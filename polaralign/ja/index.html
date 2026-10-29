@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Polar Align：極軸望遠鏡の北極星の位置がわかる Android アプリ</title>
+<meta name="description" content="極軸合わせ用の Android アプリ。観測地と時刻から、極軸望遠鏡のどこに北極星を入れるかを表示します。オフライン、広告なし。">
+<link rel="alternate" hreflang="en" href="https://heocoi.github.io/notchwork/polaralign/">
+<style>
+body{max-width:760px;margin:40px auto;padding:0 20px;font:16px/1.75 "Hiragino Sans","Noto Sans JP",-apple-system,sans-serif;color:#1d232a}
+a{color:#1f5f8b}h1{font-size:27px;line-height:1.35;margin-bottom:8px}h2{font-size:20px;margin-top:36px}
+.shots{display:flex;gap:12px;overflow-x:auto;padding:8px 0}.shots img{height:420px;border-radius:12px;border:1px solid #d7dde3}
+.play{display:inline-block;padding:10px 16px;border:1px solid #1d232a;border-radius:8px;color:#1d232a;margin:8px 0}
+nav,footer{font-size:14px;color:#5a6672}
+</style></head><body>
+<nav><a href="../../">Notchwork</a> &nbsp; <a href="../">English</a></nav>
+<h1>Polar Align：極軸合わせアプリ（Android）</h1>
+<p>極軸望遠鏡をのぞいたとき、北極星をどこに合わせればよいかを、観測地と現在時刻から表示します。表示された位置に北極星を入れて赤道儀を固定すれば、極軸合わせは終わりです。</p>
+<p><span class="play">Google Play で近日公開</span></p>
+<div class="shots">
+<img src="../img/ja-01-now.png" alt="メイン画面：時計型レチクルと北極星の位置、文字盤の位置 7:07">
+<img src="../img/ja-07-now-red.png" alt="赤色の夜間モード">
+<img src="../img/03-skywatcher-plate.png" alt="Sky-Watcher 型レチクル">
+<img src="../img/05-south-sigma-octantis.png" alt="南半球：iOptron 型レチクル上のはちぶんぎ座σ星">
+</div>
+<h2>表示する内容</h2>
+<p>極軸望遠鏡のレチクルと北極星（南半球でははちぶんぎ座σ星）の位置、大きく表示した文字盤の位置、時角、子午線通過までの時間を表示します。極軸望遠鏡で見た向き（180°回転）と肉眼の向きを切り替えられます。</p>
+<h2>現場での使いやすさ</h2>
+<p>オフラインで動きます。緯度経度を入力するか、「現在地を使う」を一度タップするだけで、位置は端末の外に出ません。赤色の夜間モードではシステムバーも消えるので、画面に白い表示が残りません。広告もアカウント登録もありません。</p>
+<h2>無料版と Pro</h2>
+<p>無料版では、時計型レチクルで北極星の位置をリアルタイムに確認できます（北半球、南半球とも）。Pro は買い切りで、各社の取扱説明書の図をもとにした Sky-Watcher と iOptron のレチクル、年度リング付きの24時間目盛り、文字盤の回転と左右反転、日時を指定できるプランナー、観測地の保存が加わります。</p>
+<h2>精度</h2>
+<p>歳差、章動、光行差を含めて計算しています。2026年から2035年までの260通りの条件で天文計算ライブラリ astropy と比べ、時角の差は最大でも0.1分角未満でした。大気差は考慮していません。</p>
+<footer><p><a href="../privacy/ja/">プライバシーポリシー</a> &nbsp; お問い合わせ：<a href="mailto:notchwork@demetio.com">notchwork@demetio.com</a><br>Sky-Watcher、iOptron とは関係ありません。</p></footer>
+</body></html>
