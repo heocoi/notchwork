@@ -2,33 +2,95 @@
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Polar Align：極軸望遠鏡の北極星の位置がわかる Android アプリ</title>
 <meta name="description" content="極軸合わせ用の Android アプリ。観測地と時刻から、極軸望遠鏡のどこに北極星を入れるかを表示します。オフライン、広告なし。">
-<link rel="alternate" hreflang="en" href="https://heocoi.github.io/notchwork/polaralign/">
-<style>
-body{max-width:760px;margin:40px auto;padding:0 20px;font:16px/1.75 "Hiragino Sans","Noto Sans JP",-apple-system,sans-serif;color:#1d232a}
-a{color:#1f5f8b}h1{font-size:27px;line-height:1.35;margin-bottom:8px}h2{font-size:20px;margin-top:36px}
-.shots{display:flex;gap:12px;overflow-x:auto;padding:8px 0}.shots img{height:420px;border-radius:12px;border:1px solid #d7dde3}
-.play{display:inline-block;padding:10px 16px;border:1px solid #1d232a;border-radius:8px;color:#1d232a;margin:8px 0}
-nav,footer{font-size:14px;color:#5a6672}
-</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Polar Align", "operatingSystem": "Android", "applicationCategory": "UtilitiesApplication", "description": "Shows where Polaris or sigma Octantis goes in your polar scope for your site and time. Offline, no ads, no account.", "publisher": {"@type": "Organization", "name": "Notchwork"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
-</head><body>
-<nav><a href="../../">Notchwork</a> &nbsp; <a href="../">English</a></nav>
-<h1>Polar Align：極軸合わせアプリ（Android）</h1>
-<p>極軸望遠鏡をのぞいたとき、北極星をどこに合わせればよいかを、観測地と現在時刻から表示します。表示された位置に北極星を入れて赤道儀を固定すれば、極軸合わせは終わりです。</p>
-<p><span class="play">Google Play で近日公開</span></p>
-<div class="shots">
-<img src="../img/ja-01-now.png" alt="メイン画面：時計型レチクルと北極星の位置、文字盤の位置 7:07">
-<img src="../img/ja-07-now-red.png" alt="赤色の夜間モード">
-<img src="../img/03-skywatcher-plate.png" alt="Sky-Watcher 型レチクル">
-<img src="../img/05-south-sigma-octantis.png" alt="南半球：iOptron 型レチクル上のはちぶんぎ座σ星">
+<link rel="canonical" href="https://notchwork.demetio.app/polaralign/ja/">
+<link rel="alternate" hreflang="ja" href="https://notchwork.demetio.app/polaralign/ja/">
+<link rel="alternate" hreflang="en" href="https://notchwork.demetio.app/polaralign/">
+<link rel="alternate" hreflang="x-default" href="https://notchwork.demetio.app/polaralign/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Notchwork">
+<meta property="og:title" content="Polar Align：極軸望遠鏡の北極星の位置がわかる Android アプリ"><meta property="og:description" content="極軸合わせ用の Android アプリ。観測地と時刻から、極軸望遠鏡のどこに北極星を入れるかを表示します。オフライン、広告なし。">
+<meta property="og:url" content="https://notchwork.demetio.app/polaralign/ja/"><meta property="og:image" content="https://notchwork.demetio.app/polaralign/img/j-01-now.png">
+<meta name="theme-color" content="#05080f">
+<link rel="icon" href="../img/icon.png">
+<link rel="stylesheet" href="../pa.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Polar Align", "operatingSystem": "Android", "applicationCategory": "UtilitiesApplication", "url": "https://notchwork.demetio.app/polaralign/ja/", "description": "Shows where Polaris or sigma Octantis goes in your polar scope for your site and time. Offline, no ads, no account.", "publisher": {"@type": "Organization", "name": "Notchwork"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+</head>
+<body class="ja sky">
+<div class="wrap"><nav class="top"><a class="brand" href="../../"><img src="../img/icon.png" alt="" width="30" height="30">Notchwork</a><span class="sp"></span><a class="on" href="./">Polar Align</a><a href="../reticle-guide/ja/">レチクルの見方</a><a href="../privacy/ja/" class="hide-s">プライバシー</a><a href="../" lang="en">English</a></nav></div>
+
+<header class="hero"><div class="wrap grid">
+<div>
+<h1>極軸望遠鏡の<em>どこに北極星を入れるか</em>、今の時刻と場所でわかる。</h1>
+<p class="lede">観測地と現在時刻から、北極星を入れる位置を時計の読みで表示します。表示された位置に北極星を入れて赤道儀を固定すれば、極軸合わせは終わりです。</p>
+<span class="soon">Google Play で近日公開</span>
+<p class="fine">Android。オフラインで動作、広告もアカウント登録もありません。</p>
 </div>
+<div class="stage">
+<svg class="orbit" viewBox="0 0 600 600" aria-hidden="true" focusable="false">
+<g fill="none" stroke="#7fd4e0" stroke-width="1">
+<circle cx="300" cy="300" r="296" opacity=".16"/><circle cx="300" cy="300" r="250" opacity=".12"/>
+<circle cx="300" cy="300" r="200" stroke-dasharray="2 7" opacity=".5"/>
+<line x1="300" y1="4" x2="300" y2="596" opacity=".1"/><line x1="4" y1="300" x2="596" y2="300" opacity=".1"/>
+</g>
+<g class="spin"><line x1="300" y1="300" x2="300" y2="100" stroke="#7fd4e0" stroke-width="1" stroke-dasharray="4 5" opacity=".4"/><circle cx="300" cy="100" r="16" fill="#ffe9a8" opacity=".16"/><circle cx="300" cy="100" r="6" fill="#ffe9a8"/></g>
+</svg>
+<div class="phone"><img src="../img/j-01-now.png" width="560" height="1120" alt="メイン画面：時計型レチクルと北極星の位置、文字盤の位置 7:25"></div>
+</div>
+</div></header>
+
+<section class="night"><div class="wrap split">
+<div class="pair">
+<div class="phone"><img src="../img/j-01-now.png" width="560" height="1120" loading="lazy" alt="通常の暗いテーマの画面"></div>
+<div class="phone red"><img src="../img/j-02-red.png" width="560" height="1120" loading="lazy" alt="赤色の夜間モード"></div>
+</div>
+<div class="copy">
+<h2>赤色の夜間モードで、暗順応を保てます。</h2>
+<p class="sub">赤色モードではシステムバーも消えるので、画面に白い表示が残りません。赤道儀のそばでも目が暗さに慣れたままです。</p>
+<p class="sub">緯度経度を入力するか、「現在地を使う」を一度タップするだけ。位置情報はタップしたときだけ読み取り、端末の外には送りません。</p>
+</div>
+</div></section>
+
+<section class="plates"><div class="wrap">
+<h2>のぞいたときの見え方で、レチクルを描きます。</h2>
+<p class="sub">極軸望遠鏡で見た向き（180°回転）と肉眼の向きを切り替えられます。見たままの絵に合わせるだけなので、頭の中で反転させる必要はありません。</p>
+<div class="rail">
+<figure><div class="phone"><img src="../img/j-01-now.png" width="560" height="1120" loading="lazy" alt="時計型レチクルと北極星の位置"></div><figcaption><b>時計型</b>無料。北極星の位置をリアルタイムで表示する汎用のレチクルです。</figcaption></figure>
+<figure><div class="phone"><img src="../img/n-03-skywatcher.png" width="560" height="1244" loading="lazy" alt="Sky-Watcher 型レチクル"></div><figcaption><b>Sky-Watcher</b>2012年、2020年、2028年の円のあいだに星を描きます。</figcaption></figure>
+<figure><div class="phone"><img src="../img/n-05-south.png" width="560" height="1244" loading="lazy" alt="南半球：iOptron 型レチクル上のはちぶんぎ座σ星"></div><figcaption><b>南半球</b>北極星の代わりに、はちぶんぎ座σ星を描きます。</figcaption></figure>
+<figure><div class="phone"><img src="../img/j-03-reticle.png" width="560" height="1120" loading="lazy" alt="レチクルの選択画面"></div><figcaption><b>レチクルの選択</b>Pro では Sky-Watcher、iOptron、Orion、Celestron から選べます。</figcaption></figure>
+<figure><div class="phone"><img src="../img/j-04-planner.png" width="560" height="1120" loading="lazy" alt="プランナー画面"></div><figcaption><b>プランナー</b>日時を指定して、今夜あとで星がどこに来るかを確認できます。</figcaption></figure>
+</div>
+<p class="brands">Pro では、各社の取扱説明書の図をもとにした <b>Sky-Watcher</b>、<b>iOptron</b>、<b>Orion</b>、<b>Celestron</b> のレチクルが使えます。</p>
+</div></section>
+
+<section><div class="wrap">
+<h2>astropy と照らし合わせて確認しました。</h2>
+<p class="sub">歳差、章動、光行差を含めて計算しています。天文計算ライブラリ astropy と時角を比べました。大気差は考慮していません。</p>
+<div class="facts">
+<div><span class="n">260</span><span class="t">通りの条件で比較</span></div>
+<div><span class="n">2026〜2035</span><span class="t">年の範囲、北半球と南半球</span></div>
+<div><span class="n">0.1&prime;未満</span><span class="t">時角の差は最大でも0.1分角未満</span></div>
+</div>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap">
 <h2>表示する内容</h2>
-<p>極軸望遠鏡のレチクルと北極星（南半球でははちぶんぎ座σ星）の位置、大きく表示した文字盤の位置、時角、子午線通過までの時間を表示します。極軸望遠鏡で見た向き（180°回転）と肉眼の向きを切り替えられます。</p>
-<h2>現場での使いやすさ</h2>
-<p>オフラインで動きます。緯度経度を入力するか、「現在地を使う」を一度タップするだけで、位置は端末の外に出ません。赤色の夜間モードではシステムバーも消えるので、画面に白い表示が残りません。広告もアカウント登録もありません。</p>
-<h2>無料版と Pro</h2>
-<p>無料版では、時計型レチクルで北極星の位置をリアルタイムに確認できます（北半球、南半球とも）。Pro は買い切りで、各社の取扱説明書の図をもとにした Sky-Watcher、iOptron、Orion、Celestron のレチクル、24時間目盛り（北半球では北極星の年度リング付き）、文字盤の回転と左右反転、日時を指定できるプランナー、観測地の保存が加わります。</p>
-<h2>精度</h2>
-<p>歳差、章動、光行差を含めて計算しています。2026年から2035年までの260通りの条件で天文計算ライブラリ astropy と比べ、時角の差は最大でも0.1分角未満でした。大気差は考慮していません。</p>
-<p>極軸望遠鏡を使うのが初めてなら、<a href="../reticle-guide/ja/">極軸望遠鏡のレチクルの見方</a>もどうぞ。</p>
-<footer><p><a href="../privacy/ja/">プライバシーポリシー</a> &nbsp; お問い合わせ：<a href="mailto:notchwork@demetio.com">notchwork@demetio.com</a><br>Sky-Watcher、iOptron、Orion、Celestron、Astro-Physics とは関係ありません。</p></footer>
+<ul class="rows">
+<li><b>レチクルと星の位置</b><span>極軸望遠鏡のレチクルと、北極星（南半球ではちぶんぎ座σ星）の位置。</span></li>
+<li><b>文字盤の位置</b><span>大きな文字で表示。時角と、子午線通過までの時間も確認できます。</span></li>
+<li><b>2つの見え方</b><span>極軸望遠鏡で見た向き（180°回転）と、肉眼の向き。</span></li>
+</ul>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap">
+<h2>無料版と、買い切りの Pro</h2>
+<div class="tiers">
+<div class="tier"><h3>無料版</h3><p>時計型レチクルで、北極星の位置をリアルタイムに確認できます。</p><ul><li>北半球と南半球の両方に対応</li><li>極軸望遠鏡の向きと肉眼の向きを切り替え</li><li>赤色の夜間モード、広告なし、アカウント登録なし</li></ul></div>
+<div class="tier pro"><h3>Pro</h3><p>買い切りです。</p><ul><li>各社の取扱説明書の図をもとにした Sky-Watcher、iOptron、Orion、Celestron のレチクル</li><li>24時間目盛り（北半球では北極星の年度リング付き）</li><li>文字盤の回転と左右反転</li><li>日時を指定できるプランナー</li><li>観測地の保存</li></ul></div>
+</div>
+</div></section>
+
+<div class="wrap guide"><div class="box"><div><h2>極軸望遠鏡が初めてなら</h2><p>レチクルのしくみと、時計の読み方を出典つきで説明しています。</p></div><a class="btn" href="../reticle-guide/ja/">レチクルの見方を読む</a></div></div>
+
+<footer><div class="wrap"><div class="row"><a href="../privacy/ja/">プライバシーポリシー</a><a href="../../">Notchwork</a><a href="mailto:notchwork@demetio.com">notchwork@demetio.com</a></div>
+Sky-Watcher、iOptron、Orion、Celestron、Astro-Physics とは関係ありません。</div></footer>
 </body></html>

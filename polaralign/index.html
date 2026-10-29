@@ -2,37 +2,94 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Polar Align: polar scope app for Android (Polaris position, offline)</title>
 <meta name="description" content="Android polar alignment app. Shows where Polaris or sigma Octantis goes in your polar scope for your site and time. Offline, no ads, no account.">
-<link rel="alternate" hreflang="ja" href="https://heocoi.github.io/notchwork/polaralign/ja/">
-<style>
-body{max-width:760px;margin:40px auto;padding:0 20px;font:17px/1.6 -apple-system,"Segoe UI",Roboto,sans-serif;color:#1d232a}
-a{color:#1f5f8b}h1{font-size:30px;line-height:1.25;margin-bottom:8px}h2{font-size:21px;margin-top:36px}
-.shots{display:flex;gap:12px;overflow-x:auto;padding:8px 0}.shots img{height:420px;border-radius:12px;border:1px solid #d7dde3}
-.play{display:inline-block;padding:10px 16px;border:1px solid #1d232a;border-radius:8px;color:#1d232a;text-decoration:none;margin:8px 0}
-nav,footer{font-size:14px;color:#5a6672}
-</style><script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Polar Align", "operatingSystem": "Android", "applicationCategory": "UtilitiesApplication", "description": "Shows where Polaris or sigma Octantis goes in your polar scope for your site and time. Offline, no ads, no account.", "publisher": {"@type": "Organization", "name": "Notchwork"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
-</head><body>
-<nav><a href="../">Notchwork</a> &nbsp; <a href="ja/">日本語</a></nav>
-<h1>Polar Align for Android</h1>
-<p>See where Polaris goes in your polar scope right now, for your site and the current time. Put the star on the dot, lock the mount, start imaging.</p>
-<p><span class="play">Coming soon to Google Play</span></p>
-<div class="shots">
-<img src="img/01-north-live.png" alt="Polar Align main screen: clock-face reticle with Polaris at the 7 o'clock position and the dial reading 7:07">
-<img src="img/02-red-night-mode.png" alt="Red night mode with the system bars hidden">
-<img src="img/03-skywatcher-plate.png" alt="Sky-Watcher style polar scope plate with year circles">
-<img src="img/05-south-sigma-octantis.png" alt="Southern hemisphere: sigma Octantis on the iOptron plate">
+<link rel="canonical" href="https://notchwork.demetio.app/polaralign/">
+<link rel="alternate" hreflang="en" href="https://notchwork.demetio.app/polaralign/">
+<link rel="alternate" hreflang="ja" href="https://notchwork.demetio.app/polaralign/ja/">
+<link rel="alternate" hreflang="x-default" href="https://notchwork.demetio.app/polaralign/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Notchwork">
+<meta property="og:title" content="Polar Align: polar scope app for Android (Polaris position, offline)"><meta property="og:description" content="Android polar alignment app. Shows where Polaris or sigma Octantis goes in your polar scope for your site and time. Offline, no ads, no account.">
+<meta property="og:url" content="https://notchwork.demetio.app/polaralign/"><meta property="og:image" content="https://notchwork.demetio.app/polaralign/img/n-01-live.png">
+<meta name="theme-color" content="#05080f">
+<link rel="icon" href="img/icon.png">
+<link rel="stylesheet" href="pa.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Polar Align", "operatingSystem": "Android", "applicationCategory": "UtilitiesApplication", "url": "https://notchwork.demetio.app/polaralign/", "description": "Shows where Polaris or sigma Octantis goes in your polar scope for your site and time. Offline, no ads, no account.", "publisher": {"@type": "Organization", "name": "Notchwork"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+</head>
+<body class="sky">
+<div class="wrap"><nav class="top"><a class="brand" href="../"><img src="img/icon.png" alt="" width="30" height="30">Notchwork</a><span class="sp"></span><a class="on" href="./">Polar Align</a><a href="reticle-guide/">Reticle guide</a><a href="privacy/" class="hide-s">Privacy</a><a href="ja/" lang="ja">日本語</a></nav></div>
+
+<header class="hero"><div class="wrap grid">
+<div>
+<h1>Where Polaris goes in your <em>polar scope</em>, right now.</h1>
+<p class="lede">Polar Align gives you the clock position for your site and the current time. Put the star on the dot, lock the mount, start imaging.</p>
+<span class="soon">Coming soon to Google Play</span>
+<p class="fine">Android. Works offline, no ads, no account.</p>
 </div>
-<h2>What it shows</h2>
-<ul>
-<li>The polar scope reticle with Polaris, or sigma Octantis in the south, at the right clock position</li>
-<li>The dial reading in large type, plus the hour angle and the time to the next upper transit</li>
-<li>Through-the-scope view (turned 180°) or naked-eye view</li>
+<div class="stage">
+<svg class="orbit" viewBox="0 0 600 600" aria-hidden="true" focusable="false">
+<g fill="none" stroke="#7fd4e0" stroke-width="1">
+<circle cx="300" cy="300" r="296" opacity=".16"/><circle cx="300" cy="300" r="250" opacity=".12"/>
+<circle cx="300" cy="300" r="200" stroke-dasharray="2 7" opacity=".5"/>
+<line x1="300" y1="4" x2="300" y2="596" opacity=".1"/><line x1="4" y1="300" x2="596" y2="300" opacity=".1"/>
+</g>
+<g class="spin"><line x1="300" y1="300" x2="300" y2="100" stroke="#7fd4e0" stroke-width="1" stroke-dasharray="4 5" opacity=".4"/><circle cx="300" cy="100" r="16" fill="#ffe9a8" opacity=".16"/><circle cx="300" cy="100" r="6" fill="#ffe9a8"/></g>
+</svg>
+<div class="phone"><img src="img/n-01-live.png" width="560" height="1244" alt="Polar Align main screen: clock-face reticle with Polaris at the 7 o'clock position and the dial reading 7:07"></div>
+</div>
+</div></header>
+
+<section class="night"><div class="wrap split">
+<div class="pair">
+<div class="phone"><img src="img/n-01-live.png" width="560" height="1244" loading="lazy" alt="Polar Align in its normal dark theme"></div>
+<div class="phone red"><img src="img/n-02-red.png" width="560" height="1244" loading="lazy" alt="Red night mode with the system bars hidden"></div>
+</div>
+<div class="copy">
+<h2>Red night mode keeps your eyes dark adapted.</h2>
+<p class="sub">Red mode hides the system bars, so nothing white stays on screen while you stand at the mount.</p>
+<p class="sub">Type your coordinates, or tap "Use my location once". The position is read only when you tap and never leaves your phone.</p>
+</div>
+</div></section>
+
+<section class="plates"><div class="wrap">
+<h2>Draws the plate you are looking through.</h2>
+<p class="sub">The star is placed on the reticle the way you see it through the scope, so you copy the picture instead of flipping it in your head. Through-the-scope view is turned 180°, or switch to the naked-eye view.</p>
+<div class="rail">
+<figure><div class="phone"><img src="img/n-01-live.png" width="560" height="1244" loading="lazy" alt="Clock-face reticle with live Polaris position"></div><figcaption><b>Clock face</b>Free. The generic reticle with the live star position.</figcaption></figure>
+<figure><div class="phone"><img src="img/n-03-skywatcher.png" width="560" height="1244" loading="lazy" alt="Sky-Watcher style polar scope plate with year circles"></div><figcaption><b>Sky-Watcher</b>Circles for 2012, 2020 and 2028 with the star between them.</figcaption></figure>
+<figure><div class="phone"><img src="img/n-04-ioptron.png" width="560" height="1244" loading="lazy" alt="iOptron style polar scope plate"></div><figcaption><b>iOptron</b>A dial from 1 to 12 with the inner and outer circles.</figcaption></figure>
+<figure><div class="phone"><img src="img/n-05-south.png" width="560" height="1244" loading="lazy" alt="Southern hemisphere: sigma Octantis on the iOptron plate"></div><figcaption><b>Southern sky</b>Sigma Octantis takes the place of Polaris.</figcaption></figure>
+</div>
+<p class="brands">Pro adds <b>Sky-Watcher</b>, <b>iOptron</b>, <b>Orion</b> and <b>Celestron</b> plates, drawn from the manufacturers' manuals.</p>
+</div></section>
+
+<section><div class="wrap">
+<h2>Checked against astropy.</h2>
+<p class="sub">Positions include precession, nutation and aberration. We compared the hour angle with the astropy library, in both hemispheres. Atmospheric refraction is not applied.</p>
+<div class="facts">
+<div><span class="n">260</span><span class="t">cases compared</span></div>
+<div><span class="n">2026 to 2035</span><span class="t">dates covered, north and south</span></div>
+<div><span class="n">&lt; 0.1&prime;</span><span class="t">largest hour angle difference, under 0.1 arcminute</span></div>
+</div>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap">
+<h2>What it shows.</h2>
+<ul class="rows">
+<li><b>The reticle</b><span>With Polaris, or sigma Octantis in the south, at the right clock position.</span></li>
+<li><b>The dial reading</b><span>In large type, plus the hour angle and the time to the next upper transit.</span></li>
+<li><b>Two views</b><span>Through the scope (turned 180°) or naked eye.</span></li>
 </ul>
-<h2>Made for the field</h2>
-<p>It works offline. Type your coordinates, or tap "Use my location once"; the position never leaves your phone. Red night mode hides the system bars so nothing white stays on screen. No ads, no account.</p>
-<h2>Free and Pro</h2>
-<p>Free: the clock-face reticle with the live star position, in both hemispheres. Pro is a one-time purchase and adds Sky-Watcher, iOptron, Orion and Celestron plates drawn from the manufacturers' manuals, a 24-hour dial with Polaris year rings in the north, dial rotation and mirroring, a time planner and saved sites.</p>
-<h2>Accuracy</h2>
-<p>Positions include precession, nutation and aberration. We compared the hour angle with the astropy library on 260 dates from 2026 to 2035 in both hemispheres; the largest difference was under 0.1 arcminute. Atmospheric refraction is not applied.</p>
-<p>New to polar scopes? Read <a href="reticle-guide/">how to read a polar scope reticle</a>.</p>
-<footer><p><a href="privacy/">Privacy policy</a> &nbsp; Contact: <a href="mailto:notchwork@demetio.com">notchwork@demetio.com</a><br>Not affiliated with Sky-Watcher, iOptron, Orion, Celestron or Astro-Physics.</p></footer>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap">
+<h2>Free, and a one-time Pro.</h2>
+<div class="tiers">
+<div class="tier"><h3>Free</h3><p>The clock-face reticle with the live star position.</p><ul><li>North and south hemisphere</li><li>Through-the-scope or naked-eye view</li><li>Red night mode, no ads, no account</li></ul></div>
+<div class="tier pro"><h3>Pro</h3><p>A one-time purchase.</p><ul><li>Sky-Watcher, iOptron, Orion and Celestron plates, drawn from the manufacturers' manuals</li><li>A 24-hour dial, with Polaris year rings in the north</li><li>Rotate and mirror the dial to match what you see through your scope</li><li>A time planner to see where Polaris will be later tonight</li><li>Saved observing sites</li></ul></div>
+</div>
+</div></section>
+
+<div class="wrap guide"><div class="box"><div><h2>New to polar scopes?</h2><p>How a reticle works and how to read the clock position, with sources.</p></div><a class="btn" href="reticle-guide/">Read the reticle guide</a></div></div>
+
+<footer><div class="wrap"><div class="row"><a href="privacy/">Privacy policy</a><a href="../">Notchwork</a><a href="mailto:notchwork@demetio.com">notchwork@demetio.com</a></div>
+Not affiliated with Sky-Watcher, iOptron, Orion, Celestron or Astro-Physics.</div></footer>
 </body></html>

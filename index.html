@@ -1,15 +1,94 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Notchwork</title>
-<style>body{max-width:680px;margin:40px auto;padding:0 20px;font:16px/1.6 -apple-system,"Segoe UI",Roboto,sans-serif;color:#1d232a}a{color:#1f5f8b}</style>
-</head><body>
-<h1>Notchwork</h1>
-<p>Small, offline Android tools for people who work with their hands and their telescopes.</p>
-<h2>Polar Align</h2>
-<p>Shows where Polaris or sigma Octantis goes in your polar scope, for your site and the current time.</p>
-<p><a href="polaralign/">About the app</a> &nbsp; <a href="polaralign/reticle-guide/">How to read a polar scope reticle</a> &nbsp; <a href="polaralign/privacy/">Privacy policy</a> &nbsp; <a href="polaralign/privacy/ja/">プライバシーポリシー</a></p>
-<h2>Cut list optimizer</h2>
+<meta name="description" content="Small, offline Android tools for people who work with their hands and their telescopes. Polar Align for polar scopes, a cut list optimizer for plywood.">
+<link rel="canonical" href="https://notchwork.demetio.app/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Notchwork">
+<meta property="og:title" content="Notchwork"><meta property="og:description" content="Small, offline Android tools for people who work with their hands and their telescopes.">
+<meta property="og:url" content="https://notchwork.demetio.app/"><meta property="og:image" content="https://notchwork.demetio.app/polaralign/img/n-01-live.png">
+<meta name="theme-color" content="#f4f2ee">
+<link rel="icon" href="polaralign/img/icon.png">
+<link rel="stylesheet" href="assets/home.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "Notchwork", "url": "https://notchwork.demetio.app/", "email": "notchwork@demetio.com"}</script>
+</head>
+<body>
+
+<header class="brandband"><div class="wrap">
+<div class="bar">
+<svg class="mark" viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="8" fill="#14171c"/><path d="M9 9h6.5l1.5 5 1.5-5H25v16h-5.5V17.5L17 24l-2.5-6.5V25H9z" fill="#f4f2ee"/></svg>
+<b>Notchwork</b><span class="sp"></span>
+<a href="#polar-align">Polar Align</a>&nbsp;&nbsp;<a href="#cut-list">Cut list</a>
+</div>
+<div class="hero">
+<div>
+<h1>Small, offline Android tools <span>for people who work with their hands and their telescopes.</span></h1>
+<div class="jump"><a href="#polar-align">Polar Align</a><a href="#cut-list">Cut list optimizer</a></div>
+</div>
+<svg class="art" viewBox="0 0 520 400" role="img" aria-label="A plywood sheet laid out in labeled parts, overlapped by a polar scope reticle">
+<defs><pattern id="h" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="#f7f2e4"/><line x1="0" y1="0" x2="0" y2="7" stroke="#b9b09a" stroke-width="1"/></pattern></defs>
+<rect x="8" y="30" width="360" height="250" fill="url(#h)" stroke="#2e2c29" stroke-width="2"/>
+<g stroke="#2e2c29" stroke-width="1.5">
+<rect x="8" y="30" width="140" height="130" fill="#bfe3de"/>
+<rect x="148" y="30" width="96" height="130" fill="#c8dbe8"/>
+<rect x="244" y="30" width="124" height="80" fill="#efcdc8"/>
+<rect x="244" y="110" width="124" height="26" fill="#d3dce6"/>
+<rect x="244" y="136" width="124" height="26" fill="#d3dce6"/>
+<rect x="8" y="160" width="140" height="80" fill="#efcdc8"/>
+<rect x="244" y="162" width="124" height="14" fill="#e8dcb8"/>
+</g>
+<g font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="12" fill="#211f1c">
+<text x="78" y="50" text-anchor="middle">30 1/16</text><text x="140" y="152" text-anchor="end" font-weight="600">Back</text>
+<text x="196" y="50" text-anchor="middle">21 1/4</text><text x="238" y="152" text-anchor="end" font-weight="600">Bottom</text>
+<text x="306" y="50" text-anchor="middle">30 1/16</text><text x="360" y="104" text-anchor="end" font-weight="600">Shelf</text>
+<text x="306" y="128" text-anchor="middle">Drawer front</text><text x="306" y="154" text-anchor="middle">Drawer front</text>
+<text x="140" y="232" text-anchor="end" font-weight="600">Shelf</text>
+</g>
+<g transform="translate(372 262)">
+<circle r="124" fill="#0a111c" stroke="#aebccd" stroke-width="2"/>
+<circle r="108" fill="none" stroke="#aebccd" stroke-width="9" stroke-dasharray="1.4 9.2" opacity=".55"/>
+<circle r="72" fill="none" stroke="#7fd4e0" stroke-width="1" opacity=".5"/>
+<circle r="66" fill="none" stroke="#7fd4e0" stroke-width="1" stroke-dasharray="2 5" opacity=".9"/>
+<line x1="0" y1="-124" x2="0" y2="124" stroke="#aebccd" stroke-width="1" opacity=".7"/><line x1="-124" y1="0" x2="124" y2="0" stroke="#aebccd" stroke-width="1" opacity=".7"/>
+<line x1="0" y1="0" x2="-33" y2="57" stroke="#7fd4e0" stroke-width="1" stroke-dasharray="4 4"/>
+<circle cx="-33" cy="57" r="13" fill="#ffe9a8" opacity=".2"/><circle cx="-33" cy="57" r="5.5" fill="#ffe9a8"/>
+<g font-family="-apple-system,Segoe UI,Roboto,sans-serif" font-size="13" fill="#c3cedd" text-anchor="middle"><text y="-90">12</text><text x="92" y="5">3</text><text y="98">6</text><text x="-92" y="5">9</text></g>
+</g>
+</svg>
+</div>
+</div></header>
+
+<section class="pa" id="polar-align"><div class="wrap grid">
+<div class="copy">
+<div class="app"><img src="polaralign/img/icon.png" alt="" width="52" height="52"><span>Polar Align</span></div>
+<h2>Where Polaris goes in your <em>polar scope</em>, right now.</h2>
+<p>Shows where Polaris, or sigma Octantis in the south, goes in your polar scope for your site and the current time. Put the star on the dot, lock the mount, start imaging.</p>
+<p>Works offline. No ads, no account. Red night mode for the field.</p>
+<span class="soon">Coming soon to Google Play</span>
+<div class="links"><a href="polaralign/">About the app</a><a href="polaralign/reticle-guide/">How to read a polar scope reticle</a><a href="polaralign/privacy/">Privacy policy</a><a href="polaralign/privacy/ja/" lang="ja">プライバシーポリシー</a><a href="polaralign/ja/" lang="ja">日本語</a></div>
+</div>
+<div class="shots">
+<svg class="orbit" viewBox="0 0 600 600" aria-hidden="true" focusable="false">
+<g fill="none" stroke="#7fd4e0" stroke-width="1"><circle cx="300" cy="300" r="296" opacity=".16"/><circle cx="300" cy="300" r="250" opacity=".12"/><circle cx="300" cy="300" r="200" stroke-dasharray="2 7" opacity=".5"/></g>
+<g class="spin"><line x1="300" y1="300" x2="300" y2="100" stroke="#7fd4e0" stroke-dasharray="4 5" opacity=".4"/><circle cx="300" cy="100" r="16" fill="#ffe9a8" opacity=".16"/><circle cx="300" cy="100" r="6" fill="#ffe9a8"/></g>
+</svg>
+<div class="phone"><img src="polaralign/img/n-01-live.png" width="560" height="1244" alt="Polar Align main screen: clock-face reticle with Polaris at the 7 o'clock position and the dial reading 7:07"></div>
+<div class="phone red"><img src="polaralign/img/n-02-red.png" width="560" height="1244" alt="Polar Align in red night mode"></div>
+</div>
+</div></section>
+
+<section class="cl" id="cut-list"><div class="wrap grid">
+<div class="shot"><div class="sheet"><img src="cutlist/img/result.png" width="560" height="1244" alt="Cut List layout screen: two sheets, 22 parts placed, 29 cuts, labeled parts on a 96 by 48 inch sheet"></div></div>
+<div>
+<p class="app">Cut List</p>
+<h2>Fewer sheets. Every cut in order.</h2>
 <p>Lay out plywood and sheet parts on as few sheets as possible, with labels, sizes and the cut order. Inches with fractions or metric.</p>
-<p><a href="cutlist/">Use the free web version</a></p>
-<p>Contact: <a href="mailto:notchwork@demetio.com">notchwork@demetio.com</a></p>
+<p>The free web version runs in your browser. The Android app is on its way.</p>
+<div class="cta"><a class="btn" href="cutlist/">Use the free web version</a><span class="soon">Android app coming soon</span></div>
+</div>
+</div></section>
+
+<footer class="foot"><div class="wrap row">
+<div><b>Notchwork</b><p>Offline tools for the workshop and the telescope.</p></div>
+<div><p>Contact <a href="mailto:notchwork@demetio.com">notchwork@demetio.com</a></p></div>
+</div></footer>
 </body></html>
