@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Free Cut List Optimizer: plan plywood and sheet cuts with less waste</title>
+<meta name="description" content="Free online cut list optimizer. Enter your parts and sheet size, get a labeled layout, waste percentage and cut order. Inch fractions like 23 5/8 and metric. Runs in your browser, nothing is uploaded.">
+<link rel="canonical" href="https://heocoi.github.io/notchwork/cutlist/">
+<style>
+:root{--paper:#f6f2e9;--card:#fffdf8;--card2:#efeadd;--ink:#211f1c;--graphite:#2e2c29;--mute:#5a5650;--line:#cfc8b8;--pine:#25634a;--pine-bg:#d5e6db;--err:#a8281f;--err-bg:#f6ddd6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 -apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px 48px}
+nav{font-size:14px;padding:14px 0;color:var(--mute)}
+a{color:var(--pine)}
+h1{font-size:28px;line-height:1.2;margin:4px 0 8px}
+h2{font-size:19px;margin:0 0 10px}
+.lead{margin:0 0 18px;color:var(--mute)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin:0 0 14px}
+.bar{background:var(--graphite);color:#fff;border-radius:8px;padding:8px 14px;font-weight:600;margin:0 0 10px}
+label{font-size:13px;color:var(--mute);display:block;margin-bottom:2px}
+input[type=text],select{width:100%;font:inherit;font-size:16px;padding:8px 9px;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--ink)}
+input[type=text]:focus,select:focus,button:focus-visible,summary:focus-visible{outline:2px solid var(--pine);outline-offset:1px}
+input.bad{border-color:var(--err);background:var(--err-bg)}
+.row{display:grid;gap:8px;align-items:end}
+.opts{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
+.sheetrow{grid-template-columns:1fr 1fr 1fr}
+.partgrid{display:grid;grid-template-columns:minmax(70px,1.4fr) 1fr 1fr .6fr 44px 36px;gap:6px;align-items:center}
+.partgrid .h{font-size:12px;color:var(--mute);font-weight:600}
+.partgrid input[type=checkbox]{width:22px;height:22px;accent-color:var(--pine);justify-self:center}
+.partgrid .del{width:34px;height:34px;padding:0;border:1px solid var(--line);background:#fff;border-radius:7px;font-size:18px;line-height:1;color:var(--mute);cursor:pointer}
+button.btn{font:inherit;font-weight:600;border:0;border-radius:8px;padding:11px 18px;background:var(--pine);color:#fff;cursor:pointer}
+button.alt{background:transparent;color:var(--pine);border:1px solid var(--pine)}
+button.btn:hover{filter:brightness(1.08)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.count{font-size:13px;color:var(--mute)}
+.msg{background:var(--err-bg);color:var(--err);border-radius:8px;padding:10px 12px;margin:10px 0 0;font-size:15px}
+.note{font-size:13px;color:var(--mute);margin:8px 0 0}
+table{border-collapse:collapse;width:100%;font-size:14px}
+td,th{padding:5px 8px;text-align:left}
+tbody tr:nth-child(odd){background:var(--card2)}
+th{font-size:12px;color:var(--mute)}
+.info td:first-child{font-weight:600}
+.sheet{margin:18px 0 0}
+.sheet h3{margin:0;font-size:16px}
+.sheet .sub{font-size:13px;color:var(--mute);margin:0 0 6px}
+.svgbox{width:100%;line-height:0}
+svg text{font-family:-apple-system,"Segoe UI",Roboto,sans-serif}
+details summary{cursor:pointer;background:var(--mute);color:#fff;border-radius:8px;padding:8px 14px;font-weight:600;margin-top:8px;list-style:none}
+details summary::-webkit-details-marker{display:none}
+.unplaced{background:var(--err-bg);border-radius:10px;padding:12px 14px;margin:0 0 14px}
+.unplaced b{color:var(--err)}
+.unplaced p{margin:4px 0;font-size:14px}
+.promo{border-left:0;background:var(--pine-bg);border-radius:10px;padding:14px;margin:22px 0 0}
+.play{display:inline-block;padding:10px 16px;border:1px solid var(--graphite);border-radius:8px;color:var(--graphite);text-decoration:none;font-weight:600;margin-top:6px;background:#fff}
+footer{font-size:14px;color:var(--mute);margin-top:30px}
+@media(max-width:520px){.partgrid{grid-template-columns:1fr 1fr 58px 34px 34px}.partgrid .lab{grid-column:1/-1}.partgrid .h.lab{display:none}h1{font-size:24px}}
+@media print{nav,.card.inputs,.actions,footer,.promo{display:none}body{background:#fff}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Cut List Optimizer","url":"https://heocoi.github.io/notchwork/cutlist/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","description":"Free cut list optimizer for plywood and sheet goods. Labeled layout, waste percentage and cut order. Runs in the browser.","publisher":{"@type":"Organization","name":"Notchwork"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+</head><body><div class="wrap">
+<nav><a href="../">Notchwork</a></nav>
+<h1>Free cut list optimizer</h1>
+<p class="lead">Enter your parts and your sheet size. The page lays them out on as few sheets as it can, draws every sheet with sizes and labels, and lists the saw cuts in order. Inches with fractions like 23 5/8, or metric. It runs in your browser: nothing is uploaded.</p>
+
+<section class="card inputs" aria-label="Inputs">
+  <div class="bar">Sheet</div>
+  <div class="row sheetrow">
+    <div><label for="sw">Width (along the grain)</label><input type="text" id="sw" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
+    <div><label for="sh">Height</label><input type="text" id="sh" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
+    <div><label for="sq">Sheets available</label><input type="text" id="sq" inputmode="numeric" autocomplete="off"></div>
+  </div>
+  <div class="bar" style="margin-top:16px">Options</div>
+  <div class="row opts">
+    <div><label for="unit">Units</label><select id="unit"><option value="in">Inches</option><option value="mm">Millimetres</option></select></div>
+    <div id="fracWrap"><label for="frac">Show sizes as</label><select id="frac"><option value="0">Decimal</option><option value="1">Fractions</option></select></div>
+    <div><label for="kerf">Saw kerf</label><input type="text" id="kerf" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
+    <div><label for="trim">Edge trim</label><input type="text" id="trim" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
+  </div>
+  <p class="note">Edge trim is removed from all four edges of every sheet. Sheet width runs along the grain; a part with Rot unchecked keeps its width along it.</p>
+
+  <div class="bar" style="margin-top:16px">Parts</div>
+  <div class="partgrid" id="parts" role="group" aria-label="Parts"></div>
+  <div class="actions">
+    <button class="btn alt" id="add" type="button">Add part</button>
+    <span class="count" id="count"></span>
+  </div>
+  <div class="actions">
+    <button class="btn" id="calc" type="button">Calculate</button>
+    <button class="btn alt" id="example" type="button">Load example</button>
+    <button class="btn alt" id="clear" type="button">Clear</button>
+  </div>
+  <div class="msg" id="err" role="alert" hidden></div>
+</section>
+
+<section id="out" aria-live="polite"></section>
+
+<section class="promo">
+  <h2>Take it to the shop with the Android app</h2>
+  <p style="margin:0">This page does what the free app does: up to 20 part rows, one sheet size, the full layout with labels, sizes and cut order. The Android app adds saved projects and a PDF with the label and size printed on every part, and works offline with a keypad made for fractions.</p>
+  <!-- When the app is live, replace this line with a link to https://play.google.com/store/apps/details?id=com.notchwork.cutlist -->
+  <span class="play">Coming soon to Google Play</span>
+</section>
+
+<section style="margin-top:26px">
+  <h2>How the layout is made</h2>
+  <p>The layout uses a guillotine method: every cut runs edge to edge, as on a table saw or panel saw. The page runs the same packer under many sort orders, fit rules and split rules and keeps the result that leaves the least unplaced area, then the fewest sheet area, sheets and cuts. Check the plan before you cut expensive material.</p>
+</section>
+
+<footer><p>Contact: <a href="mailto:notchwork@demetio.com">notchwork@demetio.com</a><br>No ads, no account, no tracking. Your list is kept only in this browser so a reload does not lose it.</p></footer>
+</div>
+
+<script>
+// ==CORE-START==
+// Port of android/cutlist optimizer (CutOptimizer.kt, Lengths.kt). Keep the logic identical; parity is tested against the Kotlin code.
+const EPS = 1e-7;
+
+function roundHalfEven(x) {
+  const f = Math.floor(x), d = x - f;
+  if (d < 0.5) return f;
+  if (d > 0.5) return f + 1;
+  return f % 2 === 0 ? f : f + 1;
+}
+
+// Lengths.parse: "12.5", "12,5", "1/2", "3 1/2", "3-1/2". Returns null when not a number.
+function parseLength(text) {
+  let s = String(text).trim();
+  if (s === '') return null;
+  if (s.includes(',') && !s.includes('.')) s = s.replace(/,/g, '.');
+  if (/^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/.test(s)) {
+    const v = Number(s);
+    return Number.isFinite(v) && v >= 0 ? v : null;
+  }
+  const m = /^(?:(\d+)[\s-]+)?(\d+)\s*\/\s*(\d+)$/.exec(s);
+  if (!m) return null;
+  const whole = m[1] ? Number(m[1]) : 0;
+  const den = Number(m[3]);
+  if (den === 0) return null;
+  return whole + Number(m[2]) / den;
+}
+
+// Lengths.format: fixed decimals, trailing zeros removed.
+function formatLength(v, maxDecimals) {
+  const f = Math.pow(10, maxDecimals);
+  const r = roundHalfEven(v * f) / f;
+  if (Math.abs(r - roundHalfEven(r)) < 1e-9) return String(roundHalfEven(r));
+  return r.toFixed(maxDecimals).replace(/0+$/, '').replace(/\.$/, '');
+}
+
+// Lengths.fraction: mixed number to the nearest 1/32, reduced: 23.625 -> "23 5/8".
+function fractionLength(v, denominator = 32) {
+  const total = roundHalfEven(v * denominator);
+  const whole = Math.trunc(total / denominator);
+  let num = total % denominator;
+  let den = denominator;
+  if (num === 0) return String(whole);
+  let a = num, b = den;
+  while (b !== 0) { const t = a % b; a = b; b = t; }
+  num /= a; den /= a;
+  return whole === 0 ? num + '/' + den : whole + ' ' + num + '/' + den;
+}
+
+const ORDER = [
+  (a, b) => cmpKeys([-(a.w * a.h), -Math.max(a.w, a.h), a.partNo], [-(b.w * b.h), -Math.max(b.w, b.h), b.partNo]),
+  (a, b) => cmpKeys([-Math.max(a.w, a.h), -Math.min(a.w, a.h), a.partNo], [-Math.max(b.w, b.h), -Math.min(b.w, b.h), b.partNo]),
+  (a, b) => cmpKeys([-Math.min(a.w, a.h), -Math.max(a.w, a.h), a.partNo], [-Math.min(b.w, b.h), -Math.max(b.w, b.h), b.partNo]),
+  (a, b) => cmpKeys([-a.w, -a.h, a.partNo], [-b.w, -b.h, b.partNo]),
+  (a, b) => cmpKeys([-a.h, -a.w, a.partNo], [-b.h, -b.w, b.partNo]),
+  (a, b) => cmpKeys([-(a.w + a.h), -(a.w * a.h), a.partNo], [-(b.w + b.h), -(b.w * b.h), b.partNo]),
+];
+function cmpKeys(a, b) {
+  for (let i = 0; i < a.length; i++) { if (a[i] < b[i]) return -1; if (a[i] > b[i]) return 1; }
+  return 0;
+}
+// Enum orders match the Kotlin declaration order, because the search keeps the FIRST best run.
+const FIT = ['BestArea', 'BestShortSide', 'BestLongSide'];
+const SPLIT = ['ShorterLeftover', 'LongerLeftover', 'KeepBigRemnant', 'KeepSmallRemnant', 'VerticalFirst', 'HorizontalFirst'];
+const OPEN = ['SmallestSheet', 'LargestSheet'];
+const VERTICAL = 0, HORIZONTAL = 1;       // Orientation ordinal
+const TOO_LARGE = 0, OUT_OF_STOCK = 1;    // UnplacedReason ordinal
+
+function fitsSheet(it, s, trim) {
+  const uw = s.width - 2 * trim, uh = s.height - 2 * trim;
+  return (it.w <= uw + EPS && it.h <= uh + EPS) || (it.rotate && it.h <= uw + EPS && it.w <= uh + EPS);
+}
+
+function place(sh, rectIndex, item, rot, kerf, split) {
+  const r = sh.free.splice(rectIndex, 1)[0];
+  const pw = rot ? item.h : item.w;
+  const ph = rot ? item.w : item.h;
+  sh.placements.push({ partNo: item.partNo, label: item.label, x: r.x, y: r.y, width: pw, height: ph, rotated: rot });
+
+  const lw = r.w - pw, lh = r.h - ph;
+  const hasRight = lw > EPS, hasBelow = lh > EPS;
+  const rightW = Math.max(0, lw - kerf), belowH = Math.max(0, lh - kerf);
+
+  let horizontalFirst;
+  switch (split) {
+    case 'ShorterLeftover': horizontalFirst = lw <= lh; break;
+    case 'LongerLeftover': horizontalFirst = lw > lh; break;
+    case 'HorizontalFirst': horizontalFirst = true; break;
+    case 'VerticalFirst': horizontalFirst = false; break;
+    default: { // KeepBigRemnant, KeepSmallRemnant
+      const hMax = Math.max(r.w * belowH, rightW * ph);
+      const vMax = Math.max(rightW * r.h, pw * belowH);
+      horizontalFirst = split === 'KeepBigRemnant' ? hMax >= vMax : hMax < vMax;
+    }
+  }
+  const xCut = r.x + pw, yCut = r.y + ph;
+  if (horizontalFirst) {
+    let d = r.depth;
+    if (hasBelow) {
+      d++;
+      sh.cuts.push({ orientation: HORIZONTAL, position: yCut, start: r.x, length: r.w, depth: d });
+      if (belowH > EPS) sh.free.push({ x: r.x, y: yCut + kerf, w: r.w, h: belowH, depth: d });
+    }
+    if (hasRight) {
+      d++;
+      sh.cuts.push({ orientation: VERTICAL, position: xCut, start: r.y, length: ph, depth: d });
+      if (rightW > EPS) sh.free.push({ x: xCut + kerf, y: r.y, w: rightW, h: ph, depth: d });
+    }
+  } else {
+    let d = r.depth;
+    if (hasRight) {
+      d++;
+      sh.cuts.push({ orientation: VERTICAL, position: xCut, start: r.y, length: r.h, depth: d });
+      if (rightW > EPS) sh.free.push({ x: xCut + kerf, y: r.y, w: rightW, h: r.h, depth: d });
+    }
+    if (hasBelow) {
+      d++;
+      sh.cuts.push({ orientation: HORIZONTAL, position: yCut, start: r.x, length: pw, depth: d });
+      if (belowH > EPS) sh.free.push({ x: r.x, y: yCut + kerf, w: pw, h: belowH, depth: d });
+    }
+  }
+}
+
+function pack(items, stock, usable, kerf, trim, fit, split, policy) {
+  const open = [];
+  const left = stock.map(s => s.qty);
+  const unplaced = [];
+  for (const item of items) {
+    let bestSheet = null, bestRect = -1, bestRot = false;
+    let s1 = Number.MAX_VALUE, s2 = Number.MAX_VALUE;
+    for (const sh of open) {
+      for (let ri = 0; ri < sh.free.length; ri++) {
+        const r = sh.free[ri];
+        const rots = (item.rotate && item.w !== item.h) ? [false, true] : [false];
+        for (const rot of rots) {
+          const pw = rot ? item.h : item.w, ph = rot ? item.w : item.h;
+          if (pw > r.w + EPS || ph > r.h + EPS) continue;
+          const lw = r.w - pw, lh = r.h - ph;
+          let a, b;
+          if (fit === 'BestArea') { a = r.w * r.h - pw * ph; b = Math.min(lw, lh); }
+          else if (fit === 'BestShortSide') { a = Math.min(lw, lh); b = Math.max(lw, lh); }
+          else { a = Math.max(lw, lh); b = Math.min(lw, lh); }
+          if (a < s1 - EPS || (a < s1 + EPS && b < s2 - EPS)) {
+            s1 = a; s2 = b; bestSheet = sh; bestRect = ri; bestRot = rot;
+          }
+        }
+      }
+    }
+    if (bestSheet === null) {
+      let pick = -1;
+      for (const si of usable) {
+        if (left[si] <= 0 || !fitsSheet(item, stock[si], trim)) continue;
+        const area = stock[si].width * stock[si].height;
+        let better;
+        if (pick < 0) better = true;
+        else if (policy === 'SmallestSheet') better = area < stock[pick].width * stock[pick].height - EPS;
+        else better = area > stock[pick].width * stock[pick].height + EPS;
+        if (better) pick = si;
+      }
+      if (pick < 0) { unplaced.push(unplacedOf(item, OUT_OF_STOCK)); continue; }
+      left[pick]--;
+      const s = stock[pick];
+      const sh = { stockIndex: pick, free: [{ x: trim, y: trim, w: s.width - 2 * trim, h: s.height - 2 * trim, depth: 0 }], placements: [], cuts: [] };
+      open.push(sh);
+      const rot = !(item.w <= sh.free[0].w + EPS && item.h <= sh.free[0].h + EPS);
+      place(sh, 0, item, rot, kerf, split);
+    } else {
+      place(bestSheet, bestRect, item, bestRot, kerf, split);
+    }
+  }
+  let sheetArea = 0, cuts = 0, unplacedArea = 0;
+  for (const sh of open) { sheetArea += stock[sh.stockIndex].width * stock[sh.stockIndex].height; cuts += sh.cuts.length; }
+  for (const u of unplaced) unplacedArea += u.width * u.height;
+  return { sheets: open, unplaced, sheetArea, cuts, unplacedArea };
+}
+
+function betterThan(a, o) {
+  if (Math.abs(a.unplacedArea - o.unplacedArea) > EPS) return a.unplacedArea < o.unplacedArea;
+  if (a.unplaced.length !== o.unplaced.length) return a.unplaced.length < o.unplaced.length;
+  if (Math.abs(a.sheetArea - o.sheetArea) > EPS) return a.sheetArea < o.sheetArea;
+  if (a.sheets.length !== o.sheets.length) return a.sheets.length < o.sheets.length;
+  return a.cuts < o.cuts;
+}
+
+function unplacedOf(it, reason) {
+  return { partNo: it.partNo, label: it.label, width: it.w, height: it.h, reason };
+}
+
+// stock: [{width,height,qty}], parts: [{width,height,qty,label,allowRotate}], settings: {kerf,trim}
+// Returns {sheets:[{stockIndex,sheetWidth,sheetHeight,placements,cuts,wastePercent}], unplaced, wastePercent, cutCount}
+function optimize(stock, parts, settings = {}, budgetMillis = Infinity, progress = () => true) {
+  const t0 = Date.now();
+  const kerf = Math.max(0, settings.kerf || 0);
+  const trim = Math.max(0, settings.trim || 0);
+  const usable = [];
+  stock.forEach((s, i) => { if (s.qty > 0 && s.width - 2 * trim > EPS && s.height - 2 * trim > EPS) usable.push(i); });
+  const items = [];
+  parts.forEach((p, i) => {
+    if (p.width > EPS && p.height > EPS) {
+      for (let k = 0; k < Math.max(0, p.qty); k++) items.push({ partNo: i + 1, label: p.label || '', w: p.width, h: p.height, rotate: p.allowRotate !== false });
+    }
+  });
+  const tooLarge = [], packable = [];
+  for (const it of items) {
+    if (usable.some(si => fitsSheet(it, stock[si], trim))) packable.push(it); else tooLarge.push(unplacedOf(it, TOO_LARGE));
+  }
+  let best = null;
+  const total = ORDER.length * FIT.length * SPLIT.length * OPEN.length;
+  let done = 0;
+  search:
+  for (const cmp of ORDER) {
+    const sorted = packable.slice().sort(cmp);
+    for (const fit of FIT) for (const split of SPLIT) for (const policy of OPEN) {
+      const run = pack(sorted, stock, usable, kerf, trim, fit, split, policy);
+      if (best === null || betterThan(run, best)) best = run;
+      done++;
+      if (!progress(done / total)) break search;
+      if (Date.now() - t0 > budgetMillis) break search;
+    }
+  }
+  const run = best || { sheets: [], unplaced: [] };
+  const layouts = run.sheets.map(sh => {
+    const s = stock[sh.stockIndex];
+    const all = [];
+    if (trim > 0) {
+      all.push({ orientation: VERTICAL, position: trim, start: 0, length: s.height, depth: 0 });
+      all.push({ orientation: VERTICAL, position: s.width - trim, start: 0, length: s.height, depth: 0 });
+      all.push({ orientation: HORIZONTAL, position: trim, start: 0, length: s.width, depth: 0 });
+      all.push({ orientation: HORIZONTAL, position: s.height - trim, start: 0, length: s.width, depth: 0 });
+    }
+    const rest = sh.cuts.slice().sort((a, b) => a.depth - b.depth || a.orientation - b.orientation || a.position - b.position || a.start - b.start);
+    const cuts = all.concat(rest);
+    const sheetArea = s.width * s.height;
+    let used = 0;
+    for (const p of sh.placements) used += p.width * p.height;
+    return { stockIndex: sh.stockIndex, sheetWidth: s.width, sheetHeight: s.height, placements: sh.placements, cuts,
+      sheetArea, usedArea: used, wastePercent: sheetArea <= 0 ? 0 : 100 * (1 - used / sheetArea) };
+  });
+  const unplaced = tooLarge.concat(run.unplaced).sort((a, b) => a.partNo - b.partNo || a.reason - b.reason);
+  let sa = 0, ua = 0, cc = 0;
+  for (const l of layouts) { sa += l.sheetArea; ua += l.usedArea; cc += l.cuts.filter(c => c.depth !== 0).length; }
+  return { sheets: layouts, unplaced, sheetArea: sa, usedArea: ua, wastePercent: sa <= 0 ? 0 : 100 * (1 - ua / sa), cutCount: cc };
+}
+// ==CORE-END==
+
+// ---------------------------------------------------------------- page ----
+(function () {
+  if (typeof document === 'undefined') return;
+  const FREE_PART_ROWS = 20;        // same as FREE_PART_ROWS in the Android app (AppViewModel.kt)
+  const DEFAULT_STOCK_QTY = '20';   // DEFAULT_STOCK_QTY in Model.kt
+  const MORE_SHEETS_QTY = 50;       // MORE_SHEETS_QTY in Model.kt
+  const BUDGET_MS = 8000;           // the app's search budget
+  const KEY = 'notchwork.cutlist.v1';
+  const $ = id => document.getElementById(id);
+  const PALETTE = ['#CFE3D6', '#C9DCE8', '#EBCFC8', '#DDE6C6', '#E8DEC3', '#CFD6DC', '#BFE2E0', '#E4EBB8', '#DAD6CC'];
+
+  let nextId = 1;
+  let state = defaultState('in');
+  let last = null; // last calculation {res, unit, fractions}
+
+  function defaultState(unit) {
+    const inch = unit === 'in';
+    return { unit, fractions: false, kerf: inch ? '0.125' : '3', trim: '', sw: inch ? '96' : '2440', sh: inch ? '48' : '1220', sq: DEFAULT_STOCK_QTY, parts: [blankPart()] };
+  }
+  function blankPart() { return { id: nextId++, label: '', w: '', h: '', qty: '1', rot: true }; }
+
+  function examplePartsFor(unit) {
+    const inch = unit === 'in';
+    const rows = inch ? [
+      ['Side', '28.375', '22', '2', 0], ['Bottom', '30.0625', '21.25', '1', 1], ['Shelf', '30.0625', '19.6875', '2', 1],
+      ['Door', '28.1875', '15.625', '2', 0], ['Rail', '30.0625', '3.9375', '2', 1], ['Drawer front', '30.0625', '7.0625', '3', 0],
+      ['Back', '30.0625', '28.1875', '1', 1], ['Drawer side', '19.6875', '5.5', '6', 1], ['Drawer base', '18.25', '19.6875', '3', 1]
+    ] : [
+      ['Side', '720', '560', '2', 0], ['Bottom', '764', '540', '1', 1], ['Shelf', '764', '500', '2', 1],
+      ['Door', '716', '397', '2', 0], ['Rail', '764', '100', '2', 1], ['Drawer front', '764', '180', '3', 0],
+      ['Back', '764', '716', '1', 1], ['Drawer side', '500', '140', '6', 1], ['Drawer base', '464', '500', '3', 1]
+    ];
+    return rows.map(r => ({ id: nextId++, label: r[0], w: r[1], h: r[2], qty: r[3], rot: r[4] === 1 }));
+  }
+
+  const decimals = () => state.unit === 'mm' ? 2 : 3;
+  function fmt(v, unit, fractions) {
+    return (fractions && unit === 'in') ? fractionLength(v) : formatLength(v, unit === 'mm' ? 2 : 3);
+  }
+
+  // Convert every typed length when the unit or the display mode changes (Project.convertedTo).
+  function convertState(target, showFractions) {
+    const frac = showFractions && target === 'in';
+    if (target === state.unit && frac === state.fractions) return;
+    const k = target === state.unit ? 1 : (target === 'in' ? 1 / 25.4 : 25.4);
+    const c = s => {
+      const v = parseLength(s);
+      if (v === null) return s;
+      const x = v * k;
+      if (frac && Math.abs(x * 32 - roundHalfEven(x * 32)) < 1e-6) return fractionLength(x);
+      return formatLength(x, target === 'mm' ? 2 : 3);
+    };
+    state.kerf = c(state.kerf); state.trim = c(state.trim); state.sw = c(state.sw); state.sh = c(state.sh);
+    state.parts.forEach(p => { p.w = c(p.w); p.h = c(p.h); });
+    state.unit = target; state.fractions = frac;
+  }
+
+  function isBlankPart(p) { return !p.w.trim() && !p.h.trim() && !p.label.trim(); }
+
+  // Project.build(): turns the typed text into optimizer input or an error message plus the fields to flag.
+  function build() {
+    const bad = new Set();
+    let message = null;
+    const fail = (m, key) => { if (!message) message = m; if (key) bad.add(key); };
+    const len = s => s.trim() === '' ? 0 : parseLength(s);
+    const kerf = len(state.kerf), trim = len(state.trim);
+    if (kerf === null) fail('Kerf is not a number.', 'kerf');
+    if (trim === null) fail('Edge trim is not a number.', 'trim');
+    const stock = [];
+    const sw = parseLength(state.sw), sh = parseLength(state.sh), sq = intOrNull(state.sq);
+    if (sw === null || sh === null || sw <= 0 || sh <= 0) { fail('Enter the sheet width and height.', 'sw'); bad.add('sh'); }
+    else if (sq === null || sq < 1) fail('Sheets available must be 1 or more.', 'sq');
+    else stock.push({ width: sw, height: sh, qty: sq });
+    const parts = [];
+    let any = false;
+    state.parts.forEach((r, i) => {
+      if (isBlankPart(r)) { parts.push({ width: 0, height: 0, qty: 0 }); return; }
+      const w = parseLength(r.w), h = parseLength(r.h), q = intOrNull(r.qty);
+      if (w === null || h === null || w <= 0 || h <= 0) { fail('Part ' + (i + 1) + ': enter width and height.', 'p' + r.id); parts.push({ width: 0, height: 0, qty: 0 }); }
+      else if (q === null || q < 1) { fail('Part ' + (i + 1) + ': quantity must be 1 or more.', 'p' + r.id); parts.push({ width: 0, height: 0, qty: 0 }); }
+      else { any = true; parts.push({ width: w, height: h, qty: q, label: r.label.trim(), allowRotate: r.rot }); }
+    });
+    if (!any && !message) fail('Add at least one part.');
+    if (message) return { error: message, bad };
+    return { stock, parts, settings: { kerf: kerf || 0, trim: trim || 0 } };
+  }
+  function intOrNull(s) { s = s.trim(); return /^[+-]?\d+$/.test(s) ? parseInt(s, 10) : null; }
+
+  // ---- rendering of the inputs
+  function renderInputs() {
+    $('sw').value = state.sw; $('sh').value = state.sh; $('sq').value = state.sq;
+    $('unit').value = state.unit; $('frac').value = state.fractions ? '1' : '0';
+    $('fracWrap').hidden = state.unit !== 'in';
+    $('kerf').value = state.kerf; $('trim').value = state.trim;
+    const u = state.unit;
+    const g = $('parts');
+    g.innerHTML = '';
+    const head = [['Label', 'lab'], ['Width (' + u + ')', ''], ['Height (' + u + ')', ''], ['Qty', ''], ['Rot', ''], ['', '']];
+    head.forEach(h => { const d = document.createElement('div'); d.className = 'h ' + h[1]; d.textContent = h[0]; g.appendChild(d); });
+    state.parts.forEach((p, i) => {
+      const mk = (cls, val, field, aria, mode) => {
+        const el = document.createElement('input'); el.type = 'text'; el.value = val; el.className = cls;
+        el.setAttribute('aria-label', aria); el.autocomplete = 'off'; el.spellcheck = false; el.autocapitalize = 'off';
+        if (mode) el.inputMode = mode;
+        el.dataset.id = p.id; el.dataset.f = field; return el;
+      };
+      const lab = mk('lab', p.label, 'label', 'Label for part ' + (i + 1)); lab.placeholder = 'e.g. Side'; lab.maxLength = 40;
+      const w = mk('', p.w, 'w', 'Part ' + (i + 1) + ' width', 'text'), h = mk('', p.h, 'h', 'Part ' + (i + 1) + ' height', 'text');
+      const q = mk('', p.qty, 'qty', 'Part ' + (i + 1) + ' quantity', 'numeric');
+      lab.id = 'p' + p.id + 'l';
+      [w, h, q].forEach(el => { el.id = 'p' + p.id + el.dataset.f; });
+      const rot = document.createElement('input'); rot.type = 'checkbox'; rot.checked = p.rot; rot.dataset.id = p.id; rot.dataset.f = 'rot';
+      rot.setAttribute('aria-label', 'Part ' + (i + 1) + ' may rotate');
+      const del = document.createElement('button'); del.type = 'button'; del.className = 'del'; del.textContent = '×';
+      del.setAttribute('aria-label', 'Delete part ' + (i + 1)); del.dataset.del = p.id;
+      const wrapLab = document.createElement('div'); wrapLab.className = 'lab'; wrapLab.appendChild(lab);
+      g.append(wrapLab, w, h, q, rot, del);
+    });
+    $('count').textContent = state.parts.length + ' of ' + FREE_PART_ROWS + ' part rows';
+    $('add').disabled = state.parts.length >= FREE_PART_ROWS;
+  }
+
+  function flagBad(bad) {
+    document.querySelectorAll('input.bad').forEach(e => e.classList.remove('bad'));
+    bad.forEach(k => {
+      let el = null;
+      if (k.charAt(0) === 'p') { el = $(k + 'w'); const h = $(k + 'h'); if (h) h.classList.add('bad'); const q = $(k + 'qty'); if (q) q.classList.add('bad'); }
+      else el = $(k);
+      if (el) el.classList.add('bad');
+    });
+  }
+
+  function save() { try { localStorage.setItem(KEY, JSON.stringify({ state, nextId })); } catch (e) { /* private mode: ignore */ } }
+  function load() {
+    try {
+      const s = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (s && s.state && Array.isArray(s.state.parts) && s.state.parts.length <= FREE_PART_ROWS) { state = s.state; nextId = s.nextId || 1000; }
+    } catch (e) { /* ignore */ }
+  }
+
+  // ---- events
+  $('parts').addEventListener('input', e => {
+    const t = e.target; if (!t.dataset || !t.dataset.f) return;
+    const p = state.parts.find(x => String(x.id) === t.dataset.id); if (!p) return;
+    p[t.dataset.f] = t.type === 'checkbox' ? t.checked : t.value;
+    t.classList.remove('bad'); save();
+  });
+  $('parts').addEventListener('click', e => {
+    const id = e.target.dataset && e.target.dataset.del; if (!id) return;
+    state.parts = state.parts.filter(x => String(x.id) !== id);
+    if (!state.parts.length) state.parts.push(blankPart());
+    renderInputs(); save();
+  });
+  ['sw', 'sh', 'sq', 'kerf', 'trim'].forEach(id => $(id).addEventListener('input', e => { state[id] = e.target.value; e.target.classList.remove('bad'); save(); }));
+  $('unit').addEventListener('change', e => { convertState(e.target.value, state.fractions); renderInputs(); save(); });
+  $('frac').addEventListener('change', e => { convertState(state.unit, e.target.value === '1'); renderInputs(); save(); });
+  $('add').addEventListener('click', () => {
+    if (state.parts.length >= FREE_PART_ROWS) return;
+    state.parts.push(blankPart()); renderInputs(); save();
+    const l = document.querySelectorAll('#parts input.lab, #parts .lab input'); if (l.length) l[l.length - 1].focus();
+  });
+  $('example').addEventListener('click', () => {
+    const u = state.unit; const d = defaultState(u);
+    state = d; state.parts = examplePartsFor(u); state.sq = '4';
+    renderInputs(); $('err').hidden = true; flagBad(new Set()); save(); calculate();
+  });
+  $('clear').addEventListener('click', () => {
+    state = defaultState(state.unit); renderInputs(); $('out').innerHTML = ''; $('err').hidden = true; flagBad(new Set()); last = null; save();
+  });
+  $('calc').addEventListener('click', calculate);
+
+  function calculate() {
+    const b = build();
+    flagBad(b.bad || new Set());
+    const err = $('err');
+    if (b.error) { err.textContent = b.error; err.hidden = false; return; }
+    err.hidden = true;
+    const btn = $('calc'); btn.disabled = true; btn.textContent = 'Finding the best layout';
+    setTimeout(() => {
+      try {
+        const res = optimize(b.stock, b.parts, b.settings, BUDGET_MS);
+        last = { res, unit: state.unit, fractions: state.fractions, sheetsAvail: b.stock[0].qty };
+        renderResult();
+      } finally { btn.disabled = false; btn.textContent = 'Calculate'; }
+      const out = $('out'); if (out.scrollIntoView) out.scrollIntoView({ block: 'start' });
+    }, 30);
+  }
+
+  // ---- result
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const pct = v => v.toFixed(1) + '%';
+
+  function renderResult() {
+    if (!last) return;
+    const { res, unit, fractions } = last;
+    const f = v => fmt(v, unit, fractions);
+    const out = $('out');
+    let h = '';
+    if (res.unplaced.length) {
+      const outOf = res.unplaced.some(u => u.reason === OUT_OF_STOCK);
+      const groups = new Map();
+      res.unplaced.forEach(u => { const k = u.partNo + '|' + u.reason + '|' + u.label; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(u); });
+      h += '<div class="unplaced"><b>Not placed</b>';
+      groups.forEach((list, k) => {
+        const u = list[0];
+        h += '<p>' + esc(u.label || '#' + u.partNo) + '  ' + f(u.width) + ' x ' + f(u.height) + ', ' + list.length + ' pcs: ' + (u.reason === TOO_LARGE ? 'larger than every sheet' : 'out of sheets') + '</p>';
+      });
+      if (outOf) {
+        h += '<p>This job needs more sheets than the ' + last.sheetsAvail + ' you entered. Raise "Sheets available", or let the page use up to ' + MORE_SHEETS_QTY + '.</p>';
+        if (last.sheetsAvail < MORE_SHEETS_QTY) h += '<button class="btn" id="more" type="button">Allow ' + MORE_SHEETS_QTY + ' sheets and recalculate</button>';
+      }
+      h += '</div>';
+    }
+    if (!res.sheets.length) {
+      h += '<div class="card">Nothing could be placed. Check the sheet size and the part sizes.</div>';
+      out.innerHTML = h; wireMore(); return;
+    }
+    const placed = res.sheets.reduce((n, s) => n + s.placements.length, 0);
+    h += '<div class="card"><div class="bar">Info</div><table class="info"><tbody>' +
+      row('Sheets', res.sheets.length) + row('Used area', pct(100 - res.wastePercent)) + row('Waste', pct(res.wastePercent)) +
+      row('Parts placed', placed) + row('Cuts', res.cutCount) + '</tbody></table></div>';
+    res.sheets.forEach((s, i) => {
+      h += '<div class="card sheet"><h3>Sheet ' + (i + 1) + ' of ' + res.sheets.length + '</h3>' +
+        '<p class="sub">' + f(s.sheetWidth) + ' x ' + f(s.sheetHeight) + ' ' + unit + ', ' + pct(s.wastePercent) + ' waste, ' + s.placements.length + ' parts</p>' +
+        '<div class="svgbox" data-sheet="' + i + '"></div>' +
+        '<details' + (i === 0 ? ' open' : '') + '><summary>Cuts (' + s.cuts.length + ')</summary>' + cutTable(s, f) + '</details></div>';
+    });
+    out.innerHTML = h;
+    drawSheets(); wireMore();
+  }
+  function row(k, v) { return '<tr><td>' + k + '</td><td>' + v + '</td></tr>'; }
+  function cutTable(s, f) {
+    let t = '<table><thead><tr><th>#</th><th>Cut</th><th>At</th><th>From</th><th>Length</th></tr></thead><tbody>';
+    s.cuts.forEach((c, k) => {
+      const trim = c.depth === 0, vert = c.orientation === VERTICAL;
+      const kind = trim ? (vert ? 'Trim vertical' : 'Trim horizontal') : (vert ? 'vertical' : 'horizontal');
+      t += '<tr><td>' + (k + 1) + '</td><td>' + kind + '</td><td>' + f(c.position) + '</td><td>' + f(c.start) + '</td><td>' + f(c.length) + '</td></tr>';
+    });
+    return t + '</tbody></table>';
+  }
+  function wireMore() {
+    const m = $('more'); if (!m) return;
+    m.addEventListener('click', () => { state.sq = String(MORE_SHEETS_QTY); renderInputs(); save(); calculate(); });
+  }
+
+  // ---- SVG, same look as SheetRenderer.kt: width on top, height rotated on the left, label bottom right, waste hatched
+  const mctx = document.createElement('canvas').getContext('2d');
+  function measure(s, size, bold) { mctx.font = (bold ? 'bold ' : '') + size + 'px sans-serif'; return mctx.measureText(s).width; }
+  function fitSize(s, maxW, maxH, want, minPx, bold) {
+    if (maxW <= 0 || maxH <= 0) return null;
+    const w = measure(s, want, bold);
+    const size = w <= maxW ? want : want * maxW / w;
+    if (size < minPx || size * 1.1 > maxH) return null;
+    return size;
+  }
+  function sheetSvg(s, widthPx, f, textPx) {
+    const k = widthPx / s.sheetWidth, H = s.sheetHeight * k, minPx = textPx * 0.55, stroke = Math.max(textPx / 10, 1);
+    let g = '<defs><pattern id="hatch" width="' + (textPx * 0.9) + '" height="' + (textPx * 0.9) + '" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><line x1="0" y1="0" x2="0" y2="' + (textPx * 0.9) + '" stroke="#C4BDAE" stroke-width="' + (stroke * 0.8) + '"/></pattern></defs>';
+    g += '<rect width="' + widthPx + '" height="' + H + '" fill="#F7F4EC"/><rect width="' + widthPx + '" height="' + H + '" fill="url(#hatch)"/>';
+    s.placements.forEach(p => {
+      const x = p.x * k, y = p.y * k, w = p.width * k, h = p.height * k;
+      g += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="' + PALETTE[(p.partNo - 1) % PALETTE.length] + '" stroke="#3A3732" stroke-width="' + stroke + '"/>';
+      g += labels(x, y, w, h, p.partNo, p.label, f(p.width), f(p.height), textPx, minPx);
+    });
+    g += '<rect width="' + widthPx + '" height="' + H + '" fill="none" stroke="#3A3732" stroke-width="' + (stroke * 1.6) + '"/>';
+    return '<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sheet layout" width="' + widthPx + '" height="' + H + '" viewBox="0 0 ' + widthPx + ' ' + H + '">' + g + '</svg>';
+  }
+  function labels(x, y, w, h, no, label, ws, hs, textPx, minPx) {
+    const pad = textPx * 0.25, ink = '#211F1C';
+    const T = (txt, tx, ty, size, anchor, bold) => '<text x="' + tx + '" y="' + ty + '" font-size="' + size + '" fill="' + ink + '" text-anchor="' + anchor + '"' + (bold ? ' font-weight="700"' : '') + '>' + esc(txt) + '</text>';
+    const tag = label || '#' + no;
+    if (h - 2 * pad < textPx * 2.4) {
+      const line = tag + '  ' + ws;
+      const sz = fitSize(line, w - 2 * pad, h - pad, textPx, minPx, false);
+      return sz ? T(line, x + w / 2, y + h / 2 + sz * 0.35, sz, 'middle') : '';
+    }
+    let g = '';
+    let sz = fitSize(ws, w - 2 * pad, h - 2 * pad, textPx, minPx, false);
+    if (sz) g += T(ws, x + w / 2, y + pad + sz * 0.85, sz, 'middle');
+    sz = fitSize(hs, h - 2 * pad, w - 2 * pad, textPx, minPx, false);
+    if (sz) { const tx = x + pad + sz * 0.85, cy = y + h / 2; g += '<text x="' + tx + '" y="' + (cy + sz * 0.35) + '" font-size="' + sz + '" fill="' + ink + '" text-anchor="middle" transform="rotate(-90 ' + tx + ' ' + cy + ')">' + esc(hs) + '</text>'; }
+    sz = fitSize(tag, w * 0.55, h * 0.4, textPx, minPx, true);
+    if (sz) g += T(tag, x + w - pad, y + h - pad, sz, 'end', true);
+    return g;
+  }
+  function drawSheets() {
+    if (!last) return;
+    const { res, unit, fractions } = last;
+    const f = v => fmt(v, unit, fractions);
+    document.querySelectorAll('.svgbox').forEach(box => {
+      const s = res.sheets[Number(box.dataset.sheet)];
+      const w = Math.max(240, Math.floor(box.clientWidth));
+      box.innerHTML = sheetSvg(s, w, f, w < 500 ? 10 : 12);
+    });
+  }
+  let rt = null, lastW = 0;
+  window.addEventListener('resize', () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => { const b = document.querySelector('.svgbox'); if (b && Math.abs(b.clientWidth - lastW) > 2) { lastW = b.clientWidth; drawSheets(); } }, 120);
+  });
+
+  load();
+  renderInputs();
+  window.__cutlist = { optimize, state: () => state };
+})();
+</script>
+</body></html>
