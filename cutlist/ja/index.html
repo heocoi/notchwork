@@ -90,6 +90,15 @@ body{background-color:var(--paper);background-image:linear-gradient(#e9e2d0 1px,
 .promo .play{background:transparent;color:#fff;border-color:#9fc9b6;margin-top:16px}
 footer{border-top:1px solid var(--line);padding-top:22px}
 @media(max-width:700px){.shellhero{grid-template-columns:1fr;padding:30px 0 26px}.shellhero svg{max-width:340px}}
+.appadds{margin:34px 0 0}
+.appadds h2{font-size:22px;margin:0 0 8px}
+.appadds p{margin:0 0 14px;max-width:44em}
+.appgrid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;align-items:start}
+.appgrid figure{margin:0;min-width:0}
+.appgrid img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:#fff}
+.appgrid figcaption{font-size:14px;color:var(--mute);margin-top:8px}
+@media(max-width:600px){.appgrid{grid-template-columns:1fr}}
+@media print{.appadds{display:none}}
 @media print{.topbar,.shellhero svg{display:none}.shellhero{display:block;padding:0}body{background:#fff}}
 </style>
 <style>
@@ -177,6 +186,15 @@ section p{line-height:1.8}
 </section>
 
 <section id="out" aria-live="polite"></section>
+
+<section class="appadds">
+<h2>Android アプリで増えること</h2>
+<p>プロジェクトの保存と、部材の名前とサイズ入りの PDF は、Android アプリの Pro に含まれます。以下はアプリの画面そのままです。</p>
+<div class="appgrid">
+<figure><img src="../img/app-pdf-ja.webp" width="1000" height="703" loading="lazy" alt="Cut List Android アプリの PDF の板1枚分のページ。1820 x 910 mm の板に部材が縮尺どおりに並び、寸法と、背板、底板、引出し前板などの名前、カットの一覧の最初の行が入っている"><figcaption>PDF の1ページ。板1枚につき1ページです</figcaption></figure>
+<figure><img src="../img/app-projects-ja.webp" width="720" height="520" loading="lazy" alt="Cut List Android アプリのプロジェクト一覧。キッチンの下台、作業台の天板、ガレージの棚の3件が保存されている"><figcaption>プロジェクトを保存して、いつでも開けます</figcaption></figure>
+</div>
+</section>
 
 <section class="promo">
   <h2>Android アプリで現場に持ち出す</h2>

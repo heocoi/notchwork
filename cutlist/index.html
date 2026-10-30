@@ -90,6 +90,15 @@ body{background-color:var(--paper);background-image:linear-gradient(#e9e2d0 1px,
 .promo .play{background:transparent;color:#fff;border-color:#9fc9b6;margin-top:16px}
 footer{border-top:1px solid var(--line);padding-top:22px}
 @media(max-width:700px){.shellhero{grid-template-columns:1fr;padding:30px 0 26px}.shellhero svg{max-width:340px}}
+.appadds{margin:34px 0 0}
+.appadds h2{font-size:22px;margin:0 0 8px}
+.appadds p{margin:0 0 14px;max-width:44em}
+.appgrid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;align-items:start}
+.appgrid figure{margin:0;min-width:0}
+.appgrid img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:#fff}
+.appgrid figcaption{font-size:14px;color:var(--mute);margin-top:8px}
+@media(max-width:600px){.appgrid{grid-template-columns:1fr}}
+@media print{.appadds{display:none}}
 @media print{.topbar,.shellhero svg{display:none}.shellhero{display:block;padding:0}body{background:#fff}}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Cut List Optimizer","url":"https://notchwork.demetio.app/cutlist/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","description":"Free cut list optimizer for plywood and sheet goods. Labeled layout, waste percentage and cut order. Runs in the browser.","publisher":{"@type":"Organization","name":"Notchwork"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
@@ -157,6 +166,15 @@ footer{border-top:1px solid var(--line);padding-top:22px}
 </section>
 
 <section id="out" aria-live="polite"></section>
+
+<section class="appadds">
+<h2>What the Android app adds</h2>
+<p>Saved projects and the PDF with part labels and sizes are part of Pro in the Android app. Here they are, straight from the app.</p>
+<div class="appgrid">
+<figure><img src="img/app-pdf-en.webp" width="1000" height="703" loading="lazy" alt="A sheet page of the PDF export from the Cut List Android app: a 96 by 48 inch sheet with parts drawn to scale, sizes on the edges, names like Back, Bottom and Shelf, and the first lines of the cut list"><figcaption>A sheet page from the PDF, one page per sheet</figcaption></figure>
+<figure><img src="img/app-projects-en.webp" width="720" height="520" loading="lazy" alt="The My projects screen in the Cut List Android app with three saved projects: Workbench top, Garage shelves and Kitchen base cabinet"><figcaption>Saved projects, open them any time</figcaption></figure>
+</div>
+</section>
 
 <section class="promo">
   <h2>Take it to the shop with the Android app</h2>
