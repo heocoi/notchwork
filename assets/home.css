@@ -81,3 +81,4 @@ a{text-underline-offset:3px}
   .cl .grid{padding:72px 24px;gap:40px}
   .bar .hide-s{display:none}
 }
+.cl.cab .shot .sheet{width:min(100%,520px)}
