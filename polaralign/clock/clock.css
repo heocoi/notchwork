@@ -48,11 +48,19 @@ input.bad{border-color:var(--red)}
 .how .note{margin-top:14px}
 .app p{color:#c3cedd;margin:0 0 20px}
 .app{padding-bottom:56px}
+.plates{max-width:760px;padding:56px 0 0}
+.plates h2{font-size:clamp(24px,3vw,32px);margin:0 0 14px}
+.plates p{color:#c3cedd;margin:0 0 20px}
+.plategrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.plategrid figure{margin:0}
+.plategrid img{display:block;width:100%;height:auto;border-radius:12px}
+.plategrid figcaption{color:#c3cedd;font-size:14px;margin-top:8px}
+@media (max-width:600px){.plategrid{grid-template-columns:1fr;max-width:360px}}
 
 @media (max-width:860px){
   .tool{grid-template-columns:1fr;gap:28px;padding:20px}
   .clock h1{margin-top:8px}
-  .how,.app{padding-top:44px}
+  .how,.app,.plates{padding-top:44px}
 }
 @media (max-width:420px){
   .row2{grid-template-columns:1fr}
