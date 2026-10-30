@@ -146,9 +146,9 @@ section p{line-height:1.8}
     <div><label for="unit">単位</label><select id="unit"><option value="mm">ミリメートル (mm)</option><option value="in">インチ (in)</option></select></div>
     <div id="fracWrap"><label for="frac">寸法の表示</label><select id="frac"><option value="0">小数</option><option value="1">分数</option></select></div>
     <div><label for="kerf">切りしろ（刃の厚み）</label><input type="text" id="kerf" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
-    <div><label for="trim">耳落とし</label><input type="text" id="trim" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
+    <div><label for="trim">端の切り落とし</label><input type="text" id="trim" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
   </div>
-  <p class="note">耳落としは、すべての板の四辺から取り除く幅です。板の幅は木目方向です。「回転」のチェックを外した部材は、幅を木目方向に保ったまま配置します。</p>
+  <p class="note">端の切り落としは、すべての板の四辺から取り除く幅です。板の幅は木目方向です。「回転」のチェックを外した部材は、幅を木目方向に保ったまま配置します。</p>
 
   <div class="bar" style="margin-top:16px">部材</div>
   <div class="partgrid" id="parts" role="group" aria-label="部材"></div>
@@ -579,7 +579,7 @@ function parsePartsCsv(text, limit) {
     const len = s => s.trim() === '' ? 0 : parseLength(s);
     const kerf = len(state.kerf), trim = len(state.trim);
     if (kerf === null) fail('切りしろが数値ではありません。', 'kerf');
-    if (trim === null) fail('耳落としの幅が数値ではありません。', 'trim');
+    if (trim === null) fail('端の切り落としの幅が数値ではありません。', 'trim');
     const stock = [];
     const sw = parseLength(state.sw), sh = parseLength(state.sh), sq = intOrNull(state.sq);
     if (sw === null || sh === null || sw <= 0 || sh <= 0) { fail('板の幅と高さを入力してください。', 'sw'); bad.add('sh'); }
@@ -791,7 +791,7 @@ function parsePartsCsv(text, limit) {
     let t = '<table><thead><tr><th>#</th><th>切断</th><th>位置</th><th>始点</th><th>長さ</th></tr></thead><tbody>';
     s.cuts.forEach((c, k) => {
       const trim = c.depth === 0, vert = c.orientation === VERTICAL;
-      const kind = trim ? (vert ? '耳落とし 縦' : '耳落とし 横') : (vert ? '縦切り' : '横切り');
+      const kind = trim ? (vert ? '端の切り落とし 縦' : '端の切り落とし 横') : (vert ? '縦切り' : '横切り');
       t += '<tr><td>' + (k + 1) + '</td><td>' + kind + '</td><td>' + f(c.position) + '</td><td>' + f(c.start) + '</td><td>' + f(c.length) + '</td></tr>';
     });
     return t + '</tbody></table>';
