@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stair Stringer Calculator: rise, run, first step and landings (IRC)</title>
+<meta name="description" content="Free stair stringer calculator. Enter total rise and get riser and tread sizes in inch fractions, the correct first-step cut for tread thickness, stringer length, a cut layout drawing and a pass or fail against the IRC. Handles landings. Runs in your browser.">
+<link rel="canonical" href="https://notchwork.demetio.app/stairs/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Notchwork">
+<meta property="og:title" content="Stair Stringer Calculator: rise, run, first step and landings (IRC)">
+<meta property="og:description" content="Riser and tread in inch fractions, first-step drop, stringer length, cut layout and IRC pass or fail. Landings included. Free, runs in your browser.">
+<meta property="og:url" content="https://notchwork.demetio.app/stairs/">
+<meta name="theme-color" content="#f2b705">
+<link rel="icon" href="../polaralign/img/icon.png">
+<style>
+:root{--bg:#fbfaf6;--card:#fff;--ink:#1c1b19;--mute:#5d5a52;--line:#d9d4c6;--tape:#f2b705;--tape-d:#8a6600;--ok:#1f7a46;--ok-bg:#dff1e5;--bad:#b3261e;--bad-bg:#f9dedb;--warn:#8a5a00;--warn-bg:#fbefd0;--wood:#e8d3a6;--wood-d:#6b4a1c}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 -apple-system,"Segoe UI",Roboto,sans-serif}
+.stripe{height:10px;background:repeating-linear-gradient(90deg,var(--tape) 0 28px,#1c1b19 28px 31px,var(--tape) 31px 59px)}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px 56px}
+nav{font-size:14px;padding:14px 0 6px;color:var(--mute)}
+a{color:#0d5c8a}
+h1{font-size:30px;line-height:1.15;margin:6px 0 8px;letter-spacing:-.01em}
+h2{font-size:20px;margin:30px 0 10px}
+h3{font-size:16px;margin:0 0 6px}
+.lead{margin:0 0 18px;color:var(--mute);max-width:62ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin:0 0 14px}
+.grid{display:grid;gap:12px 14px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+label,.lab{font-size:13px;font-weight:600;color:var(--ink);display:block;margin-bottom:3px}
+.hint{font-size:12px;color:var(--mute);margin:3px 0 0;font-weight:400}
+input[type=text],select{width:100%;font:inherit;font-size:16px;padding:9px 10px;border:1px solid #b9b3a2;border-radius:6px;background:#fff;color:var(--ink)}
+input:focus,select:focus,button:focus-visible,summary:focus-visible{outline:3px solid var(--tape);outline-offset:1px}
+input.bad{border-color:var(--bad);background:var(--bad-bg)}
+.err{color:var(--bad);font-size:13px;margin:3px 0 0}
+.chk{display:flex;gap:8px;align-items:center;font-size:15px;font-weight:600;margin:0}
+.chk input{width:20px;height:20px;accent-color:#1c1b19}
+.sub{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+.verdict{display:flex;gap:12px;align-items:center;border-radius:10px;padding:12px 16px;margin:0 0 14px;font-weight:700;font-size:18px}
+.verdict small{display:block;font-weight:400;font-size:14px}
+.verdict.pass{background:var(--ok-bg);color:#14522f}
+.verdict.fail{background:var(--bad-bg);color:#7e1a14}
+.verdict.err{background:var(--warn-bg);color:var(--warn)}
+.big{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin:0 0 14px}
+.big div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.big b{display:block;font-size:22px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.big span{font-size:12px;color:var(--mute)}
+.big .hot{background:#fff4c9;border-color:var(--tape)}
+ul.checks{list-style:none;margin:0;padding:0}
+ul.checks li{display:grid;grid-template-columns:62px 1fr;gap:10px;padding:8px 0;border-top:1px solid #eee9dc;font-size:15px}
+ul.checks li:first-child{border-top:0}
+.tag{font-size:12px;font-weight:700;text-align:center;border-radius:5px;padding:2px 0;align-self:start;margin-top:2px}
+.tag.pass{background:var(--ok-bg);color:#14522f}.tag.fail{background:var(--bad-bg);color:#7e1a14}.tag.warn{background:var(--warn-bg);color:var(--warn)}
+ul.checks b{display:block}
+ul.checks span{color:var(--mute);font-size:14px}
+.draw{width:100%;line-height:0;background:#fff;border:1px solid var(--line);border-radius:8px}
+.draw svg{width:100%;height:auto;max-height:640px}
+svg text{font-family:-apple-system,"Segoe UI",Roboto,sans-serif}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:5px 8px;text-align:left;border-bottom:1px solid #eee9dc}
+th{font-size:12px;color:var(--mute);font-weight:600}
+.scroll{overflow-x:auto}
+button{font:inherit;font-weight:600;border:1px solid #1c1b19;background:#1c1b19;color:#fff;border-radius:7px;padding:9px 16px;cursor:pointer}
+button.alt{background:#fff;color:#1c1b19}
+.note{font-size:13px;color:var(--mute)}
+.prose p,.prose li{max-width:68ch}
+.prose table td:first-child{font-weight:600;white-space:nowrap}
+details{border-top:1px solid var(--line);padding:10px 0}
+details summary{cursor:pointer;font-weight:600}
+footer{font-size:14px;color:var(--mute);margin-top:34px}
+@media(max-width:520px){h1{font-size:25px}ul.checks li{grid-template-columns:54px 1fr}}
+@media print{.stripe,nav,.noprint,.prose,footer,form,details{display:none!important}body{background:#fff}.card,.big div{border-color:#999}}
+</style></head><body>
+<div class="stripe"></div>
+<div class="wrap">
+<nav><a href="../">Notchwork</a> / Stair stringer calculator</nav>
+<h1>Stair Stringer Calculator</h1>
+<p class="lead">Enter the total rise. Get riser and tread sizes in inch fractions, the first-step cut that accounts for tread thickness, stringer length, a layout drawing, and a pass or fail against the 2021 IRC with the reason. Free, no account, runs in your browser.</p>
+
+<form class="card noprint" id="f" autocomplete="off" onsubmit="return false">
+<div class="grid">
+ <div><label for="rise">Total rise</label><input type="text" id="rise" inputmode="text" value="108" aria-describedby="rise-h"><p class="hint" id="rise-h">Finished floor to finished floor. Try 108 3/8 or 9' 0 3/8"</p></div>
+ <div><label for="tread">Tread depth, nose to nose</label><input type="text" id="tread" value="10" aria-describedby="tread-h"><p class="hint" id="tread-h">The horizontal step. Blank means use the run below.</p></div>
+ <div><label for="run">Run available (optional)</label><input type="text" id="run" value="" aria-describedby="run-h"><p class="hint" id="run-h">If tread is blank, treads are sized to fit this.</p></div>
+ <div><label for="thk">Tread thickness</label><input type="text" id="thk" value="1" aria-describedby="thk-h"><p class="hint" id="thk-h">5/4 decking is 1". A 2x tread is 1 1/2".</p></div>
+ <div><label for="nose">Nosing overhang</label><input type="text" id="nose" value="1" aria-describedby="nose-h"><p class="hint" id="nose-h">IRC wants 3/4" to 1 1/4" unless the tread is 11" or more.</p></div>
+ <div><label for="stock">Stringer board</label><select id="stock"><option value="7.25">2x8 (7 1/4")</option><option value="9.25">2x10 (9 1/4")</option><option value="11.25" selected>2x12 (11 1/4")</option><option value="13.25">2x14 (13 1/4")</option></select></div>
+ <div><label for="risers">Risers</label><select id="risers"><option value="closed" selected>Closed (riser boards)</option><option value="open">Open (no riser boards)</option></select></div>
+ <div><label for="width">Stair width</label><input type="text" id="width" value="36"><p class="hint">Clear width. IRC minimum is 36".</p></div>
+ <div><label for="head">Headroom (optional)</label><input type="text" id="head" value=""><p class="hint">Straight up from the nosing line. IRC minimum 6' 8".</p></div>
+ <div><label for="nrisers">Number of risers (optional)</label><input type="text" id="nrisers" value=""><p class="hint">Blank picks the fewest that meet the 7 3/4" limit.</p></div>
+</div>
+<div class="sub">
+ <p class="chk"><input type="checkbox" id="land"><label for="land" style="margin:0;font-size:15px">Add an intermediate landing</label></p>
+ <div class="grid" id="landbox" hidden style="margin-top:10px">
+  <div><label for="l1">Risers in the lower flight</label><input type="text" id="l1" value=""><p class="hint">Blank splits the risers about in half.</p></div>
+  <div><label for="ld">Landing depth</label><input type="text" id="ld" value="36"><p class="hint">In the direction of travel. IRC minimum 36" on a straight run.</p></div>
+ </div>
+</div>
+</form>
+
+<div id="out" aria-live="polite"></div>
+<p class="noprint"><button class="alt" type="button" id="print">Print this layout</button></p>
+
+<div class="prose">
+<h2>The first-step mistake</h2>
+<p>Drop the first cut by the tread thickness. Every tread sits on top of the stringer, so a 1" tread adds 1" to the first step. If you cut the bottom of the stringer with a full riser, the first step comes out one tread thickness too tall, and every other step is correct. Code limits riser variation in a flight to 3/8", so a 1" error at the bottom fails inspection, and it is the step people trip on.</p>
+<p>The fix is to cut the bottom plumb cut at riser minus tread thickness. This calculator does that for you and shows it in the drawing as the first cut. The top works the same way: the last seat is placed so the floor above lands at the full rise. If your top floor finish is a different thickness than your treads, adjust the top by the difference.</p>
+
+<h2>What this checks</h2>
+<p>Numbers come from the 2021 International Residential Code, Chapter 3, R311.7, read on the ICC code site on October 30, 2026.</p>
+<div class="scroll"><table>
+<thead><tr><th>Rule</th><th>Limit</th><th>Section</th></tr></thead>
+<tbody>
+<tr><td>Riser height</td><td>7 3/4" maximum. Largest riser in a flight within 3/8" of the smallest.</td><td>R311.7.5.1</td></tr>
+<tr><td>Tread depth</td><td>10" minimum, nose to nose. Largest within 3/8" of the smallest.</td><td>R311.7.5.2</td></tr>
+<tr><td>Nosing</td><td>3/4" to 1 1/4" projection. Not required when the tread is 11" or deeper.</td><td>R311.7.5.3</td></tr>
+<tr><td>Open risers</td><td>A 4" sphere must not pass where the drop below is more than 30".</td><td>R311.7.5.1</td></tr>
+<tr><td>Rise of one flight</td><td>12' 7" maximum between floors or landings.</td><td>R311.7.3</td></tr>
+<tr><td>Headroom</td><td>6' 8" minimum.</td><td>R311.7.2</td></tr>
+<tr><td>Width</td><td>36" clear above the handrail. 31 1/2" with a rail on one side, 27" with rails on both, at and below handrail height.</td><td>R311.7.1</td></tr>
+<tr><td>Landing</td><td>At least as wide as the stair. 36" deep in the direction of travel on a straight run.</td><td>R311.7.6</td></tr>
+</tbody></table></div>
+<p class="note">Wood left under the notch (3 1/2" or more) is shop practice, not an IRC number. It is shown as a warning, not a failure.</p>
+<p><b>Your local code governs.</b> Jurisdictions adopt different editions and add amendments, so confirm with your building department. This page does not check stringer spacing or span, handrails and guards, winders, spiral stairs, or stairs outside the IRC. Treat the output as a layout aid, and test-fit a stringer before you cut all of them.</p>
+
+<h2>How the numbers are worked out</h2>
+<ul>
+<li>Risers = total rise divided by 7 3/4", rounded up. Riser height = total rise divided by risers.</li>
+<li>Treads = risers minus 1, because the floor above is the last tread. With a landing, each flight has its own risers minus 1 treads.</li>
+<li>First cut = riser minus tread thickness. Each seat is marked at step number times riser, minus tread thickness, so rounding never builds up along the stringer.</li>
+<li>Pitch length is the distance from notch tip to notch tip. Board length is the long edge of the stock, long point to long point.</li>
+</ul>
+
+<h2>Questions</h2>
+<details><summary>Do I measure rise to the finished floor?</summary><p>Yes, finished floor to finished floor, from the surface where the bottom step starts to the surface of the floor above. If the finish is not installed yet, add its thickness to the rise you measured.</p></details>
+<details><summary>Why is the stringer shorter or longer than other calculators say?</summary><p>Many tools report the diagonal of total rise and total run. The notch layout above has one fewer tread than risers and a first cut shortened by the tread thickness, so the board length here comes from the actual shape and the stock width you picked.</p></details>
+<details><summary>What if the run does not fit?</summary><p>Enter your run available and leave the tread blank. The tread is sized to fit, rounded down to 1/16". If it falls below 10" you will see a failure, and the options are a landing, a different layout, or more room.</p></details>
+<details><summary>Does anything get sent anywhere?</summary><p>No. The calculation runs in your browser and nothing is uploaded or stored.</p></details>
+</div>
+<footer><p>Notchwork makes offline tools for the workshop. <a href="../">Home</a> | <a href="../cutlist/">Cut list optimizer</a></p></footer>
+</div>
+
+<script src="stairs.js"></script>
+<script>
+(function(){
+var S=window.Stairs,$=function(i){return document.getElementById(i)},out=$('out');
+var ids=['rise','tread','run','thk','nose','width','head','nrisers','l1','ld'];
+function val(id,optional){var el=$(id),s=el.value.trim();el.classList.remove('bad');var e=el.parentNode.querySelector('.err');if(e)e.remove();
+ if(!s)return null;var v=S.parseLen(s);
+ if(v===null){el.classList.add('bad');var p=document.createElement('p');p.className='err';p.textContent='Could not read "'+s+'". Try 7 3/4 or 9\' 0 3/8"';el.parentNode.appendChild(p);return NaN}
+ return v}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function stockLen(x){var L=[8,10,12,14,16,20];for(var i=0;i<L.length;i++)if(L[i]*12>=x)return L[i]+' ft';return 'longer than 20 ft'}
+
+function drawing(f,t,nosing){
+ var pts=f.points,g=f.tread,r=f.riser,N=f.risers,i;
+ var minX=-nosing-4,maxX=f.run+6,minY=-4,maxY=f.topY+r*.8;
+ var w=maxX-minX,h=maxY-minY,fs=Math.max(w,h)/34;
+ var X=function(x){return x-minX},Y=function(y){return maxY-y};
+ var s='<svg viewBox="0 0 '+w.toFixed(1)+' '+h.toFixed(1)+'" role="img" aria-label="'+esc(f.name)+' stringer cut layout">';
+ s+='<line x1="0" x2="'+w+'" y1="'+Y(0)+'" y2="'+Y(0)+'" stroke="#1c1b19" stroke-width="'+fs/9+'"/>';
+ var d='M'+pts.map(function(p){return X(p[0]).toFixed(2)+' '+Y(p[1]).toFixed(2)}).join(' L')+' Z';
+ s+='<path d="'+d+'" fill="#e8d3a6" stroke="#6b4a1c" stroke-width="'+fs/9+'" stroke-linejoin="round"/>';
+ for(i=0;i<f.seats.length;i++){ // treads on the seats
+  s+='<rect x="'+X(i*g-nosing).toFixed(2)+'" y="'+Y(f.seats[i]+t).toFixed(2)+'" width="'+(g+nosing).toFixed(2)+'" height="'+t.toFixed(2)+'" fill="#c99a5b" stroke="#6b4a1c" stroke-width="'+fs/14+'"/>';
+ }
+ function lab(x,y,txt,anchor,col){return '<text x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" font-size="'+fs.toFixed(2)+'" text-anchor="'+(anchor||'start')+'" fill="'+(col||'#1c1b19')+'" stroke="#fff" stroke-width="'+(fs/4).toFixed(2)+'" paint-order="stroke" font-weight="600">'+esc(txt)+'</text>'}
+ // dimension marks on the first two steps, text legend in the empty upper left
+ var sw=fs/6;
+ s+='<line x1="'+X(-1.5)+'" x2="'+X(-1.5)+'" y1="'+Y(0)+'" y2="'+Y(f.firstCut)+'" stroke="#b3261e" stroke-width="'+sw+'"/>';
+ s+='<line x1="'+X(g-1.5).toFixed(2)+'" x2="'+X(g-1.5).toFixed(2)+'" y1="'+Y(f.seats[0]).toFixed(2)+'" y2="'+Y(f.seats[1]).toFixed(2)+'" stroke="#0d5c8a" stroke-width="'+sw+'"/>';
+ s+='<line x1="'+X(g).toFixed(2)+'" x2="'+X(2*g).toFixed(2)+'" y1="'+Y(f.seats[1]+t+1.5).toFixed(2)+'" y2="'+Y(f.seats[1]+t+1.5).toFixed(2)+'" stroke="#0d5c8a" stroke-width="'+sw+'"/>';
+ s+='</svg>';
+ return s}
+
+function render(){
+ var o={},bad=false;
+ var m={rise:val('rise'),tread:val('tread'),maxRun:val('run'),treadThk:val('thk'),nosing:val('nose'),width:val('width'),headroom:val('head'),risers:val('nrisers')};
+ var l1=val('l1'),ld=val('ld');
+ for(var k in m){if(m[k]!==null&&isNaN(m[k]))bad=true}
+ if((l1!==null&&isNaN(l1))||(ld!==null&&isNaN(ld)))bad=true;
+ if(bad){out.innerHTML='<div class="verdict err">Fix the highlighted field<small>One of the values could not be read.</small></div>';return}
+ o=m;o.stock=parseFloat($('stock').value);o.open=$('risers').value==='open';
+ if(m.treadThk===null)o.treadThk=0; if(m.nosing===null)o.nosing=0; if(m.width===null)o.width=36;
+ $('landbox').hidden=!$('land').checked;
+ if($('land').checked)o.landing={on:true,risersFirst:l1,depth:ld};
+ var R=S.compute(o);
+ if(R.error){out.innerHTML='<div class="verdict err">'+esc(R.error)+'</div>';return}
+ var h='';
+ var failList=R.checks.filter(function(c){return c.status==='fail'}).map(function(c){return c.label});
+ h+='<div class="verdict '+(R.ok?'pass':'fail')+'"><div>'+(R.ok?'Meets the 2021 IRC limits checked here':'Does not meet the 2021 IRC: '+esc(failList.join(', ')))+'<small>'+(R.warns?R.warns+(R.warns>1?' warnings. ':' warning. '):'')+R.checks.length+' checks, see reasons below. Your local code governs.</small></div></div>';
+ h+='<div class="big"><div><b>'+R.N+'</b><span>risers</span></div><div><b>'+R.treadCount+'</b><span>treads on the stringer'+(R.flights.length>1?'s (both flights)':'')+'</span></div>'+
+  '<div><b>'+S.fmt(R.riser)+'</b><span>riser, exactly '+R.riser.toFixed(3)+'"</span></div>'+
+  '<div><b>'+S.fmt(R.tread)+'</b><span>tread, nose to nose</span></div>'+
+  '<div class="hot"><b>'+S.fmt(R.flights[0].firstCut)+'</b><span>first cut at the floor (riser minus '+S.fmt(R.treadThk)+' tread)</span></div>'+
+  '<div><b>'+S.fmt(R.totalRun)+'</b><span>total run'+(R.landDepth?' with landing':'')+'</span></div></div>';
+ R.flights.forEach(function(f,idx){
+  h+='<div class="card"><h3>'+esc(f.name)+(R.flights.length>1?': '+f.risers+' risers, rises '+S.fmt(f.rise):'')+'</h3>';
+  h+='<div class="big" style="margin-top:8px"><div><b>'+S.fmt(f.boardLen)+'</b><span>board length, long point to long point. Buy '+stockLen(f.boardLen)+' stock.</span></div>'+
+   '<div><b>'+S.fmt(f.pitchLen)+'</b><span>notch tip to notch tip</span></div>'+
+   '<div><b>'+S.fmt(f.throat)+'</b><span>wood left under the notch</span></div>'+
+   '<div><b>'+S.fmt(f.topY)+'</b><span>top plumb cut above the bottom surface</span></div></div>';
+  h+='<div class="draw">'+drawing(f,R.treadThk,R.nosing)+'</div>';
+  h+='<p class="note"><b style="color:#b3261e">Red bar: first cut '+S.fmt(f.firstCut)+'</b> (riser minus tread thickness). <b style="color:#0d5c8a">Blue: riser '+S.fmt(f.riser)+', tread '+S.fmt(f.tread)+'.</b> Top plumb cut ends '+S.fmt(f.topY)+' above the bottom surface. Side view, to scale, treads drawn on the seats.</p>';
+  h+='<details><summary>Seat heights for marking, '+f.seats.length+' notches</summary><div class="scroll"><table><thead><tr><th>Step</th><th>Tread surface above bottom</th><th>Seat on the stringer</th></tr></thead><tbody>';
+  f.seats.forEach(function(sv,i){h+='<tr><td>'+(i+1)+'</td><td>'+S.fmt(f.treadTops[i])+'</td><td>'+S.fmt(sv)+'</td></tr>'});
+  h+='<tr><td>Top</td><td>'+S.fmt(f.riser*f.risers)+'</td><td>plumb cut ends at '+S.fmt(f.topY)+'</td></tr>';
+  h+='</tbody></table></div><p class="note">Marks are rounded from the running total, so a 1/16" rounding never adds up. Mark them off a story pole or a long tape from the bottom surface.</p></details></div>';
+ });
+ if(R.flights.length>1)h+='<p class="note">Landing surface is '+S.fmt(R.landingAt)+' above the bottom floor, '+S.fmt(R.landDepth)+' deep. The upper flight starts on the landing with its own shortened first cut.</p>';
+ h+='<div class="card"><h3>Code check</h3><ul class="checks">';
+ R.checks.forEach(function(c){h+='<li><span class="tag '+c.status+'">'+c.status.toUpperCase()+'</span><div><b>'+esc(c.label)+'</b><span>'+esc(c.detail)+'</span></div></li>'});
+ h+='</ul></div>';
+ out.innerHTML=h}
+
+ids.forEach(function(i){$(i).addEventListener('input',render)});
+['stock','risers','land'].forEach(function(i){$(i).addEventListener('change',render)});
+$('print').addEventListener('click',function(){window.print()});
+render();
+})();
+</script>
+</body></html>
