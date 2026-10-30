@@ -513,6 +513,9 @@ function parsePartsCsv(text, limit) {
 // ==UNITS-START==
 // Untouched defaults per unit. Returns the other unit's default (a number) when `s` is exactly the default
 // of `from`, otherwise null so the caller converts the value.
+// New projects start in inch fractions with a 1/8 kerf, as in the Android app (Project.blank). Millimetres stay decimal.
+const defaultFractions = unit => unit === 'in';
+const defaultKerf = unit => unit === 'in' ? '1/8' : '3';
 const UNIT_DEFAULTS = { sw: { in: 96, mm: 2440 }, sh: { in: 48, mm: 1220 }, kerf: { in: 0.125, mm: 3 } };
 function unitDefaultSwap(field, s, from, to) {
   const d = UNIT_DEFAULTS[field];
@@ -539,11 +542,11 @@ function unitDefaultSwap(field, s, from, to) {
 
   function defaultState(unit) {
     const inch = unit === 'in';
-    return { unit, fractions: false, kerf: inch ? '0.125' : '3', trim: '', sw: inch ? '96' : '2440', sh: inch ? '48' : '1220', sq: DEFAULT_STOCK_QTY, parts: [blankPart()] };
+    return { unit, fractions: defaultFractions(unit), kerf: defaultKerf(unit), trim: '', sw: inch ? '96' : '2440', sh: inch ? '48' : '1220', sq: DEFAULT_STOCK_QTY, parts: [blankPart()] };
   }
   function blankPart() { return { id: nextId++, label: '', w: '', h: '', qty: '1', rot: true }; }
 
-  function examplePartsFor(unit) {
+  function examplePartsFor(unit, fractions) {
     const inch = unit === 'in';
     const rows = inch ? [
       ['Side', '28.375', '22', '2', 0], ['Bottom', '30.0625', '21.25', '1', 1], ['Shelf', '30.0625', '19.6875', '2', 1],
@@ -554,7 +557,8 @@ function unitDefaultSwap(field, s, from, to) {
       ['Door', '716', '397', '2', 0], ['Rail', '764', '100', '2', 1], ['Drawer front', '764', '180', '3', 0],
       ['Back', '764', '716', '1', 1], ['Drawer side', '500', '140', '6', 1], ['Drawer base', '464', '500', '3', 1]
     ];
-    return rows.map(r => ({ id: nextId++, label: r[0], w: r[1], h: r[2], qty: r[3], rot: r[4] === 1 }));
+    const t = x => (fractions && inch) ? fractionLength(parseLength(x)) : x;
+    return rows.map(r => ({ id: nextId++, label: r[0], w: t(r[1]), h: t(r[2]), qty: r[3], rot: r[4] === 1 }));
   }
 
   const decimals = () => state.unit === 'mm' ? 2 : 3;
@@ -683,7 +687,7 @@ function unitDefaultSwap(field, s, from, to) {
   });
   $('example').addEventListener('click', () => {
     const u = state.unit; const d = defaultState(u);
-    state = d; state.parts = examplePartsFor(u); state.sq = '4';
+    state = d; state.parts = examplePartsFor(u, state.fractions); state.sq = '4';
     renderInputs(); $('err').hidden = true; flagBad(new Set()); save(); calculate();
   });
   $('clear').addEventListener('click', () => {
