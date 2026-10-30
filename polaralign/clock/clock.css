@@ -60,3 +60,4 @@ input.bad{border-color:var(--red)}
 }
 .top a{white-space:nowrap}
 @media (max-width:520px){.top{gap:14px}.top .brand{font-size:0;gap:0}.top .brand img{margin:0}}
+@media (max-width:420px){body.ja .top{gap:10px}body.ja .top a{font-size:13px}body.ja .clock h1{font-size:30px}}

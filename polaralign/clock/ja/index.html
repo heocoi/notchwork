@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>極軸望遠鏡クロック：今、北極星を入れる位置がわかる無料ツール</title>
+<meta name="description" content="極軸合わせ用の無料ツール。緯度と経度を入力すると、極軸望遠鏡の文字盤のどこに北極星（南半球ではちぶんぎ座σ星）を入れるかを、今の時刻で表示します。時角と子午線通過までの時間もわかります。ブラウザだけで動作します。">
+<link rel="canonical" href="https://notchwork.demetio.app/polaralign/clock/ja/">
+<link rel="alternate" hreflang="ja" href="https://notchwork.demetio.app/polaralign/clock/ja/">
+<link rel="alternate" hreflang="en" href="https://notchwork.demetio.app/polaralign/clock/">
+<link rel="alternate" hreflang="x-default" href="https://notchwork.demetio.app/polaralign/clock/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Notchwork">
+<meta property="og:title" content="極軸望遠鏡クロック：今、北極星を入れる位置がわかる無料ツール"><meta property="og:description" content="緯度経度と現在時刻から、文字盤の読み、時角、子午線通過までの時間を表示します。無料、ブラウザで動作、データは送信しません。">
+<meta property="og:url" content="https://notchwork.demetio.app/polaralign/clock/ja/"><meta property="og:image" content="https://notchwork.demetio.app/polaralign/img/j-01-now.png">
+<meta name="theme-color" content="#05080f">
+<link rel="icon" href="../../img/icon.png">
+<link rel="stylesheet" href="../../pa.css">
+<link rel="stylesheet" href="../clock.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "極軸望遠鏡クロック", "inLanguage": "ja", "url": "https://notchwork.demetio.app/polaralign/clock/ja/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript", "description": "緯度経度と現在時刻から、極軸望遠鏡の時計型文字盤で北極星（南半球ではちぶんぎ座σ星）を入れる位置を表示します。ブラウザ上で動作し、データは外部に送信されません。", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "JPY"}, "publisher": {"@type": "Organization", "name": "Notchwork", "url": "https://notchwork.demetio.app/"}}</script>
+</head>
+<body class="ja sky">
+<div class="wrap"><nav class="top"><a class="brand" href="../../../"><img src="../../img/icon.png" alt="" width="30" height="30">Notchwork</a><span class="sp"></span><a href="../../ja/">Polar Align</a><a class="on" href="./">極軸望遠鏡クロック</a><a href="../../reticle-guide/ja/" class="hide-s">レチクルの見方</a><a href="../../privacy/ja/" class="hide-s">プライバシー</a><a href="../" lang="en">English</a></nav></div>
+
+<main class="wrap clock">
+<h1>極軸望遠鏡クロック</h1>
+<p class="lede">今、極軸望遠鏡の文字盤のどこに北極星を入れるかがわかります。緯度と経度を入力して、表示された時計の位置に星を合わせてください。</p>
+
+<div class="tool">
+<form class="inputs" id="f" autocomplete="off" novalidate>
+<div class="row2">
+<div><label for="lat">緯度</label><input id="lat" inputmode="decimal" placeholder="35.6762" aria-describedby="coordhint"></div>
+<div><label for="lon">経度</label><input id="lon" inputmode="decimal" placeholder="139.6503" aria-describedby="coordhint"></div>
+</div>
+<p class="hint" id="coordhint">度の小数で入力します（例は東京）。北緯と東経はプラス、南緯と西経はマイナスです。</p>
+<p class="err" id="err" role="alert" hidden></p>
+<button type="button" id="geo" class="ghost">現在地を使う</button>
+<p class="hint" id="geohint">タップするとブラウザが許可を求めます。位置情報はタップしたときだけ読み取り、このタブの外には出ません。</p>
+<fieldset class="view"><legend>見え方</legend>
+<label class="opt"><input type="radio" name="view" value="through" checked> 極軸望遠鏡で見た向き</label>
+<label class="opt"><input type="radio" name="view" value="naked"> 肉眼の向き</label>
+<p class="hint" id="viewhint">極軸望遠鏡では空が180°回って見えるため、接眼レンズで見えるとおりの向きで文字盤を描きます。</p>
+</fieldset>
+<p class="now" id="now" aria-live="off"></p>
+</form>
+
+<div class="out">
+<svg id="dial" viewBox="0 0 400 400" role="img" aria-label="極軸望遠鏡の文字盤。緯度と経度を入力すると星の位置が表示されます。" focusable="false">
+<circle cx="200" cy="200" r="186" class="rim"/>
+<g id="ticks"></g>
+<circle cx="200" cy="200" r="112" class="ring"/>
+<line x1="200" y1="14" x2="200" y2="386" class="cross"/><line x1="14" y1="200" x2="386" y2="200" class="cross"/>
+<circle cx="200" cy="200" r="3" class="hub"/>
+<g id="star" style="display:none"><line id="spoke" x1="200" y1="200" x2="200" y2="88" class="spoke"/><circle id="halo" r="16" cx="200" cy="88"/><circle id="dot" r="6" cx="200" cy="88"/></g>
+</svg>
+<div class="read" id="read" hidden>
+<div class="big"><span class="lab">文字盤の読み</span><span id="dialtxt" class="num">-</span></div>
+<dl>
+<div><dt>星</dt><dd id="starname">-</dd></div>
+<div><dt>時角</dt><dd id="ha">-</dd></div>
+<div><dt>次の上部子午線通過まで</dt><dd id="transit">-</dd></div>
+<div><dt>極からの距離</dt><dd id="pd">-</dd></div>
+</dl>
+</div>
+<p class="empty" id="empty">緯度と経度を入力すると、星の位置が表示されます。</p>
+</div>
+</div>
+
+<section class="how">
+<h2>使い方</h2>
+<ol>
+<li>赤道儀を水平にし、緯度目盛りをおおまかに合わせ、赤経軸をだいたい北（南半球では南）に向けます。</li>
+<li>極軸望遠鏡をのぞいたとき、レチクルの12時の印が上に来るように赤経軸を回します。</li>
+<li>上に表示された文字盤の読みを確認します。赤経軸や赤緯軸ではなく、架台の高度調整ボルトと方位調整ボルトを動かして、星をその時計の位置の円に入れます。</li>
+<li>ボルトを固定します。読みはゆっくり動くので、数分後にもう一度確認してください。</li>
+</ol>
+<p class="note">はじめての方へ：<a href="../../reticle-guide/ja/">極軸望遠鏡のレチクルの見方</a></p>
+</section>
+
+<section class="how">
+<h2>表示される数字の意味</h2>
+<ul>
+<li><b>文字盤の読み</b>は、極のまわりの星の角度を12時間制の時計で表したものです。12時が上で、選んだ見え方の向きで表示します。</li>
+<li><b>時角</b>は、星が極の上側で子午線を通過してからの経過時間です。恒星時で、時間と分で表示します。</li>
+<li><b>次の上部子午線通過まで</b>は、星が次に極の真上に来るまでの時間です。肉眼の向きでは、その瞬間が12時の位置です。</li>
+<li><b>はちぶんぎ座σ星</b>は、緯度がマイナスの場所で使います。南の天の極には明るい星がないためです。5.4等ほどと暗いので、空の暗い場所が必要です。</li>
+</ul>
+</section>
+
+<section class="how">
+<h2>どれくらい正確ですか</h2>
+<p>星の位置には固有運動、年周光行差、歳差、章動を含め、恒星時は端末の時計から求めています。同じコードを、天文計算ライブラリ astropy と2026年から2035年までの260通りの条件（北半球と南半球で各130通り）で比較したところ、時角の差は最大で0.07分角でした。目標の0.1分角を下回っています。大気差は考慮していません。端末の時計が正確である必要があり、時計が1秒ずれると時角は0.25分角ずれます。</p>
+</section>
+
+<section class="app">
+<h2>このページと、アプリの違い</h2>
+<p>このページは、無料で使える汎用の時計型文字盤です。Android アプリの Polar Align には、Sky-Watcher、iOptron、Orion、Celestron、Explore Scientific EXOS-2、Vixen PF-L の極軸望遠鏡のレチクル、赤色の夜間モード、日時を指定できるプランナー、観測地の保存があります。これらはアプリだけの機能です。</p>
+<span class="soon">Google Play で近日公開</span>
+<p class="fine">Android。オフラインで動作、広告もアカウント登録もありません。</p>
+</section>
+</main>
+
+<footer><div class="wrap"><div class="row"><a href="../../ja/">Polar Align</a><a href="../../privacy/ja/">プライバシーポリシー</a><a href="../../../">Notchwork</a><a href="mailto:notchwork@demetio.com">notchwork@demetio.com</a></div>
+このページは読み込み後に通信せず、アナリティクスも Cookie も使いません。入力した緯度経度はこのタブの中にとどまります。Sky-Watcher、iOptron、Orion、Celestron、Explore Scientific、Bresser、Vixen、Astro-Physics とは関係ありません。</div></footer>
+
+<script src="../clock.js"></script>
+<script src="clock-ui.js"></script>
+</body></html>
