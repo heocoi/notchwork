@@ -34,6 +34,8 @@ a{text-underline-offset:3px}
 .pa h2 em{font-style:normal;color:#7fd4e0}
 .pa p{color:#c3cedd;max-width:30em;margin:0 0 14px;font-size:18px}
 .pa .soon{display:inline-block;margin-top:10px;padding:12px 20px;border:1px solid #3a4a5e;border-radius:12px;font-weight:600;color:#e9eef6;font-size:16px}
+.pa .btn{display:inline-block;margin-top:10px;padding:12px 20px;border-radius:12px;background:#e9eef6;color:#05080f;font-weight:600;font-size:16px;text-decoration:none}
+.pa .btn:hover{background:#fff}
 .pa .links{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px 26px;font-size:16px}
 .pa .links a{color:#7fd4e0}
 .pa .links a:hover{color:#b8ecf3}
