@@ -509,6 +509,18 @@ function parsePartsCsv(text, limit) {
 }
 // ==CSV-END==
 
+// ==UNITS-START==
+// Untouched defaults per unit. Returns the other unit's default (a number) when `s` is exactly the default
+// of `from`, otherwise null so the caller converts the value.
+const UNIT_DEFAULTS = { sw: { in: 96, mm: 2440 }, sh: { in: 48, mm: 1220 }, kerf: { in: 0.125, mm: 3 } };
+function unitDefaultSwap(field, s, from, to) {
+  const d = UNIT_DEFAULTS[field];
+  if (!d || from === to) return null;
+  const v = parseLength(s);
+  return v !== null && Math.abs(v - d[from]) < 1e-9 ? d[to] : null;
+}
+// ==UNITS-END==
+
 // ---------------------------------------------------------------- page ----
 (function () {
   if (typeof document === 'undefined') return;
@@ -550,18 +562,16 @@ function parsePartsCsv(text, limit) {
   }
 
   // Convert every typed length when the unit or the display mode changes (Project.convertedTo).
+  // Sheet size and kerf still at the default of the old unit switch to the default of the new unit
+  // (96 x 48 in <-> 2440 x 1220 mm, kerf 1/8 in <-> 3 mm) instead of becoming 2438.4 x 1219.2. Edited values convert.
   function convertState(target, showFractions) {
     const frac = showFractions && target === 'in';
     if (target === state.unit && frac === state.fractions) return;
     const k = target === state.unit ? 1 : (target === 'in' ? 1 / 25.4 : 25.4);
-    const c = s => {
-      const v = parseLength(s);
-      if (v === null) return s;
-      const x = v * k;
-      if (frac && Math.abs(x * 32 - roundHalfEven(x * 32)) < 1e-6) return fractionLength(x);
-      return formatLength(x, target === 'mm' ? 2 : 3);
-    };
-    state.kerf = c(state.kerf); state.trim = c(state.trim); state.sw = c(state.sw); state.sh = c(state.sh);
+    const out = x => (frac && Math.abs(x * 32 - roundHalfEven(x * 32)) < 1e-6) ? fractionLength(x) : formatLength(x, target === 'mm' ? 2 : 3);
+    const c = s => { const v = parseLength(s); return v === null ? s : out(v * k); };
+    const f = (field, s) => { const d = target === state.unit ? null : unitDefaultSwap(field, s, state.unit, target); return d === null ? c(s) : out(d); };
+    state.kerf = f('kerf', state.kerf); state.trim = c(state.trim); state.sw = f('sw', state.sw); state.sh = f('sh', state.sh);
     state.parts.forEach(p => { p.w = c(p.w); p.h = c(p.h); });
     state.unit = target; state.fractions = frac;
   }
