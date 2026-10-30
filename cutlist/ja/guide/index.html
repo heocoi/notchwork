@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>木取り図の書き方｜板取りの手順をサブロク合板の例で解説</title>
+<meta name="description" content="木取り図（板取り）の書き方を、本棚の部材を例に説明します。部材を書き出し、切りしろと木目を決め、サブロク（1820×910 mm）の板に割り付けるまでを、mm単位の計算例と図で紹介します。">
+<link rel="canonical" href="https://notchwork.demetio.app/cutlist/ja/guide/">
+<link rel="alternate" hreflang="ja" href="https://notchwork.demetio.app/cutlist/ja/guide/">
+<link rel="alternate" hreflang="en" href="https://notchwork.demetio.app/cutlist/guide/">
+<link rel="alternate" hreflang="x-default" href="https://notchwork.demetio.app/cutlist/guide/">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Notchwork">
+<meta property="og:title" content="木取り図の書き方｜板取りの手順をサブロク合板の例で解説">
+<meta property="og:description" content="部材を書き出し、切りしろと木目を決めて、サブロクの板に割り付けるまで。mm単位の計算例を図つきで紹介します。">
+<meta property="og:url" content="https://notchwork.demetio.app/cutlist/ja/guide/"><meta property="og:image" content="https://notchwork.demetio.app/cutlist/img/result.png">
+<meta name="theme-color" content="#f6f2e9">
+<link rel="icon" href="../../../polaralign/img/icon.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","inLanguage":"ja","headline":"木取り図の書き方","mainEntityOfPage":"https://notchwork.demetio.app/cutlist/ja/guide/","author":{"@type":"Organization","name":"Notchwork"},"publisher":{"@type":"Organization","name":"Notchwork"},"dateModified":"2026-10-30"}</script>
+<style>
+:root{--paper:#f6f2e9;--card:#fffdf8;--card2:#efeadd;--ink:#211f1c;--graphite:#2e2c29;--mute:#5a5650;--line:#cfc8b8;--pine:#25634a;--pine-bg:#d5e6db}
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--paper);background-image:linear-gradient(#e9e2d0 1px,transparent 1px),linear-gradient(90deg,#e9e2d0 1px,transparent 1px);background-size:32px 32px;color:var(--ink);font:17px/1.8 -apple-system,"Hiragino Sans","Yu Gothic","Segoe UI",Roboto,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 48px}
+a{color:var(--pine)}
+.topbar{display:flex;align-items:center;gap:12px;padding:18px 0 0;font-size:14px}
+.topbar a.brand{color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+.topbar svg{width:30px;height:30px}.topbar .sp{flex:1}.topbar a{white-space:nowrap}
+h1{font-size:clamp(28px,5vw,40px);line-height:1.25;letter-spacing:-.01em;margin:34px 0 14px}
+h2{font-size:22px;line-height:1.4;margin:38px 0 8px}
+p{margin:0 0 14px}
+.lead{font-size:18px;color:#4c4842}
+.nw{white-space:nowrap}
+table{border-collapse:collapse;width:100%;font-size:15px;background:var(--card);border:1px solid var(--line);margin:0 0 6px}
+td,th{padding:6px 10px;text-align:left}th{font-size:13px;color:var(--mute)}
+tbody tr:nth-child(odd){background:var(--card2)}
+.fig{margin:16px 0 20px}.fig svg{width:100%;height:auto;display:block;border-radius:2px}
+figcaption{font-size:14px;color:var(--mute);margin-top:6px;line-height:1.6}
+.tablewrap{overflow-x:auto}
+li{margin-bottom:6px}
+.promo{background:var(--pine);color:#f1f7f3;border-radius:18px;padding:26px 26px;margin:38px 0 0}
+.promo h2{color:#fff;margin:0 0 10px}.promo p{color:#dcebe3}
+.btn{display:inline-block;padding:10px 16px;border-radius:8px;font-weight:600;text-decoration:none;background:#fff;color:var(--graphite);margin:4px 8px 0 0}
+.play{display:inline-block;padding:10px 16px;border:1px solid #9fc9b6;border-radius:8px;color:#fff;font-weight:600;margin-top:4px}
+footer{font-size:14px;color:var(--mute);margin-top:30px;border-top:1px solid var(--line);padding-top:20px}
+@media(max-width:520px){.topbar{gap:8px}.topbar a.brand{font-size:16px}.topbar svg{width:26px;height:26px}.promo{padding:22px 18px}}
+</style></head><body><div class="wrap">
+<div class="topbar"><a class="brand" href="../../../"><svg viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="8" fill="#211f1c"/><path d="M9 9h6.5l1.5 5 1.5-5H25v16h-5.5V17.5L17 24l-2.5-6.5V25H9z" fill="#f6f2e9"/></svg>Notchwork</a><span class="sp"></span><a href="../">木取り図ツール</a><a href="../../guide/" hreflang="en" lang="en">English</a></div>
+<main>
+<h1>木取り図の書き方</h1>
+<p class="lead">木取り図は、1枚の板から必要な部材をどう切り出すかを描いた図です。板取りとも呼ばれます。このページでは、本棚を例にして、部材を書き出し、切りしろと木目を決め、板に割り付けるまでの手順を説明します。図は、<a href="../">無料の木取り図ツール</a>と同じ計算で描いたものです。</p>
+<p>手順は次の4つです。</p>
+<ol><li>必要な部材を、寸法と数量つきで書き出す</li><li>板のサイズと切りしろを決める</li><li>木目を保つ部材を決める</li><li>板に割り付けて、切る順番を確かめる</li></ol>
+
+<h2>手順1 部材を書き出す</h2>
+<p>同じ寸法の部材は1行にまとめて、数量で書きます。ここでは、幅800 mm、高さ900 mm、奥行き300 mmの本棚を、厚さ18 mmの合板で作るとします。背板は薄い別の板から切るので入れていません。寸法は説明のための例なので、自分の設計に合わせて変えてください。</p>
+<div class="tablewrap"><table><thead><tr><th>部材</th><th>幅（木目方向） mm</th><th>高さ mm</th><th>数量</th><th>木目</th></tr></thead><tbody><tr><td>側板</td><td>900</td><td>300</td><td>2</td><td>保つ</td></tr><tr><td>天板・地板</td><td>764</td><td>300</td><td>2</td><td>回転してよい</td></tr><tr><td>棚板</td><td>764</td><td>280</td><td>2</td><td>回転してよい</td></tr></tbody></table></div>
+<p>天板と地板の幅764 mmは、本体の幅800 mmから側板の厚み18 mmを2枚ぶん引いた値です。</p>
+
+<h2>手順2 板のサイズと切りしろを決める</h2>
+<p>合板の板のサイズとして、サブロク（3尺×6尺、約<span class="nw">910×1820 mm</span>）とシハチ（4尺×8尺、約<span class="nw">1220×2440 mm</span>）の2つがよく使われます。製品によって寸法が少し違うことがあるので、手元の板を測って入力します。この例ではサブロクを<span class="nw">1820×910 mm</span>として計算します。</p>
+<p>切りしろは、刃が削って粉にしてしまう幅のことで、刃の厚みで決まります。切るたびにこの幅だけ板が減るので、無視して割り付けると、最後の1枚が足りなくなるほどです。刃の厚みは使う刃によって違うため、実際の刃の厚みを測るか、刃の仕様を見て入れてください。この例では3 mmです。</p>
+<p>板の四辺を切り落として直角を出してから使う場合は、端の切り落とし幅も入れます。この例では0です。</p>
+
+<h2>手順3 木目を保つ部材を決める</h2>
+<p>合板の表面には木目があり、板の向きは決まっています。このページの例は、木目が板の長辺（1820 mm）に沿う板として計算しました。側板のように正面から見える部材は、木目の向きをそろえたいので、回転させない設定にします。天板や棚板のように、向きを気にしない部材なら、回転してよいことにすると、板を無駄なく使えることがあります。</p>
+<p>表の「幅」は、木目に沿う側の寸法です。無料のツールでは、部材の「回転」のチェックを外すと、幅を木目方向に保ったまま配置します。</p>
+
+<h2>手順4 板に割り付ける</h2>
+<p>手作業では、方眼紙に長方形を描いて並べることになります。ただ、テーブルソーやパネルソーは、板の端から端まで一直線にしか切れません。描いた図が、そのとおりに切れるとは限らないわけです。ツールは、すべての切断を端から端まで通す形（ギロチンカット）だけを作り、並べる順番や置き方を何通りも試して、端材が少ない結果を選びます。</p>
+<p>この本棚1台分は、<strong>板1枚</strong>に収まります。ロス率（板の面積のうち、部材にならない端材の割合）は<strong>13.9%</strong>、切断は<strong>9回</strong>です。部材の面積は合計1,426,240 mm²で、板1枚の1,656,200 mm²に対する残りが端材です。</p>
+<figure class="fig"><svg role="img" aria-label="本棚1台分の部材を、1820×910 mmの板1枚に割り付けた図。斜線は端材。各部材の上に幅、左に高さ、右下に名称を表示" viewBox="0 0 600 300" width="600" height="300"><defs><pattern id="h0" width="11" height="11" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><line x1="0" y1="0" x2="0" y2="11" stroke="#C4BDAE" stroke-width="1"/></pattern></defs><rect width="600" height="300" fill="#F7F4EC"/><rect width="600" height="300" fill="url(#h0)"/><rect x="0" y="0" width="296.7" height="98.9" fill="#CFE3D6" stroke="#3A3732" stroke-width="1.2"/><text x="148.4" y="15" font-size="15" fill="#211F1C" text-anchor="middle">900</text><text x="15" y="49.5" font-size="15" fill="#211F1C" text-anchor="middle" transform="rotate(-90 15 49.5)">300</text><text x="291.7" y="92.9" font-size="15" fill="#211F1C" text-anchor="end" font-weight="700">側板</text><rect x="297.7" y="0" width="296.7" height="98.9" fill="#CFE3D6" stroke="#3A3732" stroke-width="1.2"/><text x="446" y="15" font-size="15" fill="#211F1C" text-anchor="middle">900</text><text x="312.7" y="49.5" font-size="15" fill="#211F1C" text-anchor="middle" transform="rotate(-90 312.7 49.5)">300</text><text x="589.4" y="92.9" font-size="15" fill="#211F1C" text-anchor="end" font-weight="700">側板</text><rect x="0" y="99.9" width="251.9" height="98.9" fill="#C9DCE8" stroke="#3A3732" stroke-width="1.2"/><text x="125.9" y="114.9" font-size="15" fill="#211F1C" text-anchor="middle">764</text><text x="15" y="149.3" font-size="15" fill="#211F1C" text-anchor="middle" transform="rotate(-90 15 149.3)">300</text><text x="246.9" y="192.8" font-size="15" fill="#211F1C" text-anchor="end" font-weight="700">天板・地板</text><rect x="252.9" y="99.9" width="251.9" height="98.9" fill="#C9DCE8" stroke="#3A3732" stroke-width="1.2"/><text x="378.8" y="114.9" font-size="15" fill="#211F1C" text-anchor="middle">764</text><text x="267.9" y="149.3" font-size="15" fill="#211F1C" text-anchor="middle" transform="rotate(-90 267.9 149.3)">300</text><text x="499.7" y="192.8" font-size="15" fill="#211F1C" text-anchor="end" font-weight="700">天板・地板</text><rect x="0" y="199.8" width="251.9" height="92.3" fill="#EBCFC8" stroke="#3A3732" stroke-width="1.2"/><text x="125.9" y="214.8" font-size="15" fill="#211F1C" text-anchor="middle">764</text><text x="15" y="245.9" font-size="15" fill="#211F1C" text-anchor="middle" transform="rotate(-90 15 245.9)">280</text><text x="246.9" y="286.1" font-size="15" fill="#211F1C" text-anchor="end" font-weight="700">棚板</text><rect x="252.9" y="199.8" width="251.9" height="92.3" fill="#EBCFC8" stroke="#3A3732" stroke-width="1.2"/><text x="378.8" y="214.8" font-size="15" fill="#211F1C" text-anchor="middle">764</text><text x="267.9" y="245.9" font-size="15" fill="#211F1C" text-anchor="middle" transform="rotate(-90 267.9 245.9)">280</text><text x="499.7" y="286.1" font-size="15" fill="#211F1C" text-anchor="end" font-weight="700">棚板</text><rect width="600" height="300" fill="none" stroke="#3A3732" stroke-width="2"/></svg><figcaption>本棚1台分を、サブロク1枚（1820×910 mm）に割り付けた図。斜線の部分が端材です。各部材の上に幅、左に高さ、右下に名称を入れています。</figcaption></figure>
+<p>切る順番の最初の5回は、次のとおりです。</p>
+<ol><li>横切り。上端から300 mm、長さ1820 mm（端から切り始め）。</li><li>縦切り。左端から900 mm、長さ300 mm（端から切り始め）。</li><li>横切り。上端から603 mm、長さ1820 mm（端から切り始め）。</li><li>縦切り。左端から764 mm、長さ300 mm（上から303 mmの位置から切り始め）。</li><li>縦切り。左端から1803 mm、長さ300 mm（端から切り始め）。</li></ol>
+<p>位置は、残す部材の端までの距離です。刃は、その線の外側（端材側）を通ります。切りしろの3 mmは、その外側で消えます。</p>
+
+<h2>例2 2台分に増やしたときと、木目の固定</h2>
+<p>本棚を2台分作り、背面の補強に使う幕板（764×80 mm）を1台に2枚ずつ足します。部材は、側板4、天板・地板4、棚板4、幕板4です。側板だけ回転させない設定にして割り付けると、<strong>板2枚</strong>で、ロス率は<strong>6.5%</strong>（1枚目は7.1%、2枚目は5.9%）、切断は22回になりました。</p>
+<figure class="fig"><svg role="img" aria-label="本棚2台分、1枚目。端材は7.1%" viewBox="0 0 600 300" width="600" height="300"><defs><pattern id="h1" width="11" height="11" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><line x1="0" y1="0" x2="0" y2="11" stroke="#C4BDAE" stroke-width="1"/></pattern></defs><rect width="600" height="300" fill="#F7F4EC"/><rect width="600" height="300" fill="url(#h1)"/><rect x="0" y="0" width="296.7" height="98.9" fill="#CFE3D6" stroke="#3A3732" stroke-width="1.2"/><text x="148.4" y="15" font-size="15" fill="#211F1C" text-anchor="middle">900</text><text x="15" y="49.5" font-size="15" fill="#211F1C" text-anchor="middle" transform="rotate(-90 15 49.5)">300</text><text x="291.7" y="92.9" font-size="15" fill="#211F1C" text-anchor="end" font-weight="700">側板</text><rect x="0" y="99.9" width="296.7" height="98.9" fill="#CFE3D6" stroke="#3A3732" stroke-width="1.2"/><text x="148.4" y="114.9" font-size="15" fill="#211F1C" text-anchor="middle">900</text><text x="15" y="149.3" font-size="15" fill="#211F1C" text-anchor="middle" transform="rotate(-90 15 149.3)">300</text><text x="291.7" y="192.8" font-size="15" fill="#211F1C" text-anchor="end" font-weight="700">側板</text><rect x="0" y="199.8" width="296.7" height="98.9" fill="#CFE3D6" stroke="#3A3732" stroke-width="1.2"/><text x="148.4" y="214.8" font-size="15" fill="#211F1C" text-anchor="middle">900</text><text x="15" y="249.2" font-size="15" fill="#211F1C" text-anchor="middle" transform="rotate(-90 15 249.2)">300</text><text x="291.7" y="292.7" font-size="15" fill="#211F1C" text-anchor="end" font-weight="700">側板</text><rect x="297.7" y="0" width="296.7" height="98.9" fill="#CFE3D6" stroke="#3A3732" stroke-width="1.2"/><text x="446" y="15" font-size="15" fill="#211F1C" text-anchor="middle">900</text><text x="312.7" y="49.5" font-size="15" fill="#211F1C" text-anchor="middle" transform="rotate(-90 312.7 49.5)">300</text><text x="589.4" y="92.9" font-size="15" fill="#211F1C" text-anchor="end" font-weight="700">側板</text><rect x="297.7" y="99.9" width="251.9" height="98.9" fill="#C9DCE8" stroke="#3A3732" stroke-width="1.2"/><text x="423.6" y="114.9" font-size="15" fill="#211F1C" text-anchor="middle">764</text><text x="312.7" y="149.3" font-size="15" fill="#211F1C" text-anchor="middle" transform="rotate(-90 312.7 149.3)">300</text><text x="544.6" y="192.8" font-size="15" fill="#211F1C" text-anchor="end" font-weight="700">天板・地板</text><rect x="297.7" y="199.8" width="251.9" height="98.9" fill="#C9DCE8" stroke="#3A3732" stroke-width="1.2"/><text x="423.6" y="214.8" font-size="15" fill="#211F1C" text-anchor="middle">764</text><text x="312.7" y="249.2" font-size="15" fill="#211F1C" text-anchor="middle" transform="rotate(-90 312.7 249.2)">300</text><text x="544.6" y="292.7" font-size="15" fill="#211F1C" text-anchor="end" font-weight="700">天板・地板</text><rect width="600" height="300" fill="none" stroke="#3A3732" stroke-width="2"/></svg><figcaption>本棚2台分、1枚目。ロス率{{W2a}}%。</figcaption></figure>
+<figure class="fig"><svg role="img" aria-label="本棚2台分、2枚目。端材は5.9%" viewBox="0 0 600 300" width="600" height="300"><defs><pattern id="h2" width="11" height="11" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><line x1="0" y1="0" x2="0" y2="11" stroke="#C4BDAE" stroke-width="1"/></pattern></defs><rect width="600" height="300" fill="#F7F4EC"/><rect width="600" height="300" fill="url(#h2)"/><rect x="0" y="0" width="251.9" height="98.9" fill="#C9DCE8" stroke="#3A3732" stroke-width="1.2"/><text x="125.9" y="15" font-size="15" fill="#211F1C" text-anchor="middle">764</text><text x="15" y="49.5" font-size="15" fill="#211F1C" text-anchor="middle" transform="rotate(-90 15 49.5)">300</text><text x="246.9" y="92.9" font-size="15" fill="#211F1C" text-anchor="end" font-weight="700">天板・地板</text><rect x="0" y="99.9" width="251.9" height="98.9" fill="#C9DCE8" stroke="#3A3732" stroke-width="1.2"/><text x="125.9" y="114.9" font-size="15" fill="#211F1C" text-anchor="middle">764</text><text x="15" y="149.3" font-size="15" fill="#211F1C" text-anchor="middle" transform="rotate(-90 15 149.3)">300</text><text x="246.9" y="192.8" font-size="15" fill="#211F1C" text-anchor="end" font-weight="700">天板・地板</text><rect x="0" y="199.8" width="251.9" height="92.3" fill="#EBCFC8" stroke="#3A3732" stroke-width="1.2"/><text x="125.9" y="214.8" font-size="15" fill="#211F1C" text-anchor="middle">764</text><text x="15" y="245.9" font-size="15" fill="#211F1C" text-anchor="middle" transform="rotate(-90 15 245.9)">280</text><text x="246.9" y="286.1" font-size="15" fill="#211F1C" text-anchor="end" font-weight="700">棚板</text><rect x="252.9" y="0" width="92.3" height="251.9" fill="#EBCFC8" stroke="#3A3732" stroke-width="1.2"/><text x="299" y="15" font-size="15" fill="#211F1C" text-anchor="middle">280</text><text x="267.9" y="125.9" font-size="15" fill="#211F1C" text-anchor="middle" transform="rotate(-90 267.9 125.9)">764</text><text x="340.2" y="245.9" font-size="15" fill="#211F1C" text-anchor="end" font-weight="700">棚板</text><rect x="346.2" y="0" width="251.9" height="92.3" fill="#EBCFC8" stroke="#3A3732" stroke-width="1.2"/><text x="472.1" y="15" font-size="15" fill="#211F1C" text-anchor="middle">764</text><text x="361.2" y="46.2" font-size="15" fill="#211F1C" text-anchor="middle" transform="rotate(-90 361.2 46.2)">280</text><text x="593" y="86.3" font-size="15" fill="#211F1C" text-anchor="end" font-weight="700">棚板</text><rect x="346.2" y="93.3" width="251.9" height="92.3" fill="#EBCFC8" stroke="#3A3732" stroke-width="1.2"/><text x="472.1" y="108.3" font-size="15" fill="#211F1C" text-anchor="middle">764</text><text x="361.2" y="139.5" font-size="15" fill="#211F1C" text-anchor="middle" transform="rotate(-90 361.2 139.5)">280</text><text x="593" y="179.6" font-size="15" fill="#211F1C" text-anchor="end" font-weight="700">棚板</text><rect x="346.2" y="186.6" width="251.9" height="26.4" fill="#DDE6C6" stroke="#3A3732" stroke-width="1.2"/><text x="472.1" y="204.8" font-size="15" fill="#211F1C" text-anchor="middle">幕板  764</text><rect x="346.2" y="214" width="251.9" height="26.4" fill="#DDE6C6" stroke="#3A3732" stroke-width="1.2"/><text x="472.1" y="232.1" font-size="15" fill="#211F1C" text-anchor="middle">幕板  764</text><rect x="346.2" y="241.3" width="251.9" height="26.4" fill="#DDE6C6" stroke="#3A3732" stroke-width="1.2"/><text x="472.1" y="259.5" font-size="15" fill="#211F1C" text-anchor="middle">幕板  764</text><rect x="346.2" y="268.7" width="251.9" height="26.4" fill="#DDE6C6" stroke="#3A3732" stroke-width="1.2"/><text x="472.1" y="286.9" font-size="15" fill="#211F1C" text-anchor="middle">幕板  764</text><rect width="600" height="300" fill="none" stroke="#3A3732" stroke-width="2"/></svg><figcaption>本棚2台分、2枚目。ロス率{{W2b}}%。</figcaption></figure>
+<p>同じ部材で、幕板、天板・地板、棚板まで回転させない設定にすると、<strong>板3枚</strong>、ロス率は<strong>37.7%</strong>になりました。見えない場所の木目をそろえるために、合板を1枚多く買うことになります。見える部材だけを固定して、残りは回転してよいことにするのが基本です。</p>
+<p>ただし、回転させればいつも結果が良くなるわけではありません。ツールは配置を何通りも試して一番良いものを選びますが、最善であることを証明するものではありません。固定する部材と回転してよい部材を変えて、結果を見比べてみてください。</p>
+
+<h2>例3 切りしろで枚数が変わる</h2>
+<p>幅600 mm、高さ455 mmの棚板を12枚、サブロク（1820×910 mm）から切り出します。回転はしてよいものとして、切りしろだけを変えると、結果は次のようになります。</p>
+<div class="tablewrap"><table><thead><tr><th>切りしろ</th><th>板の枚数</th><th>ロス率</th><th>切断</th></tr></thead><tbody><tr><td>0（無視）</td><td>2</td><td>1.1%</td><td>14</td></tr><tr><td>1 mm</td><td>4</td><td>50.5%</td><td>16</td></tr><tr><td>3 mm</td><td>4</td><td>50.5%</td><td>16</td></tr></tbody></table></div>
+<p>455 mmを2つ並べると、ちょうど板の高さの910 mmになります。切りしろが0なら2列取れますが、1 mmでも切りしろがあると、2列目が板からはみ出します。計算で2枚と出ても、実際の刃で切ると足りなくなるのは、こういう場合です。合板を切ってしまってから気づくのは、いちばん高くつきます。</p>
+
+<h2>切る前に確かめること</h2>
+<ul>
+<li>図の部材の数が、書き出した部材の合計と合っているか</li>
+<li>回転した部材のうち、木目が見えるものがないか</li>
+<li>切りしろが、実際に使う刃の厚みになっているか</li>
+<li>板の欠点や、切り損じに備えて、数％の余裕を見ているか。図は、うまくいった場合の配置です</li>
+</ul>
+
+<section class="promo">
+<h2>自分の部材で木取り図を作る</h2>
+<p>ブラウザで使える木取り図ツールは無料で、入力内容は送信されません。サブロクとシハチの板を選べ、単位はミリメートルです。このページの計算は無料アプリと同じで、部材は20行まで、板は1種類です。Android アプリでは、作業内容の保存と、部材の名称と寸法を入れた PDF の書き出しができ、専用の数字キーパッドでオフラインでも使えます。</p>
+<a class="btn" href="../">無料の木取り図ツールを開く</a>
+<!-- When the app is live, replace this line with a link to https://play.google.com/store/apps/details?id=com.notchwork.cutlist -->
+<span class="play">Google Play で近日公開</span>
+</section>
+<footer><p>Notchwork のガイドです。お問い合わせは <a href="mailto:notchwork@demetio.com">notchwork@demetio.com</a> へ。</p></footer>
+</main></div></body></html>
