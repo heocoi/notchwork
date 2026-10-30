@@ -899,8 +899,27 @@ function parsePartsCsv(text, limit) {
     rd.readAsText(f);
   });
 
+  // ---- parts sent from the cabinet cut list page: #csv=<parts>&unit=in|mm&frac=1
+  function importFromHash() {
+    const h = location.hash;
+    if (h.length < 6) return;
+    const q = new URLSearchParams(h.slice(1));
+    const csv = q.get('csv');
+    if (!csv) return;
+    history.replaceState(null, '', location.pathname + location.search);
+    const r = parsePartsCsv(csv, FREE_PART_ROWS);
+    if (r.errors.length || !r.rows.length) { showCsv('msg csvmsg', 'The parts sent from the cabinet page could not be read, so your list was left as it was.'); return; }
+    const unit = q.get('unit') === 'mm' ? 'mm' : 'in';
+    convertState(unit, unit === 'in' && q.get('frac') === '1');
+    state.parts = r.rows.map(x => ({ id: nextId++, label: x.label, w: x.w, h: x.h, qty: x.qty, rot: x.rot }));
+    renderInputs(); save();
+    showCsv('okmsg csvmsg', 'Imported ' + r.rows.length + ' part rows from the cabinet cut list page, in ' + (unit === 'in' ? 'inches' : 'millimetres') + '. Your sheet size and kerf were kept.');
+    calculate();
+  }
+
   load();
   renderInputs();
+  importFromHash();
   window.__cutlist = { optimize, planPart, planSheet, keyedPartNos, state: () => state };
 })();
 </script>

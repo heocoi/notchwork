@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cabinet Cut List Calculator: frameless box parts from width, height and depth</title>
+<meta name="description" content="Free cabinet cut list calculator for frameless boxes. Enter width, height, depth and panel thickness. Get sides, top and bottom, shelves and back with sizes in inch fractions or mm and grain direction, then lay them out on sheets. Runs in your browser.">
+<link rel="canonical" href="https://notchwork.demetio.app/cabinet-cut-list/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Notchwork">
+<meta property="og:title" content="Cabinet Cut List Calculator: frameless box parts from width, height and depth">
+<meta property="og:description" content="Sides, top and bottom, shelves and back for a frameless cabinet box, with sizes and grain direction. One button sends the parts to a sheet layout. Free, runs in your browser.">
+<meta property="og:url" content="https://notchwork.demetio.app/cabinet-cut-list/">
+<meta name="theme-color" content="#f2b705">
+<link rel="icon" href="../polaralign/img/icon.png">
+<style>
+:root{--bg:#fbfaf6;--card:#fff;--ink:#1c1b19;--mute:#5d5a52;--line:#d9d4c6;--tape:#f2b705;--tape-d:#8a6600;--ok:#1f7a46;--ok-bg:#dff1e5;--bad:#b3261e;--bad-bg:#f9dedb;--warn:#8a5a00;--warn-bg:#fbefd0;--pine:#25634a}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 -apple-system,"Segoe UI",Roboto,sans-serif}
+.stripe{height:10px;background:repeating-linear-gradient(90deg,var(--tape) 0 28px,#1c1b19 28px 31px,var(--tape) 31px 59px)}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px 56px}
+nav{font-size:14px;padding:14px 0 6px;color:var(--mute)}
+a{color:#0d5c8a}
+h1{font-size:30px;line-height:1.15;margin:6px 0 8px;letter-spacing:-.01em}
+h2{font-size:20px;margin:30px 0 10px}
+h3{font-size:16px;margin:0 0 6px}
+.lead{margin:0 0 18px;color:var(--mute);max-width:62ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin:0 0 14px}
+.grid{display:grid;gap:12px 14px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+label,.lab{font-size:13px;font-weight:600;color:var(--ink);display:block;margin-bottom:3px}
+.hint{font-size:12px;color:var(--mute);margin:3px 0 0;font-weight:400}
+input[type=text],select{width:100%;font:inherit;font-size:16px;padding:9px 10px;border:1px solid #b9b3a2;border-radius:6px;background:#fff;color:var(--ink)}
+input:focus,select:focus,button:focus-visible,summary:focus-visible,a.btn:focus-visible{outline:3px solid var(--tape);outline-offset:1px}
+input.bad{border-color:var(--bad);background:var(--bad-bg)}
+.sub{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+.verdict{border-radius:10px;padding:12px 16px;margin:0 0 14px;font-weight:700;font-size:18px}
+.verdict small{display:block;font-weight:400;font-size:14px}
+.verdict.ok{background:var(--ok-bg);color:#14522f}
+.verdict.err{background:var(--warn-bg);color:var(--warn)}
+table{border-collapse:collapse;width:100%;font-size:15px;font-variant-numeric:tabular-nums}
+th,td{padding:7px 8px;text-align:left;border-bottom:1px solid #eee9dc}
+th{font-size:12px;color:var(--mute);font-weight:600}
+td.n,th.n{text-align:right}
+.scroll{overflow-x:auto}
+button,a.btn{display:inline-block;font:inherit;font-weight:600;border:1px solid #1c1b19;background:#1c1b19;color:#fff;border-radius:7px;padding:10px 16px;cursor:pointer;text-decoration:none}
+button.alt,a.btn.alt{background:#fff;color:#1c1b19}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0 0}
+.note{font-size:13px;color:var(--mute)}
+.prose p,.prose li{max-width:68ch}
+.prose table td:first-child{font-weight:600;white-space:nowrap}
+details{border-top:1px solid var(--line);padding:10px 0}
+details summary{cursor:pointer;font-weight:600}
+.promo{background:var(--pine);color:#f1f7f3;border-radius:16px;padding:22px 22px;margin:30px 0 0}
+.promo h2{margin:0 0 8px;color:#fff;font-size:22px}
+.promo p{color:#dcebe3;max-width:44em;margin:0}
+.play{display:inline-block;padding:10px 16px;border:1px solid #9fc9b6;border-radius:8px;color:#fff;text-decoration:none;font-weight:600;margin-top:14px}
+footer{font-size:14px;color:var(--mute);margin-top:34px}
+@media(max-width:520px){h1{font-size:25px}}
+@media print{.stripe,nav,.noprint,.prose,.promo,footer,form,details{display:none!important}body{background:#fff}}
+</style><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Cabinet Cut List Calculator","url":"https://notchwork.demetio.app/cabinet-cut-list/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","description":"Free cabinet cut list calculator for frameless boxes. Sides, top and bottom, shelves and back with sizes in inch fractions or millimetres and grain direction, then a sheet layout. Runs in your browser.","publisher":{"@type":"Organization","name":"Notchwork"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+</head><body>
+<div class="stripe"></div>
+<div class="wrap">
+<nav><a href="../">Notchwork</a> / Cabinet cut list</nav>
+<h1>Cabinet Cut List Calculator</h1>
+<p class="lead">For a frameless cabinet box. Enter the outside width, height and depth and the panel thickness. Get the cut list: sides, top and bottom, shelves and back, with sizes in inch fractions or millimetres and the grain direction. Then send the parts straight to the sheet layout. Free, no account, runs in your browser.</p>
+
+<form class="card noprint" id="f" autocomplete="off" onsubmit="return false">
+<div class="grid">
+ <div><label for="unit">Units</label><select id="unit"><option value="in" selected>Inches</option><option value="mm">Millimetres</option></select></div>
+ <div><label for="W">Outside width</label><input type="text" id="W" inputmode="text" value="30"><p class="hint" id="Wh">Side to side. Try 30 or 29 3/4</p></div>
+ <div><label for="H">Outside height</label><input type="text" id="H" inputmode="text" value="30"><p class="hint">Top to bottom of the box, without legs or a toe kick.</p></div>
+ <div><label for="D">Outside depth</label><input type="text" id="D" inputmode="text" value="12"><p class="hint">Front to back, back panel included.</p></div>
+ <div><label for="t">Panel thickness</label><input type="text" id="t" inputmode="text" value="3/4"><p class="hint">Measure it. 3/4 plywood is often 23/32.</p></div>
+ <div><label for="back">Back</label><select id="back"><option value="inset" selected>Inset in a rabbet</option><option value="overlay">Applied over the rear</option><option value="none">No back</option></select></div>
+ <div id="btbox"><label for="bt">Back thickness</label><input type="text" id="bt" inputmode="text" value="1/4"><p class="hint">Usually 1/4 plywood or hardboard.</p></div>
+ <div><label for="fixed">Fixed shelves</label><input type="text" id="fixed" inputmode="numeric" value="0"><p class="hint">Full width, flush with the front.</p></div>
+ <div><label for="adj">Adjustable shelves</label><input type="text" id="adj" inputmode="numeric" value="1"><p class="hint">Cut a little small so they drop in and move.</p></div>
+</div>
+</form>
+
+<div id="out" aria-live="polite"></div>
+
+<div class="prose">
+<h2>What this assumes</h2>
+<p>This page is for <b>frameless box carcasses</b>, the European style where the sides are full height and the top and bottom fit between them. It does not do face frames, toe kicks, doors, drawers, or stretchers in place of a full top. Those parts depend on your hardware and style, so size them from your own build.</p>
+<div class="scroll"><table>
+<thead><tr><th>Part</th><th>Width, along the grain</th><th>Height, across the grain</th></tr></thead>
+<tbody>
+<tr><td>Side (2)</td><td>Outside height</td><td>Depth</td></tr>
+<tr><td>Top and bottom (2)</td><td>Width minus two panel thicknesses</td><td>Depth</td></tr>
+<tr><td>Fixed shelf</td><td>Width minus two panel thicknesses</td><td>Depth minus the back thickness</td></tr>
+<tr><td>Adjustable shelf</td><td>Fixed shelf width minus 1/16" (1.5 mm)</td><td>Fixed shelf depth minus 1/4" (6 mm)</td></tr>
+<tr><td>Back, inset</td><td>Height minus one panel thickness</td><td>Width minus one panel thickness</td></tr>
+<tr><td>Back, applied</td><td>Outside height</td><td>Outside width</td></tr>
+</tbody></table></div>
+<ul>
+<li>With an <b>inset back</b>, the sides, top and bottom get a rabbet the width of the back and half the panel thickness deep, and the back sits in it flush with the rear edge. That is why the back is one panel thickness smaller each way: it reaches half a thickness into the rabbet on each side. Depth then counts the back, and the sides keep the full depth.</li>
+<li>With an <b>applied back</b>, the depth you enter is the finished depth with the back on. The sides, top and bottom are cut shallower by the back thickness, and the back covers the full width and height.</li>
+<li>Sides and back run their grain up the height. Top, bottom and shelves run it across the width. Every row is sent with the grain locked so the layout keeps it that way.</li>
+<li>Sizes are rounded to the nearest 1/32" or 0.1 mm for display, and the rounded value is what gets passed on.</li>
+</ul>
+<p class="note">Check the first box with a test fit before you cut the whole job. Your hardware, joinery and panel thickness set the real sizes, and this page cannot see them.</p>
+
+<h2>Questions</h2>
+<details><summary>Why is my back the wrong size?</summary><p>It depends on how it mounts. An inset back sits in a rabbet and is one panel thickness smaller than the outside width and height. An applied back is the full outside size. Pick the option that matches your build in the Back field.</p></details>
+<details><summary>Do I enter the thickness it says on the sheet or the one I measure?</summary><p>Measure it. Sheet goods sold as 3/4" are often a little thinner, and the width of every shelf and top changes by twice the difference.</p></details>
+<details><summary>What does the button do?</summary><p>It opens the Notchwork <a href="../cutlist/">cut list optimizer</a> with these parts already filled in, in the same units, and lays them out on sheets. The parts travel in the page address inside your browser. Nothing is uploaded.</p></details>
+<details><summary>Can I build a whole kitchen?</summary><p>Run one box at a time and import each list. The optimizer replaces its list on import, so lay out the biggest job first or add the extra rows by hand. For a full kitchen of cabinets with doors and drawers, a design program is a better tool.</p></details>
+</div>
+
+<section class="promo">
+  <h2>Take the cut list to the shop</h2>
+  <p>The Notchwork Cut List app for Android lays parts out on sheets offline, with a keypad made for fractions, and saves projects. This page's parts can go straight into the web version first.</p>
+  <!-- When the app is live, replace this line with a link to https://play.google.com/store/apps/details?id=com.notchwork.cutlist -->
+  <span class="play">Coming soon to Google Play</span>
+</section>
+
+<footer><p>Notchwork makes offline tools for the workshop. <a href="../">Home</a> | <a href="../cutlist/">Cut list optimizer</a> | <a href="../stairs/">Stair stringer calculator</a></p></footer>
+</div>
+
+<script src="cabinet.js"></script>
+<script>
+(function(){
+var C=window.Cabinet,$=function(i){return document.getElementById(i)},out=$('out');
+var ids=['W','H','D','t','bt','fixed','adj'];
+var DEF={in:{W:'30',H:'30',D:'12',t:'3/4',bt:'1/4'},mm:{W:'762',H:'762',D:'305',t:'18',bt:'6'}};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function unit(){return $('unit').value}
+function mark(id,bad,msg){var el=$(id);el.classList.toggle('bad',!!bad);var e=el.parentNode.querySelector('.err');if(e)e.remove();
+ if(bad){var p=document.createElement('p');p.className='hint';p.style.color='#b3261e';p.className+=' err';p.textContent=msg;el.parentNode.appendChild(p)}}
+function len(id){var s=$(id).value.trim();if(!s){mark(id,true,'Enter a size.');return NaN}
+ var v=C.parseLen(s,unit());if(v===null){mark(id,true,'Could not read "'+s+'". '+(unit()==='mm'?'Use a number like 762.':'Try 29 3/4 or 2\' 6"'));return NaN}
+ mark(id,false);return v}
+function count(id){var s=$(id).value.trim();if(!/^\d+$/.test(s)){mark(id,true,'Whole number, 0 to 10.');return NaN}mark(id,false);return parseInt(s,10)}
+var CAP={W:'Outside width',H:'Outside height',D:'Outside depth'};
+function render(){
+ var u=unit(),inch=u==='in';
+ $('btbox').hidden=$('back').value==='none';
+ var o={unit:u,back:$('back').value};
+ ['W','H','D','t'].forEach(function(k){o[k]=len(k)});
+ o.bt=o.back==='none'?0:len('bt');
+ o.fixed=count('fixed');o.adj=count('adj');
+ for(var k in o){if(typeof o[k]==='number'&&isNaN(o[k])){out.innerHTML='<div class="verdict err">Fix the highlighted field<small>One of the values could not be read.</small></div>';return}}
+ var R=C.compute(o);
+ if(R.error){out.innerHTML='<div class="verdict err">'+esc(R.error)+'</div>';return}
+ var us=inch?'"':' mm';
+ var h='<div class="verdict ok">'+R.parts.length+' part rows, '+R.pieces+' pieces<small>Frameless box, '+C.fmt(o.W,u)+' x '+C.fmt(o.H,u)+' x '+C.fmt(o.D,u)+us+' outside, '+C.fmt(o.t,u)+us+' panels. Sizes rounded to '+(inch?'1/32"':'0.1 mm')+'.</small></div>';
+ h+='<div class="card"><div class="scroll"><table><thead><tr><th>Part</th><th class="n">Qty</th><th class="n">Width, with the grain</th><th class="n">Height, across the grain</th></tr></thead><tbody>';
+ R.parts.forEach(function(p){h+='<tr><td>'+esc(p.name)+'</td><td class="n">'+p.qty+'</td><td class="n">'+C.fmt(p.along,u)+us+'</td><td class="n">'+C.fmt(p.across,u)+us+'</td></tr>'});
+ h+='</tbody></table></div><p class="note">Every part has its grain locked along the width. Interior opening: '+C.fmt(R.inner,u)+us+' wide.</p>';
+ var href='../cutlist/#csv='+encodeURIComponent(C.toCsv(R,u))+'&unit='+u+(inch?'&frac=1':'');
+ h+='<div class="actions noprint"><a class="btn" id="go" href="'+href+'">Lay these parts out on sheets</a><button class="alt" type="button" id="print">Print this list</button></div>';
+ h+='<p class="note noprint">Opens the cut list optimizer with these parts filled in. Its current list is replaced.</p></div>';
+ out.innerHTML=h;
+ $('print').addEventListener('click',function(){window.print()})}
+function convert(from,to){
+ ['W','H','D','t','bt'].forEach(function(k){var el=$(k),v=C.parseLen(el.value,from);
+  if(v===null)return;var x=from==='in'?v*25.4:v/25.4;
+  if(to==='mm')el.value=C.fmt(x,'mm');else{el.value=C.fmt(x,'in')}});
+ $('Wh').textContent=to==='mm'?'Side to side. Try 762':'Side to side. Try 30 or 29 3/4'}
+var prev='in';
+$('unit').addEventListener('change',function(){convert(prev,unit());prev=unit();render()});
+ids.forEach(function(i){$(i).addEventListener('input',render)});
+$('back').addEventListener('change',render);
+render();
+})();
+</script>
+</body></html>
