@@ -3,6 +3,9 @@
 <title>Free Cut List Optimizer: plan plywood and sheet cuts with less waste</title>
 <meta name="description" content="Free online cut list optimizer. Enter your parts and sheet size, get a labeled layout, waste percentage and cut order. Inch fractions like 23 5/8 and metric. Runs in your browser, nothing is uploaded.">
 <link rel="canonical" href="https://notchwork.demetio.app/cutlist/">
+<link rel="alternate" hreflang="en" href="https://notchwork.demetio.app/cutlist/">
+<link rel="alternate" hreflang="ja" href="https://notchwork.demetio.app/cutlist/ja/">
+<link rel="alternate" hreflang="x-default" href="https://notchwork.demetio.app/cutlist/">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Notchwork">
 <meta property="og:title" content="Free Cut List Optimizer: plan plywood and sheet cuts with less waste">
 <meta property="og:description" content="Free online cut list optimizer. Labeled layout, waste percentage and cut order. Inch fractions and metric. Runs in your browser.">
@@ -74,6 +77,7 @@ body{background-color:var(--paper);background-image:linear-gradient(#e9e2d0 1px,
 .topbar svg{width:30px;height:30px}
 .topbar .sp{flex:1}
 .topbar .here{font-size:14px;color:var(--mute);font-weight:500}
+.topbar .lang{font-size:14px;color:var(--pine);font-weight:600;white-space:nowrap}
 .shellhero{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;padding:44px 0 40px}
 .shellhero h1{font-size:clamp(34px,5.4vw,60px);line-height:1.04;letter-spacing:-.03em;margin:0 0 18px}
 .shellhero .lead{font-size:18px;color:#4c4842;margin:0;max-width:30em}
@@ -90,7 +94,7 @@ footer{border-top:1px solid var(--line);padding-top:22px}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Cut List Optimizer","url":"https://notchwork.demetio.app/cutlist/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","description":"Free cut list optimizer for plywood and sheet goods. Labeled layout, waste percentage and cut order. Runs in the browser.","publisher":{"@type":"Organization","name":"Notchwork"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
 </head><body><div class="wrap">
-<div class="topbar"><a href="../"><svg viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="8" fill="#211f1c"/><path d="M9 9h6.5l1.5 5 1.5-5H25v16h-5.5V17.5L17 24l-2.5-6.5V25H9z" fill="#f6f2e9"/></svg>Notchwork</a><span class="sp"></span><span class="here">Cut List</span></div>
+<div class="topbar"><a href="../"><svg viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="8" fill="#211f1c"/><path d="M9 9h6.5l1.5 5 1.5-5H25v16h-5.5V17.5L17 24l-2.5-6.5V25H9z" fill="#f6f2e9"/></svg>Notchwork</a><span class="sp"></span><span class="here">Cut List</span><a class="lang" href="ja/" hreflang="ja" lang="ja">日本語</a></div>
 <div class="shellhero"><div>
 <h1>Free cut list optimizer</h1>
 <p class="lead">Enter your parts and your sheet size. The page lays them out on as few sheets as it can, draws every sheet with sizes and labels, and lists the saw cuts in order. Inches with fractions like 23 5/8, or metric. It runs in your browser: nothing is uploaded.</p>

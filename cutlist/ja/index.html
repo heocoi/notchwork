@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>木取り図を無料で作成｜板取り計算ツール</title>
+<meta name="description" content="木取り図を無料で作成できる板取り計算ツール。部材と板のサイズ（mm）を入力すると、サブロク・シハチの板に無駄なく割り付けた図、ロス率、切断の順番を表示します。ブラウザだけで動作し、入力内容は送信されません。">
+<link rel="canonical" href="https://notchwork.demetio.app/cutlist/ja/">
+<link rel="alternate" hreflang="ja" href="https://notchwork.demetio.app/cutlist/ja/">
+<link rel="alternate" hreflang="en" href="https://notchwork.demetio.app/cutlist/">
+<link rel="alternate" hreflang="x-default" href="https://notchwork.demetio.app/cutlist/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Notchwork">
+<meta property="og:title" content="木取り図を無料で作成｜板取り計算ツール">
+<meta property="og:description" content="部材と板のサイズ（mm）から、ロスの少ない木取り図と切断の順番を作成します。無料、ブラウザで動作、データは送信しません。">
+<meta property="og:url" content="https://notchwork.demetio.app/cutlist/ja/"><meta property="og:image" content="https://notchwork.demetio.app/cutlist/img/result.png">
+<meta name="theme-color" content="#f6f2e9">
+<link rel="icon" href="../../polaralign/img/icon.png">
+<style>
+:root{--paper:#f6f2e9;--card:#fffdf8;--card2:#efeadd;--ink:#211f1c;--graphite:#2e2c29;--mute:#5a5650;--line:#cfc8b8;--pine:#25634a;--pine-bg:#d5e6db;--err:#a8281f;--err-bg:#f6ddd6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 -apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px 48px}
+nav{font-size:14px;padding:14px 0;color:var(--mute)}
+a{color:var(--pine)}
+h1{font-size:28px;line-height:1.2;margin:4px 0 8px}
+h2{font-size:19px;margin:0 0 10px}
+.lead{margin:0 0 18px;color:var(--mute)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin:0 0 14px}
+.bar{background:var(--graphite);color:#fff;border-radius:8px;padding:8px 14px;font-weight:600;margin:0 0 10px}
+label{font-size:13px;color:var(--mute);display:block;margin-bottom:2px}
+input[type=text],select{width:100%;font:inherit;font-size:16px;padding:8px 9px;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--ink)}
+input[type=text]:focus,select:focus,button:focus-visible,summary:focus-visible{outline:2px solid var(--pine);outline-offset:1px}
+input.bad{border-color:var(--err);background:var(--err-bg)}
+.row{display:grid;gap:8px;align-items:end}
+.opts{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
+.sheetrow{grid-template-columns:1fr 1fr 1fr}
+.partgrid{display:grid;grid-template-columns:minmax(70px,1.4fr) 1fr 1fr .6fr 44px 36px;gap:6px;align-items:center}
+.partgrid .h{font-size:12px;color:var(--mute);font-weight:600}
+.partgrid input[type=checkbox]{width:22px;height:22px;accent-color:var(--pine);justify-self:center}
+.partgrid .del{width:34px;height:34px;padding:0;border:1px solid var(--line);background:#fff;border-radius:7px;font-size:18px;line-height:1;color:var(--mute);cursor:pointer}
+button.btn{font:inherit;font-weight:600;border:0;border-radius:8px;padding:11px 18px;background:var(--pine);color:#fff;cursor:pointer}
+button.alt{background:transparent;color:var(--pine);border:1px solid var(--pine)}
+button.btn:hover{filter:brightness(1.08)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.count{font-size:13px;color:var(--mute)}
+.msg{background:var(--err-bg);color:var(--err);border-radius:8px;padding:10px 12px;margin:10px 0 0;font-size:15px}
+.csvtext{width:100%;font:14px/1.4 ui-monospace,Menlo,Consolas,monospace;padding:8px 9px;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--ink);resize:vertical}
+.csvtext:focus{outline:2px solid var(--pine);outline-offset:1px}
+.okmsg{background:var(--pine-bg);color:var(--ink);border-radius:8px;padding:10px 12px;margin:10px 0 0;font-size:15px}
+.csvmsg ul{margin:6px 0 0;padding-left:20px}
+.note{font-size:13px;color:var(--mute);margin:8px 0 0}
+table{border-collapse:collapse;width:100%;font-size:14px}
+td,th{padding:5px 8px;text-align:left}
+tbody tr:nth-child(odd){background:var(--card2)}
+th{font-size:12px;color:var(--mute)}
+.info td:first-child{font-weight:600}
+.sheet{margin:18px 0 0}
+.sheet h3{margin:0;font-size:16px}
+.sheet .sub{font-size:13px;color:var(--mute);margin:0 0 6px}
+.svgbox{width:100%;line-height:0}
+.keylegend{font-size:13px;margin:6px 0 0}.keylegend b{display:block;font-size:12px;font-weight:600;color:var(--mute)}
+svg text{font-family:-apple-system,"Segoe UI",Roboto,sans-serif}
+details summary{cursor:pointer;background:var(--mute);color:#fff;border-radius:8px;padding:8px 14px;font-weight:600;margin-top:8px;list-style:none}
+details summary::-webkit-details-marker{display:none}
+.unplaced{background:var(--err-bg);border-radius:10px;padding:12px 14px;margin:0 0 14px}
+.unplaced b{color:var(--err)}
+.unplaced p{margin:4px 0;font-size:14px}
+.promo{border-left:0;background:var(--pine-bg);border-radius:10px;padding:14px;margin:22px 0 0}
+.play{display:inline-block;padding:10px 16px;border:1px solid var(--graphite);border-radius:8px;color:var(--graphite);text-decoration:none;font-weight:600;margin-top:6px;background:#fff}
+footer{font-size:14px;color:var(--mute);margin-top:30px}
+@media(max-width:520px){.partgrid{grid-template-columns:1fr 1fr 58px 34px 34px}.partgrid .lab{grid-column:1/-1}.partgrid .h.lab{display:none}h1{font-size:24px}}
+@media print{nav,.card.inputs,.actions,footer,.promo{display:none}body{background:#fff}}
+</style>
+<style>
+/* Shell restyle only. The tool's own classes and ids are untouched. */
+.wrap{max-width:960px}
+body{background-color:var(--paper);background-image:linear-gradient(#e9e2d0 1px,transparent 1px),linear-gradient(90deg,#e9e2d0 1px,transparent 1px);background-size:32px 32px}
+.topbar{display:flex;align-items:center;gap:12px;padding:18px 0 0;color:var(--ink)}
+.topbar a{color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+.topbar svg{width:30px;height:30px}
+.topbar .sp{flex:1}
+.topbar .here{font-size:14px;color:var(--mute);font-weight:500}
+.topbar .lang{font-size:14px;color:var(--pine);font-weight:600;white-space:nowrap}
+.shellhero{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;padding:44px 0 40px}
+.shellhero h1{font-size:clamp(34px,5.4vw,60px);line-height:1.04;letter-spacing:-.03em;margin:0 0 18px}
+.shellhero .lead{font-size:18px;color:#4c4842;margin:0;max-width:30em}
+.shellhero svg{width:100%;height:auto}
+.card{border-radius:16px;box-shadow:0 18px 40px -28px rgba(33,31,28,.35)}
+.bar{border-radius:10px}
+.promo{background:#25634a;color:#f1f7f3;border-radius:20px;padding:34px 32px;margin:34px 0 0}
+.promo h2{font-size:26px;letter-spacing:-.01em;color:#fff;margin:0 0 12px}
+.promo p{color:#dcebe3;max-width:40em;margin:0}
+.promo .play{background:transparent;color:#fff;border-color:#9fc9b6;margin-top:16px}
+footer{border-top:1px solid var(--line);padding-top:22px}
+@media(max-width:700px){.shellhero{grid-template-columns:1fr;padding:30px 0 26px}.shellhero svg{max-width:340px}}
+@media print{.topbar,.shellhero svg{display:none}.shellhero{display:block;padding:0}body{background:#fff}}
+</style>
+<style>
+/* Japanese page: font stack and heading size only. */
+body{font-family:-apple-system,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,"Noto Sans JP","Segoe UI",Roboto,sans-serif;line-break:strict}
+svg text{font-family:-apple-system,"Hiragino Sans","Yu Gothic",Meiryo,"Noto Sans JP","Segoe UI",Roboto,sans-serif}
+.shellhero h1{font-size:clamp(30px,4.6vw,48px);line-height:1.15;letter-spacing:0;text-wrap:balance}
+.shellhero .lead{font-size:17px;line-height:1.75}
+h1{line-height:1.25}
+.topbar .lang{font-size:14px;color:var(--pine);font-weight:600;white-space:nowrap}
+.topbar .here{white-space:nowrap}
+.presets{margin:10px 0 0}
+.presets .count{margin-right:2px}
+.presets button.btn{padding:8px 12px;font-size:15px}
+.card p,.note{line-height:1.7}
+section p{line-height:1.8}
+@media(max-width:520px){.shellhero h1{font-size:28px}.topbar{gap:8px}.topbar a{font-size:16px}.topbar svg{width:26px;height:26px}.topbar .here{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"木取り図作成ツール（Cut List）","inLanguage":"ja","url":"https://notchwork.demetio.app/cutlist/ja/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","description":"木取り図を無料で作成する板取り計算ツール。名称つきの割り付け図、ロス率、切断の順番を表示します。ブラウザ内で動作します。","publisher":{"@type":"Organization","name":"Notchwork"},"offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"}}</script>
+</head><body><div class="wrap">
+<div class="topbar"><a href="../../"><svg viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="8" fill="#211f1c"/><path d="M9 9h6.5l1.5 5 1.5-5H25v16h-5.5V17.5L17 24l-2.5-6.5V25H9z" fill="#f6f2e9"/></svg>Notchwork</a><span class="sp"></span><span class="here">木取り図ツール</span><a class="lang" href="../" hreflang="en" lang="en">English</a></div>
+<div class="shellhero"><div>
+<h1>木取り図を無料で作成</h1>
+<p class="lead">部材のサイズと板のサイズを入力すると、板をできるだけ無駄なく使う割り付けを計算します。1枚ごとに名称と寸法を入れた木取り図を描き、切断の順番も一覧にします。サブロク（<span style="white-space:nowrap">1820×910 mm</span>）とシハチ（<span style="white-space:nowrap">2440×1220 mm</span>）に対応し、単位はミリメートルです。ブラウザの中だけで動作し、入力内容は送信されません。</p>
+</div><svg viewBox="0 0 340 250" role="img" aria-label="1820×910 mmの板に、名称つきの部材を割り付け、端材に斜線を引いた木取り図の例">
+<defs><pattern id="hh" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="#f7f2e4"/><line x1="0" y1="0" x2="0" y2="7" stroke="#b9b09a" stroke-width="1"/></pattern></defs>
+<rect x="6" y="6" width="328" height="238" fill="url(#hh)" stroke="#2e2c29" stroke-width="2"/>
+<g stroke="#2e2c29" stroke-width="1.5">
+<rect x="6" y="6" width="128" height="124" fill="#bfe3de"/><rect x="134" y="6" width="88" height="124" fill="#c8dbe8"/>
+<rect x="222" y="6" width="112" height="78" fill="#efcdc8"/><rect x="222" y="84" width="112" height="26" fill="#d3dce6"/>
+<rect x="222" y="110" width="112" height="26" fill="#d3dce6"/><rect x="6" y="130" width="128" height="76" fill="#efcdc8"/>
+<rect x="222" y="136" width="112" height="14" fill="#e8dcb8"/></g>
+<g font-size="12" fill="#211f1c">
+<text x="70" y="24" text-anchor="middle">764</text><text x="128" y="124" text-anchor="end" font-weight="600">背板</text>
+<text x="178" y="24" text-anchor="middle">540</text><text x="216" y="124" text-anchor="end" font-weight="600">底板</text>
+<text x="278" y="24" text-anchor="middle">764</text><text x="328" y="78" text-anchor="end" font-weight="600">棚板</text>
+<text x="278" y="102" text-anchor="middle">引出し前板</text><text x="278" y="128" text-anchor="middle">引出し前板</text>
+<text x="128" y="200" text-anchor="end" font-weight="600">棚板</text></g>
+</svg></div>
+
+<section class="card inputs" aria-label="入力">
+  <div class="bar">板</div>
+  <div class="row sheetrow">
+    <div><label for="sw">幅（木目方向）</label><input type="text" id="sw" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
+    <div><label for="sh">高さ</label><input type="text" id="sh" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
+    <div><label for="sq">板の枚数</label><input type="text" id="sq" inputmode="numeric" autocomplete="off"></div>
+  </div>
+  <div class="presets"><span class="count">よく使う板</span>
+    <button class="btn alt" type="button" data-preset="1820x910">サブロク 1820×910</button>
+    <button class="btn alt" type="button" data-preset="2440x1220">シハチ 2440×1220</button></div>
+  <p class="note">サブロクは3尺×6尺、シハチは4尺×8尺の合板の呼び名です。寸法はmmで入力します。</p>
+  <div class="bar" style="margin-top:16px">オプション</div>
+  <div class="row opts">
+    <div><label for="unit">単位</label><select id="unit"><option value="mm">ミリメートル (mm)</option><option value="in">インチ (in)</option></select></div>
+    <div id="fracWrap"><label for="frac">寸法の表示</label><select id="frac"><option value="0">小数</option><option value="1">分数</option></select></div>
+    <div><label for="kerf">切りしろ（刃の厚み）</label><input type="text" id="kerf" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
+    <div><label for="trim">耳落とし</label><input type="text" id="trim" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
+  </div>
+  <p class="note">耳落としは、すべての板の四辺から取り除く幅です。板の幅は木目方向です。「回転」のチェックを外した部材は、幅を木目方向に保ったまま配置します。</p>
+
+  <div class="bar" style="margin-top:16px">部材</div>
+  <div class="partgrid" id="parts" role="group" aria-label="部材"></div>
+  <div class="actions">
+    <button class="btn alt" id="add" type="button">部材を追加</button>
+    <span class="count" id="count"></span>
+  </div>
+  <div class="actions">
+    <button class="btn alt" id="pasteBtn" type="button" aria-expanded="false" aria-controls="pastePanel">リストを貼り付け</button>
+    <button class="btn alt" id="fileBtn" type="button">CSVファイルを取り込む</button>
+    <input type="file" id="csvFile" accept=".csv,.tsv,.txt,text/csv,text/plain" hidden>
+  </div>
+  <div id="pastePanel" hidden style="margin-top:10px">
+    <label for="csvText">1行に1部材、名称, 幅, 高さ, 数量, 木目の順に貼り付けます</label>
+    <textarea class="csvtext" id="csvText" rows="6" spellcheck="false" placeholder="側板, 720, 560, 2, yes&#10;棚板, 764, 500, 2"></textarea>
+    <div class="actions"><button class="btn" id="csvGo" type="button">取り込む（今のリストを置き換え）</button><button class="btn alt" id="csvCancel" type="button">キャンセル</button></div>
+  </div>
+  <p class="note">区切りはカンマ、セミコロン、タブのどれでも使えます。見出し行と引用符つきの項目にも対応しています。寸法は「単位」で選んだ単位で読み取ります。木目の列は、yes なら幅を木目方向に保ち、空欄か no なら部材を回転できます。無料版の上限は20行です。</p>
+  <div id="csvMsg" role="status" hidden></div>
+  <div class="actions">
+    <button class="btn" id="calc" type="button">木取り図を作成</button>
+    <button class="btn alt" id="example" type="button">例を読み込む</button>
+    <button class="btn alt" id="clear" type="button">クリア</button>
+  </div>
+  <div class="msg" id="err" role="alert" hidden></div>
+</section>
+
+<section id="out" aria-live="polite"></section>
+
+<section class="promo">
+  <h2>Android アプリで現場に持ち出す</h2>
+  <p style="margin:0">このページは無料アプリと同じ計算をします。部材は20行まで、板は1種類で、名称、寸法、切断の順番まで入った割り付け図を表示します。Android アプリでは、作業内容の保存と、部材の名称と寸法を入れた PDF の書き出しができ、専用の数字キーパッドでオフラインでも使えます。</p>
+  <!-- When the app is live, replace this line with a link to https://play.google.com/store/apps/details?id=com.notchwork.cutlist -->
+  <span class="play">Google Play で近日公開</span>
+</section>
+
+<section style="margin-top:26px">
+  <h2>木取り図の作り方</h2>
+  <p>木取りとは、1枚の板から必要な部材をどう切り出すかを決めることです。このページは、すべての切断を板の端から端まで通すギロチンカット方式で割り付けます。テーブルソーやパネルソーでそのまま切れる形です。並べる順番や置き方、板の分け方を何通りも試して、配置できない面積が最も小さく、次に使う板の面積、枚数、カット数が少ない結果を選びます。高価な材料を切る前に、図を必ず確認してください。木取りの考え方と計算例は、英語ですが<a href="../guide/">合板の切り出し表の作り方</a>にまとめています。</p>
+  <h2 style="margin-top:22px">サブロクとシハチ</h2>
+  <p>サブロク（3尺×6尺）は約910×1820 mm、シハチ（4尺×8尺）は約1220×2440 mmの合板です。上のボタンで板のサイズを入れられます。ほかのサイズも、幅と高さを直接入力してください。</p>
+</section>
+
+<footer><p><a href="../privacy/">プライバシーポリシー（英語）</a> &nbsp; 連絡先: <a href="mailto:notchwork@demetio.com">notchwork@demetio.com</a><br>広告なし、アカウント不要、トラッキングなし。入力内容は、再読み込みで消えないようこのブラウザの中だけに保存されます。</p></footer>
+</div>
+<script>
+// ==CORE-START==
+// Port of android/cutlist optimizer (CutOptimizer.kt, Lengths.kt). Keep the logic identical; parity is tested against the Kotlin code.
+const EPS = 1e-7;
+
+function roundHalfEven(x) {
+  const f = Math.floor(x), d = x - f;
+  if (d < 0.5) return f;
+  if (d > 0.5) return f + 1;
+  return f % 2 === 0 ? f : f + 1;
+}
+
+// Lengths.parse: "12.5", "12,5", "1/2", "3 1/2", "3-1/2". Returns null when not a number.
+function parseLength(text) {
+  let s = String(text).trim();
+  if (s === '') return null;
+  if (s.includes(',') && !s.includes('.')) s = s.replace(/,/g, '.');
+  if (/^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/.test(s)) {
+    const v = Number(s);
+    return Number.isFinite(v) && v >= 0 ? v : null;
+  }
+  const m = /^(?:(\d+)[\s-]+)?(\d+)\s*\/\s*(\d+)$/.exec(s);
+  if (!m) return null;
+  const whole = m[1] ? Number(m[1]) : 0;
+  const den = Number(m[3]);
+  if (den === 0) return null;
+  return whole + Number(m[2]) / den;
+}
+
+// Lengths.format: fixed decimals, trailing zeros removed.
+function formatLength(v, maxDecimals) {
+  const f = Math.pow(10, maxDecimals);
+  const r = roundHalfEven(v * f) / f;
+  if (Math.abs(r - roundHalfEven(r)) < 1e-9) return String(roundHalfEven(r));
+  return r.toFixed(maxDecimals).replace(/0+$/, '').replace(/\.$/, '');
+}
+
+// Lengths.fraction: mixed number to the nearest 1/32, reduced: 23.625 -> "23 5/8".
+function fractionLength(v, denominator = 32) {
+  const total = roundHalfEven(v * denominator);
+  const whole = Math.trunc(total / denominator);
+  let num = total % denominator;
+  let den = denominator;
+  if (num === 0) return String(whole);
+  let a = num, b = den;
+  while (b !== 0) { const t = a % b; a = b; b = t; }
+  num /= a; den /= a;
+  return whole === 0 ? num + '/' + den : whole + ' ' + num + '/' + den;
+}
+
+const ORDER = [
+  (a, b) => cmpKeys([-(a.w * a.h), -Math.max(a.w, a.h), a.partNo], [-(b.w * b.h), -Math.max(b.w, b.h), b.partNo]),
+  (a, b) => cmpKeys([-Math.max(a.w, a.h), -Math.min(a.w, a.h), a.partNo], [-Math.max(b.w, b.h), -Math.min(b.w, b.h), b.partNo]),
+  (a, b) => cmpKeys([-Math.min(a.w, a.h), -Math.max(a.w, a.h), a.partNo], [-Math.min(b.w, b.h), -Math.max(b.w, b.h), b.partNo]),
+  (a, b) => cmpKeys([-a.w, -a.h, a.partNo], [-b.w, -b.h, b.partNo]),
+  (a, b) => cmpKeys([-a.h, -a.w, a.partNo], [-b.h, -b.w, b.partNo]),
+  (a, b) => cmpKeys([-(a.w + a.h), -(a.w * a.h), a.partNo], [-(b.w + b.h), -(b.w * b.h), b.partNo]),
+];
+function cmpKeys(a, b) {
+  for (let i = 0; i < a.length; i++) { if (a[i] < b[i]) return -1; if (a[i] > b[i]) return 1; }
+  return 0;
+}
+// Enum orders match the Kotlin declaration order, because the search keeps the FIRST best run.
+const FIT = ['BestArea', 'BestShortSide', 'BestLongSide'];
+const SPLIT = ['ShorterLeftover', 'LongerLeftover', 'KeepBigRemnant', 'KeepSmallRemnant', 'VerticalFirst', 'HorizontalFirst'];
+const OPEN = ['SmallestSheet', 'LargestSheet'];
+const VERTICAL = 0, HORIZONTAL = 1;       // Orientation ordinal
+const TOO_LARGE = 0, OUT_OF_STOCK = 1;    // UnplacedReason ordinal
+
+function fitsSheet(it, s, trim) {
+  const uw = s.width - 2 * trim, uh = s.height - 2 * trim;
+  return (it.w <= uw + EPS && it.h <= uh + EPS) || (it.rotate && it.h <= uw + EPS && it.w <= uh + EPS);
+}
+
+function place(sh, rectIndex, item, rot, kerf, split) {
+  const r = sh.free.splice(rectIndex, 1)[0];
+  const pw = rot ? item.h : item.w;
+  const ph = rot ? item.w : item.h;
+  sh.placements.push({ partNo: item.partNo, label: item.label, x: r.x, y: r.y, width: pw, height: ph, rotated: rot });
+
+  const lw = r.w - pw, lh = r.h - ph;
+  const hasRight = lw > EPS, hasBelow = lh > EPS;
+  const rightW = Math.max(0, lw - kerf), belowH = Math.max(0, lh - kerf);
+
+  let horizontalFirst;
+  switch (split) {
+    case 'ShorterLeftover': horizontalFirst = lw <= lh; break;
+    case 'LongerLeftover': horizontalFirst = lw > lh; break;
+    case 'HorizontalFirst': horizontalFirst = true; break;
+    case 'VerticalFirst': horizontalFirst = false; break;
+    default: { // KeepBigRemnant, KeepSmallRemnant
+      const hMax = Math.max(r.w * belowH, rightW * ph);
+      const vMax = Math.max(rightW * r.h, pw * belowH);
+      horizontalFirst = split === 'KeepBigRemnant' ? hMax >= vMax : hMax < vMax;
+    }
+  }
+  const xCut = r.x + pw, yCut = r.y + ph;
+  if (horizontalFirst) {
+    let d = r.depth;
+    if (hasBelow) {
+      d++;
+      sh.cuts.push({ orientation: HORIZONTAL, position: yCut, start: r.x, length: r.w, depth: d });
+      if (belowH > EPS) sh.free.push({ x: r.x, y: yCut + kerf, w: r.w, h: belowH, depth: d });
+    }
+    if (hasRight) {
+      d++;
+      sh.cuts.push({ orientation: VERTICAL, position: xCut, start: r.y, length: ph, depth: d });
+      if (rightW > EPS) sh.free.push({ x: xCut + kerf, y: r.y, w: rightW, h: ph, depth: d });
+    }
+  } else {
+    let d = r.depth;
+    if (hasRight) {
+      d++;
+      sh.cuts.push({ orientation: VERTICAL, position: xCut, start: r.y, length: r.h, depth: d });
+      if (rightW > EPS) sh.free.push({ x: xCut + kerf, y: r.y, w: rightW, h: r.h, depth: d });
+    }
+    if (hasBelow) {
+      d++;
+      sh.cuts.push({ orientation: HORIZONTAL, position: yCut, start: r.x, length: pw, depth: d });
+      if (belowH > EPS) sh.free.push({ x: r.x, y: yCut + kerf, w: pw, h: belowH, depth: d });
+    }
+  }
+}
+
+function pack(items, stock, usable, kerf, trim, fit, split, policy) {
+  const open = [];
+  const left = stock.map(s => s.qty);
+  const unplaced = [];
+  for (const item of items) {
+    let bestSheet = null, bestRect = -1, bestRot = false;
+    let s1 = Number.MAX_VALUE, s2 = Number.MAX_VALUE;
+    for (const sh of open) {
+      for (let ri = 0; ri < sh.free.length; ri++) {
+        const r = sh.free[ri];
+        const rots = (item.rotate && item.w !== item.h) ? [false, true] : [false];
+        for (const rot of rots) {
+          const pw = rot ? item.h : item.w, ph = rot ? item.w : item.h;
+          if (pw > r.w + EPS || ph > r.h + EPS) continue;
+          const lw = r.w - pw, lh = r.h - ph;
+          let a, b;
+          if (fit === 'BestArea') { a = r.w * r.h - pw * ph; b = Math.min(lw, lh); }
+          else if (fit === 'BestShortSide') { a = Math.min(lw, lh); b = Math.max(lw, lh); }
+          else { a = Math.max(lw, lh); b = Math.min(lw, lh); }
+          if (a < s1 - EPS || (a < s1 + EPS && b < s2 - EPS)) {
+            s1 = a; s2 = b; bestSheet = sh; bestRect = ri; bestRot = rot;
+          }
+        }
+      }
+    }
+    if (bestSheet === null) {
+      let pick = -1;
+      for (const si of usable) {
+        if (left[si] <= 0 || !fitsSheet(item, stock[si], trim)) continue;
+        const area = stock[si].width * stock[si].height;
+        let better;
+        if (pick < 0) better = true;
+        else if (policy === 'SmallestSheet') better = area < stock[pick].width * stock[pick].height - EPS;
+        else better = area > stock[pick].width * stock[pick].height + EPS;
+        if (better) pick = si;
+      }
+      if (pick < 0) { unplaced.push(unplacedOf(item, OUT_OF_STOCK)); continue; }
+      left[pick]--;
+      const s = stock[pick];
+      const sh = { stockIndex: pick, free: [{ x: trim, y: trim, w: s.width - 2 * trim, h: s.height - 2 * trim, depth: 0 }], placements: [], cuts: [] };
+      open.push(sh);
+      const rot = !(item.w <= sh.free[0].w + EPS && item.h <= sh.free[0].h + EPS);
+      place(sh, 0, item, rot, kerf, split);
+    } else {
+      place(bestSheet, bestRect, item, bestRot, kerf, split);
+    }
+  }
+  let sheetArea = 0, cuts = 0, unplacedArea = 0;
+  for (const sh of open) { sheetArea += stock[sh.stockIndex].width * stock[sh.stockIndex].height; cuts += sh.cuts.length; }
+  for (const u of unplaced) unplacedArea += u.width * u.height;
+  return { sheets: open, unplaced, sheetArea, cuts, unplacedArea };
+}
+
+function betterThan(a, o) {
+  if (Math.abs(a.unplacedArea - o.unplacedArea) > EPS) return a.unplacedArea < o.unplacedArea;
+  if (a.unplaced.length !== o.unplaced.length) return a.unplaced.length < o.unplaced.length;
+  if (Math.abs(a.sheetArea - o.sheetArea) > EPS) return a.sheetArea < o.sheetArea;
+  if (a.sheets.length !== o.sheets.length) return a.sheets.length < o.sheets.length;
+  return a.cuts < o.cuts;
+}
+
+function unplacedOf(it, reason) {
+  return { partNo: it.partNo, label: it.label, width: it.w, height: it.h, reason };
+}
+
+// stock: [{width,height,qty}], parts: [{width,height,qty,label,allowRotate}], settings: {kerf,trim}
+// Returns {sheets:[{stockIndex,sheetWidth,sheetHeight,placements,cuts,wastePercent}], unplaced, wastePercent, cutCount}
+function optimize(stock, parts, settings = {}, budgetMillis = Infinity, progress = () => true) {
+  const t0 = Date.now();
+  const kerf = Math.max(0, settings.kerf || 0);
+  const trim = Math.max(0, settings.trim || 0);
+  const usable = [];
+  stock.forEach((s, i) => { if (s.qty > 0 && s.width - 2 * trim > EPS && s.height - 2 * trim > EPS) usable.push(i); });
+  const items = [];
+  parts.forEach((p, i) => {
+    if (p.width > EPS && p.height > EPS) {
+      for (let k = 0; k < Math.max(0, p.qty); k++) items.push({ partNo: i + 1, label: p.label || '', w: p.width, h: p.height, rotate: p.allowRotate !== false });
+    }
+  });
+  const tooLarge = [], packable = [];
+  for (const it of items) {
+    if (usable.some(si => fitsSheet(it, stock[si], trim))) packable.push(it); else tooLarge.push(unplacedOf(it, TOO_LARGE));
+  }
+  let best = null;
+  const total = ORDER.length * FIT.length * SPLIT.length * OPEN.length;
+  let done = 0;
+  search:
+  for (const cmp of ORDER) {
+    const sorted = packable.slice().sort(cmp);
+    for (const fit of FIT) for (const split of SPLIT) for (const policy of OPEN) {
+      const run = pack(sorted, stock, usable, kerf, trim, fit, split, policy);
+      if (best === null || betterThan(run, best)) best = run;
+      done++;
+      if (!progress(done / total)) break search;
+      if (Date.now() - t0 > budgetMillis) break search;
+    }
+  }
+  const run = best || { sheets: [], unplaced: [] };
+  const layouts = run.sheets.map(sh => {
+    const s = stock[sh.stockIndex];
+    const all = [];
+    if (trim > 0) {
+      all.push({ orientation: VERTICAL, position: trim, start: 0, length: s.height, depth: 0 });
+      all.push({ orientation: VERTICAL, position: s.width - trim, start: 0, length: s.height, depth: 0 });
+      all.push({ orientation: HORIZONTAL, position: trim, start: 0, length: s.width, depth: 0 });
+      all.push({ orientation: HORIZONTAL, position: s.height - trim, start: 0, length: s.width, depth: 0 });
+    }
+    const rest = sh.cuts.slice().sort((a, b) => a.depth - b.depth || a.orientation - b.orientation || a.position - b.position || a.start - b.start);
+    const cuts = all.concat(rest);
+    const sheetArea = s.width * s.height;
+    let used = 0;
+    for (const p of sh.placements) used += p.width * p.height;
+    return { stockIndex: sh.stockIndex, sheetWidth: s.width, sheetHeight: s.height, placements: sh.placements, cuts,
+      sheetArea, usedArea: used, wastePercent: sheetArea <= 0 ? 0 : 100 * (1 - used / sheetArea) };
+  });
+  const unplaced = tooLarge.concat(run.unplaced).sort((a, b) => a.partNo - b.partNo || a.reason - b.reason);
+  let sa = 0, ua = 0, cc = 0;
+  for (const l of layouts) { sa += l.sheetArea; ua += l.usedArea; cc += l.cuts.filter(c => c.depth !== 0).length; }
+  return { sheets: layouts, unplaced, sheetArea: sa, usedArea: ua, wastePercent: sa <= 0 ? 0 : 100 * (1 - ua / sa), cutCount: cc };
+}
+// ==CORE-END==
+
+// ==CSV-START==
+// Parts list import. Pure text in, rows and messages out. Columns: label, width, height, qty, grain.
+// Needs parseLength from the CORE block above. Nothing here touches the page.
+function parsePartsCsv(text, limit) {
+  text = String(text).replace(/^﻿/, '');
+  // Delimiter comes from the first non-empty line, outside quotes: tab, then semicolon, then comma.
+  let delim = ',';
+  {
+    let q = false, tab = 0, semi = 0, comma = 0, seen = false;
+    for (const ch of text) {
+      if (ch === '"') q = !q;
+      else if (!q && (ch === '\n' || ch === '\r')) { if (seen) break; }
+      else if (!q) {
+        if (ch === '\t') tab++; else if (ch === ';') semi++; else if (ch === ',') comma++;
+        if (ch.trim() !== '') seen = true;
+      } else seen = true;
+    }
+    delim = tab ? '\t' : semi ? ';' : ',';
+  }
+  // Split into records. Quoted fields may hold the delimiter, doubled quotes and line breaks.
+  const recs = [];
+  let cells = [], cur = '', q = false, line = 1, start = 1, open = false;
+  const endCell = () => { cells.push(cur); cur = ''; };
+  const endRec = () => { endCell(); if (cells.some(c => c.trim() !== '')) recs.push({ line: start, cells, open: false }); cells = []; };
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (q) {
+      if (ch === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else q = false; }
+      else { if (ch === '\n') line++; cur += ch; }
+    } else if (ch === '"' && cur.trim() === '') { q = true; cur = ''; }
+    else if (ch === delim) endCell();
+    else if (ch === '\n' || ch === '\r') {
+      if (ch === '\r' && text[i + 1] === '\n') i++;
+      endRec(); line++; start = line;
+    } else cur += ch;
+  }
+  if (q) { open = true; }
+  if (cur !== '' || cells.length) { endCell(); if (cells.some(c => c.trim() !== '')) recs.push({ line: start, cells, open }); cells = []; }
+
+  const errors = [], rows = [];
+  let hadHeader = false, valid = 0;
+  const lockWords = ['y', 'yes', 'true', '1', 'x', 'grain', 'lock', 'locked', 'fixed'];
+  const freeWords = ['', 'n', 'no', 'false', '0', 'free', 'rotate', 'any'];
+  recs.forEach((r, idx) => {
+    const c = r.cells.map(x => x.trim());
+    const err = m => errors.push({ row: r.line, message: 'Row ' + r.line + ': ' + m });
+    if (r.open) { err('a quote was opened and never closed.'); return; }
+    if (idx === 0 && /label|name|part|width|height|qty|quantity|grain|length/i.test(c.join(' ')) &&
+        (c[1] === undefined || parseLength(c[1]) === null) && (c[2] === undefined || parseLength(c[2]) === null)) { hadHeader = true; return; }
+    if (c.length < 3) { err('expected label, width, height, qty, grain (at least label, width and height).'); return; }
+    const w = parseLength(c[1]), h = parseLength(c[2]);
+    let ok = true;
+    if (w === null) { err('width "' + c[1] + '" is not a number.'); ok = false; }
+    else if (w <= 0) { err('width must be more than 0.'); ok = false; }
+    if (h === null) { err('height "' + c[2] + '" is not a number.'); ok = false; }
+    else if (h <= 0) { err('height must be more than 0.'); ok = false; }
+    const qs = c[3] === undefined ? '' : c[3];
+    let qty = 1;
+    if (qs !== '') { if (/^\d+$/.test(qs) && parseInt(qs, 10) >= 1) qty = parseInt(qs, 10); else { err('quantity "' + qs + '" must be a whole number, 1 or more.'); ok = false; } }
+    const gs = (c[4] === undefined ? '' : c[4]).toLowerCase();
+    let rot = true;
+    if (lockWords.includes(gs)) rot = false;
+    else if (!freeWords.includes(gs)) { err('grain "' + c[4] + '" should be yes (keep the width along the grain), no, or empty.'); ok = false; }
+    if (!ok) return;
+    valid++;
+    if (rows.length < limit) rows.push({ label: c[0].slice(0, 40), w: c[1], h: c[2], qty: String(qty), rot });
+  });
+  if (!recs.length || (!valid && !errors.length)) errors.push({ row: 0, message: 'No parts found. Use one part per line: label, width, height, qty, grain.' });
+  return { rows, errors, valid, over: Math.max(0, valid - limit), hadHeader, delimiter: delim };
+}
+// ==CSV-END==
+
+// ---------------------------------------------------------------- page ----
+(function () {
+  if (typeof document === 'undefined') return;
+  const FREE_PART_ROWS = 20;        // same as FREE_PART_ROWS in the Android app (AppViewModel.kt)
+  const DEFAULT_STOCK_QTY = '20';   // DEFAULT_STOCK_QTY in Model.kt
+  const MORE_SHEETS_QTY = 50;       // MORE_SHEETS_QTY in Model.kt
+  const BUDGET_MS = 8000;           // the app's search budget
+  const KEY = 'notchwork.cutlist.ja.v1';
+  const $ = id => document.getElementById(id);
+  const PALETTE = ['#CFE3D6', '#C9DCE8', '#EBCFC8', '#DDE6C6', '#E8DEC3', '#CFD6DC', '#BFE2E0', '#E4EBB8', '#DAD6CC'];
+
+  let nextId = 1;
+  let state = defaultState('mm');
+  let last = null; // last calculation {res, unit, fractions}
+
+  function defaultState(unit) {
+    const inch = unit === 'in';
+    return { unit, fractions: false, kerf: inch ? '0.125' : '3', trim: '', sw: inch ? '96' : '1820', sh: inch ? '48' : '910', sq: DEFAULT_STOCK_QTY, parts: [blankPart()] };
+  }
+  function blankPart() { return { id: nextId++, label: '', w: '', h: '', qty: '1', rot: true }; }
+
+  function examplePartsFor(unit) {
+    const inch = unit === 'in';
+    const rows = inch ? [
+      ['側板', '28.375', '22', '2', 0], ['底板', '30.0625', '21.25', '1', 1], ['棚板', '30.0625', '19.6875', '2', 1],
+      ['扉', '28.1875', '15.625', '2', 0], ['幕板', '30.0625', '3.9375', '2', 1], ['引出し前板', '30.0625', '7.0625', '3', 0],
+      ['背板', '30.0625', '28.1875', '1', 1], ['引出し側板', '19.6875', '5.5', '6', 1], ['引出し底板', '18.25', '19.6875', '3', 1]
+    ] : [
+      ['側板', '720', '560', '2', 0], ['底板', '764', '540', '1', 1], ['棚板', '764', '500', '2', 1],
+      ['扉', '716', '397', '2', 0], ['幕板', '764', '100', '2', 1], ['引出し前板', '764', '180', '3', 0],
+      ['背板', '764', '716', '1', 1], ['引出し側板', '500', '140', '6', 1], ['引出し底板', '464', '500', '3', 1]
+    ];
+    return rows.map(r => ({ id: nextId++, label: r[0], w: r[1], h: r[2], qty: r[3], rot: r[4] === 1 }));
+  }
+
+  const decimals = () => state.unit === 'mm' ? 2 : 3;
+  function fmt(v, unit, fractions) {
+    return (fractions && unit === 'in') ? fractionLength(v) : formatLength(v, unit === 'mm' ? 2 : 3);
+  }
+
+  // Convert every typed length when the unit or the display mode changes (Project.convertedTo).
+  function convertState(target, showFractions) {
+    const frac = showFractions && target === 'in';
+    if (target === state.unit && frac === state.fractions) return;
+    const k = target === state.unit ? 1 : (target === 'in' ? 1 / 25.4 : 25.4);
+    const c = s => {
+      const v = parseLength(s);
+      if (v === null) return s;
+      const x = v * k;
+      if (frac && Math.abs(x * 32 - roundHalfEven(x * 32)) < 1e-6) return fractionLength(x);
+      return formatLength(x, target === 'mm' ? 2 : 3);
+    };
+    state.kerf = c(state.kerf); state.trim = c(state.trim); state.sw = c(state.sw); state.sh = c(state.sh);
+    state.parts.forEach(p => { p.w = c(p.w); p.h = c(p.h); });
+    state.unit = target; state.fractions = frac;
+  }
+
+  function isBlankPart(p) { return !p.w.trim() && !p.h.trim() && !p.label.trim(); }
+
+  // Project.build(): turns the typed text into optimizer input or an error message plus the fields to flag.
+  function build() {
+    const bad = new Set();
+    let message = null;
+    const fail = (m, key) => { if (!message) message = m; if (key) bad.add(key); };
+    const len = s => s.trim() === '' ? 0 : parseLength(s);
+    const kerf = len(state.kerf), trim = len(state.trim);
+    if (kerf === null) fail('切りしろが数値ではありません。', 'kerf');
+    if (trim === null) fail('耳落としの幅が数値ではありません。', 'trim');
+    const stock = [];
+    const sw = parseLength(state.sw), sh = parseLength(state.sh), sq = intOrNull(state.sq);
+    if (sw === null || sh === null || sw <= 0 || sh <= 0) { fail('板の幅と高さを入力してください。', 'sw'); bad.add('sh'); }
+    else if (sq === null || sq < 1) fail('板の枚数は1以上にしてください。', 'sq');
+    else stock.push({ width: sw, height: sh, qty: sq });
+    const parts = [];
+    let any = false;
+    state.parts.forEach((r, i) => {
+      if (isBlankPart(r)) { parts.push({ width: 0, height: 0, qty: 0 }); return; }
+      const w = parseLength(r.w), h = parseLength(r.h), q = intOrNull(r.qty);
+      if (w === null || h === null || w <= 0 || h <= 0) { fail('部材 ' + (i + 1) + ' は幅と高さを入力してください。', 'p' + r.id); parts.push({ width: 0, height: 0, qty: 0 }); }
+      else if (q === null || q < 1) { fail('部材 ' + (i + 1) + ' は数量を1以上にしてください。', 'p' + r.id); parts.push({ width: 0, height: 0, qty: 0 }); }
+      else { any = true; parts.push({ width: w, height: h, qty: q, label: r.label.trim(), allowRotate: r.rot }); }
+    });
+    if (!any && !message) fail('部材を1つ以上追加してください。');
+    if (message) return { error: message, bad };
+    return { stock, parts, settings: { kerf: kerf || 0, trim: trim || 0 } };
+  }
+  function intOrNull(s) { s = s.trim(); return /^[+-]?\d+$/.test(s) ? parseInt(s, 10) : null; }
+
+
+  // ---- Japanese input helpers (the CORE, CSV and LABELS blocks stay byte-identical to /cutlist/)
+  // Full-width digits and punctuation typed with an IME become plain ASCII before parsing.
+  function normNumbers() {
+    let changed = false;
+    const set = (o, k) => { const v = String(o[k]).normalize('NFKC'); if (v !== o[k]) { o[k] = v; changed = true; } };
+    ['kerf', 'trim', 'sw', 'sh', 'sq'].forEach(k => set(state, k));
+    state.parts.forEach(p => { set(p, 'w'); set(p, 'h'); set(p, 'qty'); });
+    if (changed) { renderInputs(); save(); }
+  }
+  // CSV text: NFKC, then drop a Japanese header row (the block only knows English header words).
+  function prepCsv(text) {
+    text = String(text).normalize('NFKC');
+    const lines = text.split(/\r\n|\r|\n/);
+    const i = lines.findIndex(l => l.trim() !== '');
+    if (i >= 0 && /(名称|名前|部材|品名|ラベル|幅|高さ|長さ|数量|個数|木目)/.test(lines[i]) && !/\d/.test(lines[i])) lines.splice(i, 1);
+    return lines.join('\n');
+  }
+  // The CSV block returns English messages; show them in Japanese.
+  function jaCsv(m) {
+    let pre = '';
+    const mm = /^Row (\d+): (.*)$/s.exec(m);
+    if (mm) { pre = '行 ' + mm[1] + ': '; m = mm[2]; }
+    const t = [
+      [/^a quote was opened and never closed\.$/, () => '引用符が閉じられていません。'],
+      [/^expected label, width, height, qty, grain/, () => '名称, 幅, 高さ, 数量, 木目の順で入力してください（最低でも名称, 幅, 高さが必要です）。'],
+      [/^width "(.*)" is not a number\.$/s, x => '幅「' + x[1] + '」が数値ではありません。'],
+      [/^height "(.*)" is not a number\.$/s, x => '高さ「' + x[1] + '」が数値ではありません。'],
+      [/^width must be more than 0\.$/, () => '幅は0より大きくしてください。'],
+      [/^height must be more than 0\.$/, () => '高さは0より大きくしてください。'],
+      [/^quantity "(.*)" must be a whole number, 1 or more\.$/s, x => '数量「' + x[1] + '」は1以上の整数にしてください。'],
+      [/^grain "(.*)" should be yes/s, x => '木目「' + x[1] + '」は yes（幅を木目方向に保つ）、no、または空欄にしてください。'],
+      [/^No parts found\./, () => '部材が見つかりません。1行に1部材、名称, 幅, 高さ, 数量, 木目の順で入力してください。']
+    ];
+    for (const [re, fn] of t) { const x = re.exec(m); if (x) return pre + fn(x); }
+    return pre + m;
+  }
+
+  // ---- rendering of the inputs
+  function renderInputs() {
+    $('sw').value = state.sw; $('sh').value = state.sh; $('sq').value = state.sq;
+    $('unit').value = state.unit; $('frac').value = state.fractions ? '1' : '0';
+    $('fracWrap').hidden = state.unit !== 'in';
+    $('kerf').value = state.kerf; $('trim').value = state.trim;
+    const u = state.unit;
+    const g = $('parts');
+    g.innerHTML = '';
+    const head = [['名称', 'lab'], ['幅 (' + u + ')', ''], ['高さ (' + u + ')', ''], ['数量', ''], ['回転', ''], ['', '']];
+    head.forEach(h => { const d = document.createElement('div'); d.className = 'h ' + h[1]; d.textContent = h[0]; g.appendChild(d); });
+    state.parts.forEach((p, i) => {
+      const mk = (cls, val, field, aria, mode) => {
+        const el = document.createElement('input'); el.type = 'text'; el.value = val; el.className = cls;
+        el.setAttribute('aria-label', aria); el.autocomplete = 'off'; el.spellcheck = false; el.autocapitalize = 'off';
+        if (mode) el.inputMode = mode;
+        el.dataset.id = p.id; el.dataset.f = field; return el;
+      };
+      const lab = mk('lab', p.label, 'label', '部材 ' + (i + 1) + ' の名称'); lab.placeholder = '例）側板'; lab.maxLength = 40;
+      const w = mk('', p.w, 'w', '部材 ' + (i + 1) + ' の幅', 'text'), h = mk('', p.h, 'h', '部材 ' + (i + 1) + ' の高さ', 'text');
+      const q = mk('', p.qty, 'qty', '部材 ' + (i + 1) + ' の数量', 'numeric');
+      lab.id = 'p' + p.id + 'l';
+      [w, h, q].forEach(el => { el.id = 'p' + p.id + el.dataset.f; });
+      const rot = document.createElement('input'); rot.type = 'checkbox'; rot.checked = p.rot; rot.dataset.id = p.id; rot.dataset.f = 'rot';
+      rot.setAttribute('aria-label', '部材 ' + (i + 1) + ' は回転可');
+      const del = document.createElement('button'); del.type = 'button'; del.className = 'del'; del.textContent = '×';
+      del.setAttribute('aria-label', '部材 ' + (i + 1) + ' を削除'); del.dataset.del = p.id;
+      const wrapLab = document.createElement('div'); wrapLab.className = 'lab'; wrapLab.appendChild(lab);
+      g.append(wrapLab, w, h, q, rot, del);
+    });
+    $('count').textContent = '部材 ' + state.parts.length + ' / ' + FREE_PART_ROWS + ' 行';
+    $('add').disabled = state.parts.length >= FREE_PART_ROWS;
+  }
+
+  function flagBad(bad) {
+    document.querySelectorAll('input.bad').forEach(e => e.classList.remove('bad'));
+    bad.forEach(k => {
+      let el = null;
+      if (k.charAt(0) === 'p') { el = $(k + 'w'); const h = $(k + 'h'); if (h) h.classList.add('bad'); const q = $(k + 'qty'); if (q) q.classList.add('bad'); }
+      else el = $(k);
+      if (el) el.classList.add('bad');
+    });
+  }
+
+  function save() { try { localStorage.setItem(KEY, JSON.stringify({ state, nextId })); } catch (e) { /* private mode: ignore */ } }
+  function load() {
+    try {
+      const s = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (s && s.state && Array.isArray(s.state.parts) && s.state.parts.length <= FREE_PART_ROWS) { state = s.state; nextId = s.nextId || 1000; }
+    } catch (e) { /* ignore */ }
+  }
+
+  // ---- events
+  $('parts').addEventListener('input', e => {
+    const t = e.target; if (!t.dataset || !t.dataset.f) return;
+    const p = state.parts.find(x => String(x.id) === t.dataset.id); if (!p) return;
+    p[t.dataset.f] = t.type === 'checkbox' ? t.checked : t.value;
+    t.classList.remove('bad'); save();
+  });
+  $('parts').addEventListener('click', e => {
+    const id = e.target.dataset && e.target.dataset.del; if (!id) return;
+    state.parts = state.parts.filter(x => String(x.id) !== id);
+    if (!state.parts.length) state.parts.push(blankPart());
+    renderInputs(); save();
+  });
+  ['sw', 'sh', 'sq', 'kerf', 'trim'].forEach(id => $(id).addEventListener('input', e => { state[id] = e.target.value; e.target.classList.remove('bad'); save(); }));
+  $('unit').addEventListener('change', e => { convertState(e.target.value, state.fractions); renderInputs(); save(); });
+  $('frac').addEventListener('change', e => { convertState(state.unit, e.target.value === '1'); renderInputs(); save(); });
+  $('add').addEventListener('click', () => {
+    if (state.parts.length >= FREE_PART_ROWS) return;
+    state.parts.push(blankPart()); renderInputs(); save();
+    const l = document.querySelectorAll('#parts input.lab, #parts .lab input'); if (l.length) l[l.length - 1].focus();
+  });
+  $('example').addEventListener('click', () => {
+    const u = state.unit; const d = defaultState(u);
+    state = d; state.parts = examplePartsFor(u); state.sq = '4';
+    renderInputs(); $('err').hidden = true; flagBad(new Set()); save(); calculate();
+  });
+  $('clear').addEventListener('click', () => {
+    state = defaultState(state.unit); renderInputs(); $('out').innerHTML = ''; $('err').hidden = true; flagBad(new Set()); last = null; save();
+  });
+  document.querySelectorAll('[data-preset]').forEach(b => b.addEventListener('click', () => {
+    const [w, h] = b.dataset.preset.split('x');
+    if (state.unit !== 'mm') convertState('mm', false);
+    state.sw = w; state.sh = h; renderInputs(); save();
+  }));
+  $('calc').addEventListener('click', calculate);
+
+  function calculate() {
+    normNumbers();
+    const b = build();
+    flagBad(b.bad || new Set());
+    const err = $('err');
+    if (b.error) { err.textContent = b.error; err.hidden = false; return; }
+    err.hidden = true;
+    const btn = $('calc'); btn.disabled = true; btn.textContent = '最適な割り付けを計算中';
+    setTimeout(() => {
+      try {
+        const res = optimize(b.stock, b.parts, b.settings, BUDGET_MS);
+        last = { res, unit: state.unit, fractions: state.fractions, sheetsAvail: b.stock[0].qty };
+        renderResult();
+      } finally { btn.disabled = false; btn.textContent = '木取り図を作成'; }
+      const out = $('out'); if (out.scrollIntoView) out.scrollIntoView({ block: 'start' });
+    }, 30);
+  }
+
+  // ---- result
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const pct = v => v.toFixed(1) + '%';
+
+  function renderResult() {
+    if (!last) return;
+    const { res, unit, fractions } = last;
+    const f = v => fmt(v, unit, fractions);
+    const out = $('out');
+    let h = '';
+    if (res.unplaced.length) {
+      const outOf = res.unplaced.some(u => u.reason === OUT_OF_STOCK);
+      const groups = new Map();
+      res.unplaced.forEach(u => { const k = u.partNo + '|' + u.reason + '|' + u.label; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(u); });
+      h += '<div class="unplaced"><b>配置できなかった部材</b>';
+      groups.forEach((list, k) => {
+        const u = list[0];
+        h += '<p>' + esc(u.label || '#' + u.partNo) + '  ' + f(u.width) + ' × ' + f(u.height) + ', ' + list.length + '個: ' + (u.reason === TOO_LARGE ? 'どの板よりも大きい' : '板が足りない') + '</p>';
+      });
+      if (outOf) {
+        h += '<p>入力された ' + last.sheetsAvail + ' 枚では足りません。「板の枚数」を増やすか、最大 ' + MORE_SHEETS_QTY + ' 枚まで使って再計算できます。</p>';
+        if (last.sheetsAvail < MORE_SHEETS_QTY) h += '<button class="btn" id="more" type="button">' + MORE_SHEETS_QTY + ' 枚まで使って再計算</button>';
+      }
+      h += '</div>';
+    }
+    if (!res.sheets.length) {
+      h += '<div class="card">配置できた部材がありません。板のサイズと部材のサイズを確認してください。</div>';
+      out.innerHTML = h; wireMore(); return;
+    }
+    const placed = res.sheets.reduce((n, s) => n + s.placements.length, 0);
+    h += '<div class="card"><div class="bar">結果</div><table class="info"><tbody>' +
+      row('使用する板', res.sheets.length + ' 枚') + row('歩留まり', pct(100 - res.wastePercent)) + row('ロス率', pct(res.wastePercent)) +
+      row('配置した部材', placed + ' 個') + row('カット数', res.cutCount) + '</tbody></table></div>';
+    res.sheets.forEach((s, i) => {
+      h += '<div class="card sheet"><h3>板 ' + (i + 1) + ' / ' + res.sheets.length + '</h3>' +
+        '<p class="sub">' + f(s.sheetWidth) + ' × ' + f(s.sheetHeight) + ' ' + unit + ', ロス率 ' + pct(s.wastePercent) + ', 部材 ' + s.placements.length + ' 個</p>' +
+        '<div class="svgbox" data-sheet="' + i + '"></div>' +
+        '<details' + (i === 0 ? ' open' : '') + '><summary>切断の順番 (' + s.cuts.length + ')</summary>' + cutTable(s, f) + '</details></div>';
+    });
+    out.innerHTML = h;
+    drawSheets(); wireMore();
+  }
+  function row(k, v) { return '<tr><td>' + k + '</td><td>' + v + '</td></tr>'; }
+  function cutTable(s, f) {
+    let t = '<table><thead><tr><th>#</th><th>切断</th><th>位置</th><th>始点</th><th>長さ</th></tr></thead><tbody>';
+    s.cuts.forEach((c, k) => {
+      const trim = c.depth === 0, vert = c.orientation === VERTICAL;
+      const kind = trim ? (vert ? '耳落とし 縦' : '耳落とし 横') : (vert ? '縦切り' : '横切り');
+      t += '<tr><td>' + (k + 1) + '</td><td>' + kind + '</td><td>' + f(c.position) + '</td><td>' + f(c.start) + '</td><td>' + f(c.length) + '</td></tr>';
+    });
+    return t + '</tbody></table>';
+  }
+  function wireMore() {
+    const m = $('more'); if (!m) return;
+    m.addEventListener('click', () => { state.sq = String(MORE_SHEETS_QTY); renderInputs(); save(); calculate(); });
+  }
+
+  // ---- SVG, same look as SheetRenderer.kt: width on top, height rotated on the left, label bottom right, waste hatched
+  const mctx = document.createElement('canvas').getContext('2d');
+  function measure(s, size) { mctx.font = size + 'px sans-serif'; return mctx.measureText(s).width; }
+  function sheetSvg(s, widthPx, f, textPx) {
+    const k = widthPx / s.sheetWidth, H = s.sheetHeight * k, stroke = Math.max(textPx / 10, 1);
+    let g = '<defs><pattern id="hatch" width="' + (textPx * 0.9) + '" height="' + (textPx * 0.9) + '" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><line x1="0" y1="0" x2="0" y2="' + (textPx * 0.9) + '" stroke="#C4BDAE" stroke-width="' + (stroke * 0.8) + '"/></pattern></defs>';
+    g += '<rect width="' + widthPx + '" height="' + H + '" fill="#F7F4EC"/><rect width="' + widthPx + '" height="' + H + '" fill="url(#hatch)"/>';
+    const plans = planSheet(s, widthPx, textPx, f, measure);
+    s.placements.forEach((p, pi) => {
+      const x = p.x * k, y = p.y * k, w = p.width * k, h = p.height * k;
+      g += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="' + PALETTE[(p.partNo - 1) % PALETTE.length] + '" stroke="#3A3732" stroke-width="' + stroke + '"/>';
+      g += labelSvg(plans[pi]);
+    });
+    g += '<rect width="' + widthPx + '" height="' + H + '" fill="none" stroke="#3A3732" stroke-width="' + (stroke * 1.6) + '"/>';
+    return '<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="木取り図" width="' + widthPx + '" height="' + H + '" viewBox="0 0 ' + widthPx + ' ' + H + '">' + g + '</svg>';
+  }
+  // ==LABELS-START==
+  // Same decision as LabelPlanner.kt in the app. Order, first that fits wins: width / height / label as three texts;
+  // a short strip as one line "label  width"; a narrow tall part as one rotated line "label  height"; the label
+  // alone, rotated; the part number alone (rotated if it only fits that way), explained by the legend under the sheet.
+  function planPart(left, top, right, bottom, no, label, w, h, textPx, minPx, measure, fallbacks) {
+    if (fallbacks === undefined) fallbacks = true;
+    const rw = right - left, rh = bottom - top, cx = (left + right) / 2, cy = (top + bottom) / 2, pad = textPx * 0.25;
+    const tag = label || '#' + no, items = [];
+    const fit = (s, maxW, maxH) => {
+      if (maxW <= 0 || maxH <= 0) return null;
+      const sw = measure(s, textPx);
+      const size = Math.min(sw <= maxW ? textPx : textPx * maxW / sw, maxH / 1.1);
+      return size < minPx ? null : size;
+    };
+    const tight = (s, ww, hh) => fit(s, ww * 0.95, hh * 0.95);
+    const item = (text, size, x, y, dy, align, rotated, bold, isTag) => ({ text, size, x, y, dy, align, rotated, bold, isTag });
+    const centred = (s, size, isTag, bold) => item(s, size, cx, cy, size * 0.35, 'middle', false, bold, isTag);
+    const rotatedLeft = (s, size, isTag, bold) => item(s, size, left + pad + size * 0.85, cy, size * 0.35, 'middle', true, bold, isTag);
+    const rotatedCentre = (s, size) => item(s, size, cx, cy, size * 0.35, 'middle', true, true, true);
+    const keyed = () => {
+      const key = String(no);
+      let z = tight(key, rw, rh);
+      if (z !== null) return { partNo: no, items: [centred(key, z, true, true)], keyed: true };
+      z = tight(key, rh, rw);
+      if (z !== null) return { partNo: no, items: [rotatedCentre(key, z)], keyed: true };
+      return { partNo: no, items: [], keyed: false };
+    };
+    if (rh - 2 * pad < textPx * 2.4) {
+      const line = tag + '  ' + w;
+      let z = fit(line, rw - 2 * pad, rh - pad);
+      if (z !== null) return { partNo: no, items: [centred(line, z, true, false)], keyed: false };
+      if (!fallbacks) return { partNo: no, items: [], keyed: false };
+      z = tight(line, rw, rh);
+      if (z !== null) return { partNo: no, items: [centred(line, z, true, false)], keyed: false };
+      z = tight(tag, rw, rh);
+      if (z !== null) return { partNo: no, items: [centred(tag, z, true, false)], keyed: false };
+      return keyed();
+    }
+    const wSize = fit(w, rw - 2 * pad, rh - 2 * pad);
+    if (wSize !== null) items.push(item(w, wSize, cx, top + pad + wSize * 0.85, 0, 'middle', false, false, false));
+    const tagSize = fit(tag, rw * 0.55, rh * 0.4);
+    if (tagSize !== null || !fallbacks) {
+      const hz = fit(h, rh - 2 * pad, rw - 2 * pad);
+      if (hz !== null) items.push(rotatedLeft(h, hz, false, false));
+      if (tagSize !== null) items.push(item(tag, tagSize, right - pad, bottom - pad, 0, 'end', false, true, true));
+      return { partNo: no, items, keyed: false };
+    }
+    const long = tag + '  ' + h;
+    let z = tight(long, rh, rw);
+    if (z !== null) { items.push(rotatedLeft(long, z, true, false)); return { partNo: no, items, keyed: false }; }
+    z = tight(tag, rh, rw);
+    if (z !== null) { items.push(rotatedLeft(tag, z, true, true)); return { partNo: no, items, keyed: false }; }
+    return keyed();
+  }
+  function planSheet(s, widthPx, textPx, f, measure, fallbacks) {
+    const k = widthPx / s.sheetWidth, minPx = textPx * 0.55;
+    return s.placements.map(p => planPart(p.x * k, p.y * k, (p.x + p.width) * k, (p.y + p.height) * k, p.partNo, p.label, f(p.width), f(p.height), textPx, minPx, measure, fallbacks));
+  }
+  function keyedPartNos(plans) { return [...new Set(plans.filter(p => p.keyed).map(p => p.partNo))].sort((a, b) => a - b); }
+  // ==LABELS-END==
+  function labelSvg(plan) {
+    return plan.items.map(it => {
+      const common = ' font-size="' + it.size + '" fill="#211F1C" text-anchor="' + it.align + '"' + (it.bold ? ' font-weight="700"' : '');
+      const y = it.y + it.dy;
+      return it.rotated
+        ? '<text x="' + it.x + '" y="' + y + '"' + common + ' transform="rotate(-90 ' + it.x + ' ' + it.y + ')">' + esc(it.text) + '</text>'
+        : '<text x="' + it.x + '" y="' + y + '"' + common + '>' + esc(it.text) + '</text>';
+    }).join('');
+  }
+  function keyLegend(s, widthPx, textPx, f) {
+    return keyedPartNos(planSheet(s, widthPx, textPx, f, measure)).map(no => {
+      const p = s.placements.find(q => q.partNo === no);
+      return no + '  ' + (p.label || '#' + no) + '  ' + f(p.width) + ' × ' + f(p.height);
+    });
+  }
+  function drawSheets() {
+    if (!last) return;
+    const { res, unit, fractions } = last;
+    const f = v => fmt(v, unit, fractions);
+    document.querySelectorAll('.svgbox').forEach(box => {
+      const s = res.sheets[Number(box.dataset.sheet)];
+      const w = Math.max(240, Math.floor(box.clientWidth));
+      const tp = w < 500 ? 10 : 12;
+      box.innerHTML = sheetSvg(s, w, f, tp);
+      const lines = keyLegend(s, w, tp, f);
+      const old = box.nextElementSibling; if (old && old.classList.contains('keylegend')) old.remove();
+      if (lines.length) box.insertAdjacentHTML('afterend', '<div class="keylegend"><b>番号で示した部材</b>' + lines.map(l => '<div>' + esc(l) + '</div>').join('') + '</div>');
+    });
+  }
+  let rt = null, lastW = 0;
+  window.addEventListener('resize', () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => { const b = document.querySelector('.svgbox'); if (b && Math.abs(b.clientWidth - lastW) > 2) { lastW = b.clientWidth; drawSheets(); } }, 120);
+  });
+
+  // ---- CSV import
+  function showCsv(kind, html) { const m = $('csvMsg'); m.className = kind; m.innerHTML = html; m.hidden = !html; }
+  function importCsv(text) {
+    const r = parsePartsCsv(prepCsv(text), FREE_PART_ROWS);
+    if (r.errors.length) {
+      const shown = r.errors.slice(0, 10).map(e => '<li>' + esc(jaCsv(e.message)) + '</li>').join('');
+      const more = r.errors.length > 10 ? '<li>ほか ' + (r.errors.length - 10) + ' 件</li>' : '';
+      showCsv('msg csvmsg', '何も取り込まれませんでした。該当する行を直してもう一度お試しください。<ul>' + shown + more + '</ul>');
+      return false;
+    }
+    state.parts = r.rows.map(x => ({ id: nextId++, label: x.label, w: x.w, h: x.h, qty: x.qty, rot: x.rot }));
+    renderInputs(); $('err').hidden = true; flagBad(new Set()); save();
+    let m = r.rows.length + ' 行の部材を取り込みました（単位は' + (state.unit === 'in' ? 'インチ' : 'mm') + '）。';
+    if (r.over) m = r.valid + ' 行のうち最初の ' + FREE_PART_ROWS + ' 行を取り込みました。残りの ' + r.over + ' 行は含まれていません。Android アプリは行数に制限がなく、Google Play で近日公開です。';
+    showCsv('okmsg csvmsg', esc(m));
+    return true;
+  }
+  $('pasteBtn').addEventListener('click', () => {
+    const p = $('pastePanel'); p.hidden = !p.hidden; $('pasteBtn').setAttribute('aria-expanded', String(!p.hidden));
+    if (!p.hidden) $('csvText').focus();
+  });
+  $('csvCancel').addEventListener('click', () => { $('pastePanel').hidden = true; $('pasteBtn').setAttribute('aria-expanded', 'false'); });
+  $('csvGo').addEventListener('click', () => { if (importCsv($('csvText').value)) { $('csvText').value = ''; $('pastePanel').hidden = true; $('pasteBtn').setAttribute('aria-expanded', 'false'); } });
+  $('fileBtn').addEventListener('click', () => $('csvFile').click());
+  $('csvFile').addEventListener('change', e => {
+    const f = e.target.files && e.target.files[0]; e.target.value = '';
+    if (!f) return;
+    if (f.size > 1048576) { showCsv('msg csvmsg', 'ファイルが 1 MB を超えています。部材リストは数行から数十行のはずです。'); return; }
+    const rd = new FileReader();
+    rd.onload = () => importCsv(String(rd.result));
+    rd.onerror = () => showCsv('msg csvmsg', 'ファイルを読み込めませんでした。');
+    rd.readAsText(f);
+  });
+
+  load();
+  renderInputs();
+  window.__cutlist = { optimize, planPart, planSheet, keyedPartNos, state: () => state };
+})();
+</script>
+</body></html>
