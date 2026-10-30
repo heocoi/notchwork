@@ -1,0 +1,62 @@
+/* Polar scope clock page. Builds on ../pa.css */
+.clock{padding-bottom:24px}
+.clock h1{font-size:clamp(34px,5vw,56px);margin:20px 0 14px}
+.clock .lede{margin-bottom:28px}
+.tool{display:grid;grid-template-columns:minmax(280px,.9fr) 1.1fr;gap:40px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:28px}
+.tool>*{min-width:0}
+label,legend{display:block;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px;padding:0}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+input[type=text],input:not([type]){width:100%;font:inherit;font-size:18px;padding:11px 12px;border:1px solid #2b3a4f;border-radius:10px;background:var(--bg);color:var(--ink)}
+input:focus-visible,button:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+input.bad{border-color:var(--red)}
+.hint{font-size:13px;color:var(--mute);margin:6px 0 0;line-height:1.5}
+.err{font-size:14px;color:#ff9a90;margin:8px 0 0}
+.ghost{margin-top:16px;font:inherit;font-weight:600;font-size:15px;color:var(--ink);background:transparent;border:1px solid #3a4a5e;border-radius:12px;padding:11px 18px;cursor:pointer}
+.ghost:hover{border-color:var(--teal);color:#fff}
+.view{border:0;margin:22px 0 0;padding:0}
+.opt{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:500;margin:6px 0;cursor:pointer}
+.opt input{width:20px;height:20px;accent-color:var(--teal);margin:0}
+.now{font-size:13px;color:var(--mute);margin:20px 0 0;font-variant-numeric:tabular-nums}
+
+.out{display:grid;gap:18px;justify-items:center}
+#dial{width:100%;max-width:400px;height:auto}
+#dial .rim{fill:#070c14;stroke:#2b3a4f;stroke-width:2}
+#dial .ring{fill:none;stroke:var(--teal);stroke-width:1.2;stroke-dasharray:2 6;opacity:.7}
+#dial .cross{stroke:var(--teal);stroke-width:1;opacity:.14}
+#dial .hub{fill:var(--teal)}
+#dial .tk{stroke:#93a2b6;stroke-width:1.5}
+#dial .tk.maj{stroke:#e9eef6;stroke-width:3}
+#dial text{fill:#e9eef6;font:600 19px var(--sans);text-anchor:middle;dominant-baseline:central}
+#dial .spoke{stroke:var(--teal);stroke-width:1;stroke-dasharray:4 5;opacity:.5}
+#halo{fill:#ffe9a8;opacity:.18}
+#dot{fill:#ffe9a8}
+.read{width:100%}
+.read .big{display:flex;align-items:baseline;justify-content:space-between;gap:16px;border-top:1px solid var(--line);padding-top:16px}
+.read .lab{font-size:14px;color:var(--mute)}
+.read .num{font-size:clamp(48px,9vw,72px);font-weight:700;letter-spacing:-.03em;line-height:1;color:var(--teal);font-variant-numeric:tabular-nums}
+.read dl{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;margin:18px 0 0}
+.read dl div{min-width:0}
+.read dt{font-size:13px;color:var(--mute)}
+.read dd{margin:0;font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
+.empty{color:var(--mute);margin:0;text-align:center}
+
+.how,.app{max-width:760px;padding:56px 0 0}
+.how h2,.app h2{font-size:clamp(24px,3vw,32px);margin:0 0 14px}
+.how p,.how li{color:#d3dce8}
+.how ol,.how ul{padding-left:22px;margin:0}
+.how li{margin:8px 0}
+.how .note{margin-top:14px}
+.app p{color:#c3cedd;margin:0 0 20px}
+.app{padding-bottom:56px}
+
+@media (max-width:860px){
+  .tool{grid-template-columns:1fr;gap:28px;padding:20px}
+  .clock h1{margin-top:8px}
+  .how,.app{padding-top:44px}
+}
+@media (max-width:420px){
+  .row2{grid-template-columns:1fr}
+  .read dl{grid-template-columns:1fr 1fr}
+}
+.top a{white-space:nowrap}
+@media (max-width:520px){.top{gap:14px}.top .brand{font-size:0;gap:0}.top .brand img{margin:0}}

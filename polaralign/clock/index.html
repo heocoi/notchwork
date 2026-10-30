@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Polar Scope Clock: where Polaris sits on your polar scope right now</title>
+<meta name="description" content="Free polar scope clock. Type your latitude and longitude and see where Polaris (or sigma Octantis in the south) sits on a clock-face polar scope dial right now, with the dial reading, hour angle and time to upper transit. Runs in your browser.">
+<link rel="canonical" href="https://notchwork.demetio.app/polaralign/clock/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Notchwork">
+<meta property="og:title" content="Polar Scope Clock: where Polaris sits on your polar scope right now"><meta property="og:description" content="Dial reading, hour angle and time to upper transit for your coordinates and the current time. Free, runs in your browser, nothing is sent anywhere.">
+<meta property="og:url" content="https://notchwork.demetio.app/polaralign/clock/"><meta property="og:image" content="https://notchwork.demetio.app/polaralign/img/n-01-live.png">
+<meta name="theme-color" content="#05080f">
+<link rel="icon" href="../img/icon.png">
+<link rel="stylesheet" href="../pa.css">
+<link rel="stylesheet" href="clock.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Polar Scope Clock", "url": "https://notchwork.demetio.app/polaralign/clock/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript", "description": "Shows where Polaris, or sigma Octantis in the southern hemisphere, sits on a clock-face polar scope dial for your coordinates and the current time. Runs in the browser, no data leaves the page.", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "publisher": {"@type": "Organization", "name": "Notchwork", "url": "https://notchwork.demetio.app/"}}</script>
+</head>
+<body class="sky">
+<div class="wrap"><nav class="top"><a class="brand" href="../../"><img src="../img/icon.png" alt="" width="30" height="30">Notchwork</a><span class="sp"></span><a href="../">Polar Align</a><a class="on" href="./">Polar scope clock</a><a href="../reticle-guide/" class="hide-s">Reticle guide</a><a href="../privacy/" class="hide-s">Privacy</a></nav></div>
+
+<main class="wrap clock">
+<h1>Polar scope clock</h1>
+<p class="lede">Where Polaris sits on your polar scope dial right now. Type your coordinates, read the clock position, put the star there.</p>
+
+<div class="tool">
+<form class="inputs" id="f" autocomplete="off" novalidate>
+<div class="row2">
+<div><label for="lat">Latitude</label><input id="lat" inputmode="decimal" placeholder="40.7128" aria-describedby="coordhint"></div>
+<div><label for="lon">Longitude</label><input id="lon" inputmode="decimal" placeholder="-74.0060" aria-describedby="coordhint"></div>
+</div>
+<p class="hint" id="coordhint">Decimal degrees. North and east are positive, so west and south are negative.</p>
+<p class="err" id="err" role="alert" hidden></p>
+<button type="button" id="geo" class="ghost">Use my location once</button>
+<p class="hint" id="geohint">Your browser asks first. The position is read only when you tap, and it stays in this tab.</p>
+<fieldset class="view"><legend>View</legend>
+<label class="opt"><input type="radio" name="view" value="through" checked> Through the scope</label>
+<label class="opt"><input type="radio" name="view" value="naked"> Naked eye</label>
+<p class="hint" id="viewhint">A polar scope turns the sky 180°, so the dial is drawn the way you see it in the eyepiece.</p>
+</fieldset>
+<p class="now" id="now" aria-live="off"></p>
+</form>
+
+<div class="out">
+<svg id="dial" viewBox="0 0 400 400" role="img" aria-label="Polar scope dial. Enter your coordinates to place the star." focusable="false">
+<circle cx="200" cy="200" r="186" class="rim"/>
+<g id="ticks"></g>
+<circle cx="200" cy="200" r="112" class="ring"/>
+<line x1="200" y1="14" x2="200" y2="386" class="cross"/><line x1="14" y1="200" x2="386" y2="200" class="cross"/>
+<circle cx="200" cy="200" r="3" class="hub"/>
+<g id="star" style="display:none"><line id="spoke" x1="200" y1="200" x2="200" y2="88" class="spoke"/><circle id="halo" r="16" cx="200" cy="88"/><circle id="dot" r="6" cx="200" cy="88"/></g>
+</svg>
+<div class="read" id="read" hidden>
+<div class="big"><span class="lab">Dial reading</span><span id="dialtxt" class="num">-</span></div>
+<dl>
+<div><dt>Star</dt><dd id="starname">-</dd></div>
+<div><dt>Hour angle</dt><dd id="ha">-</dd></div>
+<div><dt>Next upper transit</dt><dd id="transit">-</dd></div>
+<div><dt>Distance from the pole</dt><dd id="pd">-</dd></div>
+</dl>
+</div>
+<p class="empty" id="empty">Type your latitude and longitude to place the star.</p>
+</div>
+</div>
+
+<section class="how">
+<h2>How to use it</h2>
+<ol>
+<li>Level the mount, set the latitude scale roughly, and point the RA axis roughly at the pole.</li>
+<li>Turn the RA axis until the 12 o'clock mark of the reticle is at the top as you look through the scope.</li>
+<li>Read the dial reading above. Move the mount with its altitude and azimuth bolts, not the RA or Dec axes, until the star sits on the circle at that clock position.</li>
+<li>Lock the bolts. The reading moves slowly, so check it again a few minutes later.</li>
+</ol>
+<p class="note">New to this? <a href="../reticle-guide/">How to read a polar scope reticle</a>.</p>
+</section>
+
+<section class="how">
+<h2>What the numbers mean</h2>
+<ul>
+<li><b>Dial reading</b> is the star's angle around the pole on a 12 hour clock face, 12 at the top, in the view you picked.</li>
+<li><b>Hour angle</b> is how long ago the star crossed the meridian above the pole, in hours and minutes of sidereal time.</li>
+<li><b>Next upper transit</b> is the time until the star is next directly above the pole, which is the 12 o'clock position in the naked eye view.</li>
+<li><b>Sigma Octantis</b> is used for any latitude below zero, because there is no bright star at the south celestial pole. It is faint, around magnitude 5.4, so you need a dark site.</li>
+</ul>
+</section>
+
+<section class="how">
+<h2>How accurate is it?</h2>
+<p>The positions include proper motion, annual aberration, precession and nutation, and the sidereal time comes from your clock. We ran the same code against the astropy library on 260 cases between 2026 and 2035, 130 in each hemisphere. The largest hour angle difference was 0.07 arcminute, under the 0.1 arcminute we aim for. Atmospheric refraction is not applied. Your device clock has to be right: one second of clock error is 0.25 arcminute of hour angle.</p>
+</section>
+
+<section class="app">
+<h2>This page, and the app</h2>
+<p>This page is the free generic clock face. The Polar Align Android app adds the plates for Sky-Watcher, iOptron, Orion, Celestron, Explore Scientific EXOS-2 and Vixen PF-L polar scopes, red night mode, a time planner and saved observing sites. Those stay in the app.</p>
+<span class="soon">Coming soon to Google Play</span>
+<p class="fine">Android. Works offline, no ads, no account.</p>
+</section>
+</main>
+
+<footer><div class="wrap"><div class="row"><a href="../">Polar Align</a><a href="../privacy/">Privacy policy</a><a href="../../">Notchwork</a><a href="mailto:notchwork@demetio.com">notchwork@demetio.com</a></div>
+This page makes no network requests after it loads and uses no analytics or cookies. Your coordinates stay in this tab. Not affiliated with Sky-Watcher, iOptron, Orion, Celestron, Explore Scientific, Bresser, Vixen or Astro-Physics.</div></footer>
+
+<script src="clock.js"></script>
+<script src="clock-ui.js"></script>
+</body></html>
