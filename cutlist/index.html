@@ -460,13 +460,13 @@ function parsePartsCsv(text, limit) {
 
   const errors = [], rows = [];
   let hadHeader = false, valid = 0;
-  const lockWords = ['y', 'yes', 'true', '1', 'x', 'grain', 'lock', 'locked', 'fixed'];
-  const freeWords = ['', 'n', 'no', 'false', '0', 'free', 'rotate', 'any'];
+  const lockWords = ['y', 'yes', 'true', '1', 'x', 'grain', 'lock', 'locked', 'fixed', '有', 'あり', '○', '〇', 'はい'];
+  const freeWords = ['', 'n', 'no', 'false', '0', 'free', 'rotate', 'any', '無', 'なし', '×', '-', 'いいえ'];
   recs.forEach((r, idx) => {
     const c = r.cells.map(x => x.trim());
     const err = m => errors.push({ row: r.line, message: 'Row ' + r.line + ': ' + m });
     if (r.open) { err('a quote was opened and never closed.'); return; }
-    if (idx === 0 && /label|name|part|width|height|qty|quantity|grain|length/i.test(c.join(' ')) &&
+    if (idx === 0 && /label|name|part|width|height|qty|quantity|grain|length|名称|部材|幅|高さ|長さ|数量|木目/i.test(c.join(' ')) &&
         (c[1] === undefined || parseLength(c[1]) === null) && (c[2] === undefined || parseLength(c[2]) === null)) { hadHeader = true; return; }
     if (c.length < 3) { err('expected label, width, height, qty, grain (at least label, width and height).'); return; }
     const w = parseLength(c[1]), h = parseLength(c[2]);
