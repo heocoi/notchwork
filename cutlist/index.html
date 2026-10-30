@@ -48,6 +48,7 @@ th{font-size:12px;color:var(--mute)}
 .sheet h3{margin:0;font-size:16px}
 .sheet .sub{font-size:13px;color:var(--mute);margin:0 0 6px}
 .svgbox{width:100%;line-height:0}
+.keylegend{font-size:13px;margin:6px 0 0}.keylegend b{display:block;font-size:12px;font-weight:600;color:var(--mute)}
 svg text{font-family:-apple-system,"Segoe UI",Roboto,sans-serif}
 details summary{cursor:pointer;background:var(--mute);color:#fff;border-radius:8px;padding:8px 14px;font-weight:600;margin-top:8px;list-style:none}
 details summary::-webkit-details-marker{display:none}
@@ -645,43 +646,94 @@ function optimize(stock, parts, settings = {}, budgetMillis = Infinity, progress
 
   // ---- SVG, same look as SheetRenderer.kt: width on top, height rotated on the left, label bottom right, waste hatched
   const mctx = document.createElement('canvas').getContext('2d');
-  function measure(s, size, bold) { mctx.font = (bold ? 'bold ' : '') + size + 'px sans-serif'; return mctx.measureText(s).width; }
-  function fitSize(s, maxW, maxH, want, minPx, bold) {
-    if (maxW <= 0 || maxH <= 0) return null;
-    const w = measure(s, want, bold);
-    const size = w <= maxW ? want : want * maxW / w;
-    if (size < minPx || size * 1.1 > maxH) return null;
-    return size;
-  }
+  function measure(s, size) { mctx.font = size + 'px sans-serif'; return mctx.measureText(s).width; }
   function sheetSvg(s, widthPx, f, textPx) {
-    const k = widthPx / s.sheetWidth, H = s.sheetHeight * k, minPx = textPx * 0.55, stroke = Math.max(textPx / 10, 1);
+    const k = widthPx / s.sheetWidth, H = s.sheetHeight * k, stroke = Math.max(textPx / 10, 1);
     let g = '<defs><pattern id="hatch" width="' + (textPx * 0.9) + '" height="' + (textPx * 0.9) + '" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><line x1="0" y1="0" x2="0" y2="' + (textPx * 0.9) + '" stroke="#C4BDAE" stroke-width="' + (stroke * 0.8) + '"/></pattern></defs>';
     g += '<rect width="' + widthPx + '" height="' + H + '" fill="#F7F4EC"/><rect width="' + widthPx + '" height="' + H + '" fill="url(#hatch)"/>';
-    s.placements.forEach(p => {
+    const plans = planSheet(s, widthPx, textPx, f, measure);
+    s.placements.forEach((p, pi) => {
       const x = p.x * k, y = p.y * k, w = p.width * k, h = p.height * k;
       g += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="' + PALETTE[(p.partNo - 1) % PALETTE.length] + '" stroke="#3A3732" stroke-width="' + stroke + '"/>';
-      g += labels(x, y, w, h, p.partNo, p.label, f(p.width), f(p.height), textPx, minPx);
+      g += labelSvg(plans[pi]);
     });
     g += '<rect width="' + widthPx + '" height="' + H + '" fill="none" stroke="#3A3732" stroke-width="' + (stroke * 1.6) + '"/>';
     return '<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sheet layout" width="' + widthPx + '" height="' + H + '" viewBox="0 0 ' + widthPx + ' ' + H + '">' + g + '</svg>';
   }
-  function labels(x, y, w, h, no, label, ws, hs, textPx, minPx) {
-    const pad = textPx * 0.25, ink = '#211F1C';
-    const T = (txt, tx, ty, size, anchor, bold) => '<text x="' + tx + '" y="' + ty + '" font-size="' + size + '" fill="' + ink + '" text-anchor="' + anchor + '"' + (bold ? ' font-weight="700"' : '') + '>' + esc(txt) + '</text>';
-    const tag = label || '#' + no;
-    if (h - 2 * pad < textPx * 2.4) {
-      const line = tag + '  ' + ws;
-      const sz = fitSize(line, w - 2 * pad, h - pad, textPx, minPx, false);
-      return sz ? T(line, x + w / 2, y + h / 2 + sz * 0.35, sz, 'middle') : '';
+  // ==LABELS-START==
+  // Same decision as LabelPlanner.kt in the app. Order, first that fits wins: width / height / label as three texts;
+  // a short strip as one line "label  width"; a narrow tall part as one rotated line "label  height"; the label
+  // alone, rotated; the part number alone (rotated if it only fits that way), explained by the legend under the sheet.
+  function planPart(left, top, right, bottom, no, label, w, h, textPx, minPx, measure, fallbacks) {
+    if (fallbacks === undefined) fallbacks = true;
+    const rw = right - left, rh = bottom - top, cx = (left + right) / 2, cy = (top + bottom) / 2, pad = textPx * 0.25;
+    const tag = label || '#' + no, items = [];
+    const fit = (s, maxW, maxH) => {
+      if (maxW <= 0 || maxH <= 0) return null;
+      const sw = measure(s, textPx);
+      const size = Math.min(sw <= maxW ? textPx : textPx * maxW / sw, maxH / 1.1);
+      return size < minPx ? null : size;
+    };
+    const tight = (s, ww, hh) => fit(s, ww * 0.95, hh * 0.95);
+    const item = (text, size, x, y, dy, align, rotated, bold, isTag) => ({ text, size, x, y, dy, align, rotated, bold, isTag });
+    const centred = (s, size, isTag, bold) => item(s, size, cx, cy, size * 0.35, 'middle', false, bold, isTag);
+    const rotatedLeft = (s, size, isTag, bold) => item(s, size, left + pad + size * 0.85, cy, size * 0.35, 'middle', true, bold, isTag);
+    const rotatedCentre = (s, size) => item(s, size, cx, cy, size * 0.35, 'middle', true, true, true);
+    const keyed = () => {
+      const key = String(no);
+      let z = tight(key, rw, rh);
+      if (z !== null) return { partNo: no, items: [centred(key, z, true, true)], keyed: true };
+      z = tight(key, rh, rw);
+      if (z !== null) return { partNo: no, items: [rotatedCentre(key, z)], keyed: true };
+      return { partNo: no, items: [], keyed: false };
+    };
+    if (rh - 2 * pad < textPx * 2.4) {
+      const line = tag + '  ' + w;
+      let z = fit(line, rw - 2 * pad, rh - pad);
+      if (z !== null) return { partNo: no, items: [centred(line, z, true, false)], keyed: false };
+      if (!fallbacks) return { partNo: no, items: [], keyed: false };
+      z = tight(line, rw, rh);
+      if (z !== null) return { partNo: no, items: [centred(line, z, true, false)], keyed: false };
+      z = tight(tag, rw, rh);
+      if (z !== null) return { partNo: no, items: [centred(tag, z, true, false)], keyed: false };
+      return keyed();
     }
-    let g = '';
-    let sz = fitSize(ws, w - 2 * pad, h - 2 * pad, textPx, minPx, false);
-    if (sz) g += T(ws, x + w / 2, y + pad + sz * 0.85, sz, 'middle');
-    sz = fitSize(hs, h - 2 * pad, w - 2 * pad, textPx, minPx, false);
-    if (sz) { const tx = x + pad + sz * 0.85, cy = y + h / 2; g += '<text x="' + tx + '" y="' + (cy + sz * 0.35) + '" font-size="' + sz + '" fill="' + ink + '" text-anchor="middle" transform="rotate(-90 ' + tx + ' ' + cy + ')">' + esc(hs) + '</text>'; }
-    sz = fitSize(tag, w * 0.55, h * 0.4, textPx, minPx, true);
-    if (sz) g += T(tag, x + w - pad, y + h - pad, sz, 'end', true);
-    return g;
+    const wSize = fit(w, rw - 2 * pad, rh - 2 * pad);
+    if (wSize !== null) items.push(item(w, wSize, cx, top + pad + wSize * 0.85, 0, 'middle', false, false, false));
+    const tagSize = fit(tag, rw * 0.55, rh * 0.4);
+    if (tagSize !== null || !fallbacks) {
+      const hz = fit(h, rh - 2 * pad, rw - 2 * pad);
+      if (hz !== null) items.push(rotatedLeft(h, hz, false, false));
+      if (tagSize !== null) items.push(item(tag, tagSize, right - pad, bottom - pad, 0, 'end', false, true, true));
+      return { partNo: no, items, keyed: false };
+    }
+    const long = tag + '  ' + h;
+    let z = tight(long, rh, rw);
+    if (z !== null) { items.push(rotatedLeft(long, z, true, false)); return { partNo: no, items, keyed: false }; }
+    z = tight(tag, rh, rw);
+    if (z !== null) { items.push(rotatedLeft(tag, z, true, true)); return { partNo: no, items, keyed: false }; }
+    return keyed();
+  }
+  function planSheet(s, widthPx, textPx, f, measure, fallbacks) {
+    const k = widthPx / s.sheetWidth, minPx = textPx * 0.55;
+    return s.placements.map(p => planPart(p.x * k, p.y * k, (p.x + p.width) * k, (p.y + p.height) * k, p.partNo, p.label, f(p.width), f(p.height), textPx, minPx, measure, fallbacks));
+  }
+  function keyedPartNos(plans) { return [...new Set(plans.filter(p => p.keyed).map(p => p.partNo))].sort((a, b) => a - b); }
+  // ==LABELS-END==
+  function labelSvg(plan) {
+    return plan.items.map(it => {
+      const common = ' font-size="' + it.size + '" fill="#211F1C" text-anchor="' + it.align + '"' + (it.bold ? ' font-weight="700"' : '');
+      const y = it.y + it.dy;
+      return it.rotated
+        ? '<text x="' + it.x + '" y="' + y + '"' + common + ' transform="rotate(-90 ' + it.x + ' ' + it.y + ')">' + esc(it.text) + '</text>'
+        : '<text x="' + it.x + '" y="' + y + '"' + common + '>' + esc(it.text) + '</text>';
+    }).join('');
+  }
+  function keyLegend(s, widthPx, textPx, f) {
+    return keyedPartNos(planSheet(s, widthPx, textPx, f, measure)).map(no => {
+      const p = s.placements.find(q => q.partNo === no);
+      return no + '  ' + (p.label || '#' + no) + '  ' + f(p.width) + ' x ' + f(p.height);
+    });
   }
   function drawSheets() {
     if (!last) return;
@@ -690,7 +742,11 @@ function optimize(stock, parts, settings = {}, budgetMillis = Infinity, progress
     document.querySelectorAll('.svgbox').forEach(box => {
       const s = res.sheets[Number(box.dataset.sheet)];
       const w = Math.max(240, Math.floor(box.clientWidth));
-      box.innerHTML = sheetSvg(s, w, f, w < 500 ? 10 : 12);
+      const tp = w < 500 ? 10 : 12;
+      box.innerHTML = sheetSvg(s, w, f, tp);
+      const lines = keyLegend(s, w, tp, f);
+      const old = box.nextElementSibling; if (old && old.classList.contains('keylegend')) old.remove();
+      if (lines.length) box.insertAdjacentHTML('afterend', '<div class="keylegend"><b>Parts marked by number</b>' + lines.map(l => '<div>' + esc(l) + '</div>').join('') + '</div>');
     });
   }
   let rt = null, lastW = 0;
@@ -701,7 +757,7 @@ function optimize(stock, parts, settings = {}, budgetMillis = Infinity, progress
 
   load();
   renderInputs();
-  window.__cutlist = { optimize, state: () => state };
+  window.__cutlist = { optimize, planPart, planSheet, keyedPartNos, state: () => state };
 })();
 </script>
 </body></html>
