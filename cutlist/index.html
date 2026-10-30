@@ -38,6 +38,10 @@ button.btn:hover{filter:brightness(1.08)}
 .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
 .count{font-size:13px;color:var(--mute)}
 .msg{background:var(--err-bg);color:var(--err);border-radius:8px;padding:10px 12px;margin:10px 0 0;font-size:15px}
+.csvtext{width:100%;font:14px/1.4 ui-monospace,Menlo,Consolas,monospace;padding:8px 9px;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--ink);resize:vertical}
+.csvtext:focus{outline:2px solid var(--pine);outline-offset:1px}
+.okmsg{background:var(--pine-bg);color:var(--ink);border-radius:8px;padding:10px 12px;margin:10px 0 0;font-size:15px}
+.csvmsg ul{margin:6px 0 0;padding-left:20px}
 .note{font-size:13px;color:var(--mute);margin:8px 0 0}
 table{border-collapse:collapse;width:100%;font-size:14px}
 td,th{padding:5px 8px;text-align:left}
@@ -128,6 +132,18 @@ footer{border-top:1px solid var(--line);padding-top:22px}
     <button class="btn alt" id="add" type="button">Add part</button>
     <span class="count" id="count"></span>
   </div>
+  <div class="actions">
+    <button class="btn alt" id="pasteBtn" type="button" aria-expanded="false" aria-controls="pastePanel">Paste a list</button>
+    <button class="btn alt" id="fileBtn" type="button">Import CSV file</button>
+    <input type="file" id="csvFile" accept=".csv,.tsv,.txt,text/csv,text/plain" hidden>
+  </div>
+  <div id="pastePanel" hidden style="margin-top:10px">
+    <label for="csvText">Paste one part per line: label, width, height, qty, grain</label>
+    <textarea class="csvtext" id="csvText" rows="6" spellcheck="false" placeholder="Side, 28 3/8, 22, 2, yes&#10;Shelf, 30-1/16, 19 11/16, 2"></textarea>
+    <div class="actions"><button class="btn" id="csvGo" type="button">Import (replaces the list)</button><button class="btn alt" id="csvCancel" type="button">Cancel</button></div>
+  </div>
+  <p class="note">Import takes commas, semicolons or tabs, an optional header row, and quoted fields. Sizes are read in the unit chosen under Units. Grain: yes keeps the width along the grain, empty or no lets the part rotate. Free limit: 20 rows.</p>
+  <div id="csvMsg" role="status" hidden></div>
   <div class="actions">
     <button class="btn" id="calc" type="button">Calculate</button>
     <button class="btn alt" id="example" type="button">Load example</button>
@@ -398,6 +414,78 @@ function optimize(stock, parts, settings = {}, budgetMillis = Infinity, progress
   return { sheets: layouts, unplaced, sheetArea: sa, usedArea: ua, wastePercent: sa <= 0 ? 0 : 100 * (1 - ua / sa), cutCount: cc };
 }
 // ==CORE-END==
+
+// ==CSV-START==
+// Parts list import. Pure text in, rows and messages out. Columns: label, width, height, qty, grain.
+// Needs parseLength from the CORE block above. Nothing here touches the page.
+function parsePartsCsv(text, limit) {
+  text = String(text).replace(/^﻿/, '');
+  // Delimiter comes from the first non-empty line, outside quotes: tab, then semicolon, then comma.
+  let delim = ',';
+  {
+    let q = false, tab = 0, semi = 0, comma = 0, seen = false;
+    for (const ch of text) {
+      if (ch === '"') q = !q;
+      else if (!q && (ch === '\n' || ch === '\r')) { if (seen) break; }
+      else if (!q) {
+        if (ch === '\t') tab++; else if (ch === ';') semi++; else if (ch === ',') comma++;
+        if (ch.trim() !== '') seen = true;
+      } else seen = true;
+    }
+    delim = tab ? '\t' : semi ? ';' : ',';
+  }
+  // Split into records. Quoted fields may hold the delimiter, doubled quotes and line breaks.
+  const recs = [];
+  let cells = [], cur = '', q = false, line = 1, start = 1, open = false;
+  const endCell = () => { cells.push(cur); cur = ''; };
+  const endRec = () => { endCell(); if (cells.some(c => c.trim() !== '')) recs.push({ line: start, cells, open: false }); cells = []; };
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (q) {
+      if (ch === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else q = false; }
+      else { if (ch === '\n') line++; cur += ch; }
+    } else if (ch === '"' && cur.trim() === '') { q = true; cur = ''; }
+    else if (ch === delim) endCell();
+    else if (ch === '\n' || ch === '\r') {
+      if (ch === '\r' && text[i + 1] === '\n') i++;
+      endRec(); line++; start = line;
+    } else cur += ch;
+  }
+  if (q) { open = true; }
+  if (cur !== '' || cells.length) { endCell(); if (cells.some(c => c.trim() !== '')) recs.push({ line: start, cells, open }); cells = []; }
+
+  const errors = [], rows = [];
+  let hadHeader = false, valid = 0;
+  const lockWords = ['y', 'yes', 'true', '1', 'x', 'grain', 'lock', 'locked', 'fixed'];
+  const freeWords = ['', 'n', 'no', 'false', '0', 'free', 'rotate', 'any'];
+  recs.forEach((r, idx) => {
+    const c = r.cells.map(x => x.trim());
+    const err = m => errors.push({ row: r.line, message: 'Row ' + r.line + ': ' + m });
+    if (r.open) { err('a quote was opened and never closed.'); return; }
+    if (idx === 0 && /label|name|part|width|height|qty|quantity|grain|length/i.test(c.join(' ')) &&
+        (c[1] === undefined || parseLength(c[1]) === null) && (c[2] === undefined || parseLength(c[2]) === null)) { hadHeader = true; return; }
+    if (c.length < 3) { err('expected label, width, height, qty, grain (at least label, width and height).'); return; }
+    const w = parseLength(c[1]), h = parseLength(c[2]);
+    let ok = true;
+    if (w === null) { err('width "' + c[1] + '" is not a number.'); ok = false; }
+    else if (w <= 0) { err('width must be more than 0.'); ok = false; }
+    if (h === null) { err('height "' + c[2] + '" is not a number.'); ok = false; }
+    else if (h <= 0) { err('height must be more than 0.'); ok = false; }
+    const qs = c[3] === undefined ? '' : c[3];
+    let qty = 1;
+    if (qs !== '') { if (/^\d+$/.test(qs) && parseInt(qs, 10) >= 1) qty = parseInt(qs, 10); else { err('quantity "' + qs + '" must be a whole number, 1 or more.'); ok = false; } }
+    const gs = (c[4] === undefined ? '' : c[4]).toLowerCase();
+    let rot = true;
+    if (lockWords.includes(gs)) rot = false;
+    else if (!freeWords.includes(gs)) { err('grain "' + c[4] + '" should be yes (keep the width along the grain), no, or empty.'); ok = false; }
+    if (!ok) return;
+    valid++;
+    if (rows.length < limit) rows.push({ label: c[0].slice(0, 40), w: c[1], h: c[2], qty: String(qty), rot });
+  });
+  if (!recs.length || (!valid && !errors.length)) errors.push({ row: 0, message: 'No parts found. Use one part per line: label, width, height, qty, grain.' });
+  return { rows, errors, valid, over: Math.max(0, valid - limit), hadHeader, delimiter: delim };
+}
+// ==CSV-END==
 
 // ---------------------------------------------------------------- page ----
 (function () {
@@ -753,6 +841,40 @@ function optimize(stock, parts, settings = {}, budgetMillis = Infinity, progress
   window.addEventListener('resize', () => {
     clearTimeout(rt);
     rt = setTimeout(() => { const b = document.querySelector('.svgbox'); if (b && Math.abs(b.clientWidth - lastW) > 2) { lastW = b.clientWidth; drawSheets(); } }, 120);
+  });
+
+  // ---- CSV import
+  function showCsv(kind, html) { const m = $('csvMsg'); m.className = kind; m.innerHTML = html; m.hidden = !html; }
+  function importCsv(text) {
+    const r = parsePartsCsv(text, FREE_PART_ROWS);
+    if (r.errors.length) {
+      const shown = r.errors.slice(0, 10).map(e => '<li>' + esc(e.message) + '</li>').join('');
+      const more = r.errors.length > 10 ? '<li>and ' + (r.errors.length - 10) + ' more</li>' : '';
+      showCsv('msg csvmsg', 'Nothing was imported. Fix ' + (r.errors.length === 1 ? 'this row' : 'these rows') + ' and try again.<ul>' + shown + more + '</ul>');
+      return false;
+    }
+    state.parts = r.rows.map(x => ({ id: nextId++, label: x.label, w: x.w, h: x.h, qty: x.qty, rot: x.rot }));
+    renderInputs(); $('err').hidden = true; flagBad(new Set()); save();
+    let m = 'Imported ' + r.rows.length + ' part row' + (r.rows.length === 1 ? '' : 's') + ' in ' + (state.unit === 'in' ? 'inches' : 'millimetres') + '.';
+    if (r.over) m = 'Imported the first ' + FREE_PART_ROWS + ' of ' + r.valid + ' rows. The other ' + r.over + ' were left out. The Android app has no row limit and is coming soon to Google Play.';
+    showCsv('okmsg csvmsg', esc(m));
+    return true;
+  }
+  $('pasteBtn').addEventListener('click', () => {
+    const p = $('pastePanel'); p.hidden = !p.hidden; $('pasteBtn').setAttribute('aria-expanded', String(!p.hidden));
+    if (!p.hidden) $('csvText').focus();
+  });
+  $('csvCancel').addEventListener('click', () => { $('pastePanel').hidden = true; $('pasteBtn').setAttribute('aria-expanded', 'false'); });
+  $('csvGo').addEventListener('click', () => { if (importCsv($('csvText').value)) { $('csvText').value = ''; $('pastePanel').hidden = true; $('pasteBtn').setAttribute('aria-expanded', 'false'); } });
+  $('fileBtn').addEventListener('click', () => $('csvFile').click());
+  $('csvFile').addEventListener('change', e => {
+    const f = e.target.files && e.target.files[0]; e.target.value = '';
+    if (!f) return;
+    if (f.size > 1048576) { showCsv('msg csvmsg', 'That file is over 1 MB. A parts list should be a few lines.'); return; }
+    const rd = new FileReader();
+    rd.onload = () => importCsv(String(rd.result));
+    rd.onerror = () => showCsv('msg csvmsg', 'The file could not be read.');
+    rd.readAsText(f);
   });
 
   load();
