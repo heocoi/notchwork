@@ -189,7 +189,12 @@ function render(){
  $('units-h').textContent=mm()?'Millimeters, for example 406 or 12.5':'Try 16, 5\' 3-1/2" or 12 3/4';
  renderRolling();renderSimple()}
 ['rise','roll','custom','set','scustom'].forEach(function(i){$(i).addEventListener('input',render)});
-['fit','sfit','units'].forEach(function(i){$(i).addEventListener('change',render)});
+['fit','sfit'].forEach(function(i){$(i).addEventListener('change',render)});
+// Convert typed lengths when the unit changes, so 16" does not silently become 16 mm.
+var lastMm=mm();
+$('units').addEventListener('change',function(){var nowMm=mm();if(nowMm!==lastMm){['rise','roll','set'].forEach(function(id){var el=$(id),s=el.value.trim();if(!s)return;
+ var v=lastMm?R.parseInches(s.replace(/\s*mm$/i,'')):R.parseFeetInches(s);if(v===null)return;if(lastMm)v=R.mmToInches(v);
+ el.value=nowMm?R.formatMm(v,1):R.formatFeetInches(v)})}lastMm=nowMm;render()});
 $('print').addEventListener('click',function(){window.print()});
 render();
 })();
