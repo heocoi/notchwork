@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rolling Offset Calculator: travel, true offset and roll angle</title>
+<meta name="description" content="Free rolling offset calculator for pipefitters and plumbers. Enter rise and roll, pick a 45, 22.5 or 60 degree fitting, and get travel, true offset, set-back and roll angle. Also a simple offset calculator. Feet, inches, fractions and mm. Runs in your browser.">
+<link rel="canonical" href="https://notchwork.demetio.app/rolling-offset/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Notchwork">
+<meta property="og:title" content="Rolling Offset Calculator: travel, true offset and roll angle">
+<meta property="og:description" content="Rise and roll in, travel and true offset out. 45, 22.5, 60 degree or custom fitting angle. Simple offset too. Free, runs in your browser.">
+<meta property="og:url" content="https://notchwork.demetio.app/rolling-offset/">
+<meta name="theme-color" content="#f2b705">
+<link rel="icon" href="../polaralign/img/icon.png">
+<style>
+:root{--bg:#fbfaf6;--card:#fff;--ink:#1c1b19;--mute:#5d5a52;--line:#d9d4c6;--tape:#f2b705;--tape-d:#8a6600;--ok:#1f7a46;--ok-bg:#dff1e5;--bad:#b3261e;--bad-bg:#f9dedb;--warn:#8a5a00;--warn-bg:#fbefd0;--wood:#e8d3a6;--wood-d:#6b4a1c}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 -apple-system,"Segoe UI",Roboto,sans-serif}
+.stripe{height:10px;background:repeating-linear-gradient(90deg,var(--tape) 0 28px,#1c1b19 28px 31px,var(--tape) 31px 59px)}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px 56px}
+nav{font-size:14px;padding:14px 0 6px;color:var(--mute)}
+a{color:#0d5c8a}
+h1{font-size:30px;line-height:1.15;margin:6px 0 8px;letter-spacing:-.01em}
+h2{font-size:20px;margin:30px 0 10px}
+h3{font-size:16px;margin:0 0 6px}
+.lead{margin:0 0 18px;color:var(--mute);max-width:62ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin:0 0 14px}
+.grid{display:grid;gap:12px 14px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+label,.lab{font-size:13px;font-weight:600;color:var(--ink);display:block;margin-bottom:3px}
+.hint{font-size:12px;color:var(--mute);margin:3px 0 0;font-weight:400}
+input[type=text],select{width:100%;font:inherit;font-size:16px;padding:9px 10px;border:1px solid #b9b3a2;border-radius:6px;background:#fff;color:var(--ink)}
+input:focus,select:focus,button:focus-visible,summary:focus-visible{outline:3px solid var(--tape);outline-offset:1px}
+input.bad{border-color:var(--bad);background:var(--bad-bg)}
+.err{color:var(--bad);font-size:13px;margin:3px 0 0}
+.chk{display:flex;gap:8px;align-items:center;font-size:15px;font-weight:600;margin:0}
+.chk input{width:20px;height:20px;accent-color:#1c1b19}
+.sub{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+.verdict{display:flex;gap:12px;align-items:center;border-radius:10px;padding:12px 16px;margin:0 0 14px;font-weight:700;font-size:18px}
+.verdict small{display:block;font-weight:400;font-size:14px}
+.verdict.pass{background:var(--ok-bg);color:#14522f}
+.verdict.fail{background:var(--bad-bg);color:#7e1a14}
+.verdict.err{background:var(--warn-bg);color:var(--warn)}
+.big{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin:0 0 14px}
+.big div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.big b{display:block;font-size:22px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.big span{font-size:12px;color:var(--mute)}
+.big .hot{background:#fff4c9;border-color:var(--tape)}
+ul.checks{list-style:none;margin:0;padding:0}
+ul.checks li{display:grid;grid-template-columns:62px 1fr;gap:10px;padding:8px 0;border-top:1px solid #eee9dc;font-size:15px}
+ul.checks li:first-child{border-top:0}
+.tag{font-size:12px;font-weight:700;text-align:center;border-radius:5px;padding:2px 0;align-self:start;margin-top:2px}
+.tag.pass{background:var(--ok-bg);color:#14522f}.tag.fail{background:var(--bad-bg);color:#7e1a14}.tag.warn{background:var(--warn-bg);color:var(--warn)}
+ul.checks b{display:block}
+ul.checks span{color:var(--mute);font-size:14px}
+.draw{width:100%;line-height:0;background:#fff;border:1px solid var(--line);border-radius:8px}
+.draw svg{width:100%;height:auto;max-height:640px}
+svg text{font-family:-apple-system,"Segoe UI",Roboto,sans-serif}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:5px 8px;text-align:left;border-bottom:1px solid #eee9dc}
+th{font-size:12px;color:var(--mute);font-weight:600}
+.scroll{overflow-x:auto}
+button{font:inherit;font-weight:600;border:1px solid #1c1b19;background:#1c1b19;color:#fff;border-radius:7px;padding:9px 16px;cursor:pointer}
+button.alt{background:#fff;color:#1c1b19}
+.note{font-size:13px;color:var(--mute)}
+.prose p,.prose li{max-width:68ch}
+.prose table td:first-child{font-weight:600;white-space:nowrap}
+details{border-top:1px solid var(--line);padding:10px 0}
+details summary{cursor:pointer;font-weight:600}
+footer{font-size:14px;color:var(--mute);margin-top:34px}
+@media(max-width:520px){h1{font-size:25px}ul.checks li{grid-template-columns:54px 1fr}}
+@media print{.stripe,nav,.noprint,.prose,footer,form,details{display:none!important}body{background:#fff}.card,.big div{border-color:#999}}
+.dec{font-size:13px;font-weight:400;color:var(--mute)}</style><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Rolling Offset Calculator","url":"https://notchwork.demetio.app/rolling-offset/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","description":"Free rolling offset and simple offset calculator. Travel, true offset, set-back and roll angle for 45, 22.5, 60 degree or custom fittings. Runs in your browser.","publisher":{"@type":"Organization","name":"Notchwork"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+</head><body>
+<div class="stripe"></div>
+<div class="wrap">
+<nav><a href="../">Notchwork</a> / Rolling offset calculator</nav>
+<h1>Rolling Offset Calculator</h1>
+<p class="lead">Enter the rise and the roll. Get the true offset, the center-to-center travel of the offset pipe, the set-back, and the roll angle, for a 45, 22.5, 60 degree or custom fitting. A simple offset calculator is below. Free, no account, runs in your browser and works offline once loaded.</p>
+
+<div class="card noprint" id="units-card"><div class="grid">
+ <div><label for="units">Units</label><select id="units"><option value="in" selected>Feet, inches and fractions</option><option value="mm">Millimeters</option></select><p class="hint" id="units-h">Try 16, 5' 3-1/2" or 12 3/4</p></div>
+</div></div>
+
+<h2 id="rolling">Rolling offset</h2>
+<form class="card noprint" id="rf" autocomplete="off" onsubmit="return false">
+<div class="grid">
+ <div><label for="rise">Rise</label><input type="text" id="rise" inputmode="text" value="16"><p class="hint">Vertical movement, up or down.</p></div>
+ <div><label for="roll">Roll</label><input type="text" id="roll" inputmode="text" value="12"><p class="hint">Sideways movement, left or right.</p></div>
+ <div><label for="fit">Fitting angle</label><select id="fit"><option value="45" selected>45 degrees</option><option value="22.5">22.5 degrees</option><option value="60">60 degrees</option><option value="30">30 degrees</option><option value="11.25">11.25 degrees</option><option value="custom">Custom</option></select></div>
+ <div id="custombox" hidden><label for="custom">Custom angle, degrees</label><input type="text" id="custom" inputmode="decimal" value="45"><p class="hint">Greater than 0, less than 90.</p></div>
+</div>
+</form>
+<div id="rout" aria-live="polite"></div>
+
+<h2 id="simple">Simple offset</h2>
+<form class="card noprint" id="sf" autocomplete="off" onsubmit="return false">
+<div class="grid">
+ <div><label for="set">Offset (set)</label><input type="text" id="set" value="10"><p class="hint">Distance between the two pipe centerlines.</p></div>
+ <div><label for="sfit">Fitting angle</label><select id="sfit"><option value="45" selected>45 degrees</option><option value="22.5">22.5 degrees</option><option value="60">60 degrees</option><option value="30">30 degrees</option><option value="11.25">11.25 degrees</option><option value="custom">Custom</option></select></div>
+ <div id="scustombox" hidden><label for="scustom">Custom angle, degrees</label><input type="text" id="scustom" inputmode="decimal" value="45"></div>
+</div>
+</form>
+<div id="sout" aria-live="polite"></div>
+<p class="noprint"><button class="alt" type="button" id="print">Print this page</button></p>
+<p class="note">An Android app with saved jobs, fitting take-outs and cut lengths is coming.</p>
+
+<div class="prose">
+<h2>What the words mean</h2>
+<div class="scroll"><table>
+<thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td>Rise</td><td>How far the pipe moves vertically.</td></tr>
+<tr><td>Roll</td><td>How far the pipe moves sideways. Rise and roll are at right angles to each other.</td></tr>
+<tr><td>True offset</td><td>The straight-line distance between the two pipe centerlines, square root of rise squared plus roll squared. This is the number you use as the "set" of an ordinary offset.</td></tr>
+<tr><td>Travel</td><td>Center-to-center length of the diagonal pipe between the two fittings. True offset divided by sin of the fitting angle.</td></tr>
+<tr><td>Set-back</td><td>How far along the main line the offset takes. True offset divided by tan of the fitting angle.</td></tr>
+<tr><td>Roll angle</td><td>The tilt of the offset plane, measured from the rise direction, atan of roll over rise. Rise 6 and roll 8 gives 53.13 degrees.</td></tr>
+</tbody></table></div>
+
+<h2>How to use the result</h2>
+<p>Subtract the take-out of each fitting from the travel to get the cut length of the diagonal pipe. Take-out depends on the fitting type, pipe size and weld gap, so look it up for your fitting. Set the two fittings so the plane through both pipes is tilted by the roll angle from vertical, then check the first one with a level before you tack.</p>
+<p>Fitting factors for a simple offset, travel and set-back per 1 unit of offset: 60 degrees 1.1547 and 0.5774, 45 degrees 1.4142 and 1.0, 30 degrees 2.0 and 1.7321, 22.5 degrees 2.6131 and 2.4142, 11.25 degrees 5.1258 and 5.0273.</p>
+<p class="note">Worked check: rise 16, roll 12, 45 degree fittings. True offset 20, travel 28.28. The 12-16-20 triangle is the 3-4-5 triangle scaled up, so you can verify it by hand.</p>
+
+<h2>Questions</h2>
+<details><summary>Is a rolling offset the same as a simple offset?</summary><p>A simple offset moves the pipe in one plane. A rolling offset moves it in two directions at once, up and sideways. Once you reduce rise and roll to one true offset, the rest of the math is the same as a simple offset in a tilted plane.</p></details>
+<details><summary>Does the angle have to be 45 degrees?</summary><p>No. Any fitting angle works if both fittings match. 45 is the most common because the travel is 1.4142 times the offset. Pick Custom for anything else.</p></details>
+<details><summary>Does this subtract fitting take-out?</summary><p>No. Results are center-to-center, so you can use them with any fitting type. Subtract the take-out for your fitting and weld gap yourself.</p></details>
+<details><summary>Does anything get sent anywhere?</summary><p>No. The calculation runs in your browser and nothing is uploaded or stored.</p></details>
+<p class="note">This is a layout aid. Check critical work against your own drawings and company standards.</p>
+</div>
+<footer><p>Notchwork makes offline tools for the workshop. <a href="../">Home</a> | <a href="../stairs/">Stair stringer calculator</a> | <a href="../cutlist/">Cut list optimizer</a></p></footer>
+</div>
+
+<script src="rolling-offset.js"></script>
+<script>
+(function(){
+var R=window.RollingOffset,$=function(i){return document.getElementById(i)};
+function mm(){return $('units').value==='mm'}
+function parseLen(s){s=s.trim();if(!s)return null;if(mm()){var v=R.parseInches(s.replace(/\s*mm$/i,''));return v===null?null:R.mmToInches(v)}return R.parseFeetInches(s)}
+function fmt(x){return mm()?R.formatMm(x,1)+' mm':R.formatFeetInches(x)+'<span class="dec"> ('+x.toFixed(3)+'")</span>'}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function field(id){var el=$(id),s=el.value.trim();el.classList.remove('bad');var e=el.parentNode.querySelector('.err');if(e)e.remove();
+ if(!s)return null;var v=parseLen(s);
+ if(v===null){el.classList.add('bad');var p=document.createElement('p');p.className='err';p.textContent='Could not read "'+s+'"';el.parentNode.appendChild(p);return NaN}
+ return v}
+function angle(selId,custId,boxId){var sel=$(selId).value;$(boxId).hidden=sel!=='custom';if(sel!=='custom')return parseFloat(sel);
+ var el=$(custId);el.classList.remove('bad');var v=parseFloat(el.value);if(!(v>0&&v<90)){el.classList.add('bad');return NaN}return v}
+function a1(x){return x.toFixed(2).replace(/\.?0+$/,'')}
+function big(items){return '<div class="big">'+items.map(function(i){return '<div'+(i[2]?' class="hot"':'')+'><b>'+i[0]+'</b><span>'+i[1]+'</span></div>'}).join('')+'</div>'}
+function tri(rise,roll,T,ang){ // right triangle: rise vertical, roll horizontal, true offset hypotenuse
+ var W=360,H=220,pad=34,k=Math.min((W-2*pad)/Math.max(roll,1e-9),(H-2*pad)/Math.max(rise,1e-9));
+ if(!isFinite(k))k=1;var w=roll*k,h=rise*k,x0=(W-w)/2,y0=(H+h)/2,x1=x0+w,y1=y0-h;
+ var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Rise, roll and true offset triangle">';
+ s+='<path d="M'+x0+' '+y0+' L'+x1+' '+y0+' L'+x1+' '+y1+' Z" fill="#fff4c9" stroke="#6b4a1c" stroke-width="2" stroke-linejoin="round"/>';
+ s+='<path d="M'+(x1-10)+' '+y0+' v-10 h10" fill="none" stroke="#6b4a1c" stroke-width="1.5"/>';
+ s+='<line x1="'+x0+'" y1="'+y0+'" x2="'+x1+'" y2="'+y1+'" stroke="#b3261e" stroke-width="3"/>';
+ function t(x,y,txt,a,c){return '<text x="'+x+'" y="'+y+'" font-size="14" font-weight="600" text-anchor="'+a+'" fill="'+c+'">'+esc(txt)+'</text>'}
+ s+=t((x0+x1)/2,y0+20,'roll','middle','#1c1b19')+t(x1+8,(y0+y1)/2+5,'rise','start','#1c1b19');
+ s+=t((x0+x1)/2-8,(y0+y1)/2-8,'true offset','end','#b3261e')+t(x0+2,y0-8,a1(R.toDeg(Math.atan2(roll,rise)))+' deg roll','start','#0d5c8a');
+ return s+'</svg>'}
+function side(set,run,ang){ // two pipes joined by a diagonal at the fitting angle
+ var W=360,H=170,pad=30,L=70,k=Math.min((W-2*pad-2*L)/Math.max(run,1e-9),(H-2*pad)/Math.max(set,1e-9));
+ if(!isFinite(k))k=1;var r=run*k,s0=set*k,x0=(W-r)/2,xa=x0-L,xb=x0+r+L,yb=(H+s0)/2,yt=yb-s0;
+ var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Simple offset diagram">';
+ s+='<polyline points="'+xa+','+yb+' '+x0+','+yb+' '+(x0+r)+','+yt+' '+xb+','+yt+'" fill="none" stroke="#6b4a1c" stroke-width="5" stroke-linejoin="round"/>';
+ s+='<line x1="'+(x0+r)+'" y1="'+yb+'" x2="'+(x0+r)+'" y2="'+yt+'" stroke="#0d5c8a" stroke-width="2" stroke-dasharray="5 4"/>';
+ s+='<line x1="'+x0+'" y1="'+yb+'" x2="'+(x0+r)+'" y2="'+yb+'" stroke="#0d5c8a" stroke-width="2" stroke-dasharray="5 4"/>';
+ function t(x,y,txt,a,c){return '<text x="'+x+'" y="'+y+'" font-size="14" font-weight="600" text-anchor="'+a+'" fill="'+c+'">'+esc(txt)+'</text>'}
+ s+=t((x0+r)+8,(yb+yt)/2+5,'set','start','#0d5c8a')+t(x0+r/2,yb+18,'run','middle','#0d5c8a')+t((x0+r/2),(yb+yt)/2-8,'travel','end','#6b4a1c');
+ return s+'</svg>'}
+function showErr(el,msg){el.innerHTML='<div class="verdict err">'+esc(msg)+'</div>'}
+
+function renderRolling(){
+ var rise=field('rise'),roll=field('roll'),a=angle('fit','custom','custombox'),out=$('rout');
+ if(isNaN(rise)||isNaN(roll)||isNaN(a)){showErr(out,'Fix the highlighted field. One of the values could not be read.');return}
+ var r=R.rolling(rise===null?0:rise,roll===null?0:roll,a);
+ if(!r){showErr(out,'Enter a rise or a roll greater than zero, and a fitting angle between 0 and 90 degrees.');return}
+ out.innerHTML=big([[fmt(r.trueOffset),'true offset',1],[fmt(r.travel),'travel, center to center',1],[fmt(r.setback),'set-back along the run'],[a1(r.rollAngleDeg)+' deg','roll angle from the rise direction']])+
+  '<div class="card"><div class="draw" style="max-width:420px;margin:auto">'+tri(rise||0,roll||0,r.trueOffset,r.rollAngleDeg)+'</div><p class="note">Rise and roll make a right triangle. Its long side is the true offset. Results are center to center: subtract your fitting take-outs for the cut length.</p></div>'}
+
+function renderSimple(){
+ var set=field('set'),a=angle('sfit','scustom','scustombox'),out=$('sout');
+ if(isNaN(set)||isNaN(a)){showErr(out,'Fix the highlighted field. One of the values could not be read.');return}
+ var o=set===null?null:R.simple(set,null,null,a);
+ if(!o){showErr(out,'Enter an offset greater than zero and a fitting angle between 0 and 90 degrees.');return}
+ out.innerHTML=big([[fmt(o.travel),'travel, center to center',1],[fmt(o.run),'run (set-back)',1],[fmt(o.set),'offset (set)'],[a1(o.angleDeg)+' deg','fitting angle']])+
+  '<div class="card"><div class="draw" style="max-width:420px;margin:auto">'+side(o.set,o.run,o.angleDeg)+'</div></div>'}
+
+function render(){
+ $('units-h').textContent=mm()?'Millimeters, for example 406 or 12.5':'Try 16, 5\' 3-1/2" or 12 3/4';
+ renderRolling();renderSimple()}
+['rise','roll','custom','set','scustom'].forEach(function(i){$(i).addEventListener('input',render)});
+['fit','sfit','units'].forEach(function(i){$(i).addEventListener('change',render)});
+$('print').addEventListener('click',function(){window.print()});
+render();
+})();
+</script>
+</body></html>
