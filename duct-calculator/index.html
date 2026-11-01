@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Duct Size Calculator: round duct diameter and rectangular equivalents</title>
+<meta name="description" content="Free duct size calculator (ductulator). Enter CFM and a friction rate or maximum velocity, get round duct diameter, velocity, friction loss and equivalent rectangular duct sizes. Inch-pound and SI. Runs in your browser.">
+<link rel="canonical" href="https://notchwork.demetio.app/duct-calculator/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Notchwork">
+<meta property="og:title" content="Duct Size Calculator: round duct diameter and rectangular equivalents">
+<meta property="og:description" content="CFM and friction rate in, round and rectangular duct sizes out. ASHRAE Colebrook friction, Huebscher equivalent diameter. Free, runs in your browser.">
+<meta property="og:url" content="https://notchwork.demetio.app/duct-calculator/">
+<meta name="theme-color" content="#f2b705">
+<link rel="icon" href="../polaralign/img/icon.png">
+<style>
+:root{--bg:#fbfaf6;--card:#fff;--ink:#1c1b19;--mute:#5d5a52;--line:#d9d4c6;--tape:#f2b705;--tape-d:#8a6600;--ok:#1f7a46;--ok-bg:#dff1e5;--bad:#b3261e;--bad-bg:#f9dedb;--warn:#8a5a00;--warn-bg:#fbefd0;--wood:#e8d3a6;--wood-d:#6b4a1c}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 -apple-system,"Segoe UI",Roboto,sans-serif}
+.stripe{height:10px;background:repeating-linear-gradient(90deg,var(--tape) 0 28px,#1c1b19 28px 31px,var(--tape) 31px 59px)}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px 56px}
+nav{font-size:14px;padding:14px 0 6px;color:var(--mute)}
+a{color:#0d5c8a}
+h1{font-size:30px;line-height:1.15;margin:6px 0 8px;letter-spacing:-.01em}
+h2{font-size:20px;margin:30px 0 10px}
+h3{font-size:16px;margin:0 0 6px}
+.lead{margin:0 0 18px;color:var(--mute);max-width:62ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin:0 0 14px}
+.grid{display:grid;gap:12px 14px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+label,.lab{font-size:13px;font-weight:600;color:var(--ink);display:block;margin-bottom:3px}
+.hint{font-size:12px;color:var(--mute);margin:3px 0 0;font-weight:400}
+input[type=text],select{width:100%;font:inherit;font-size:16px;padding:9px 10px;border:1px solid #b9b3a2;border-radius:6px;background:#fff;color:var(--ink)}
+input:focus,select:focus,button:focus-visible,summary:focus-visible{outline:3px solid var(--tape);outline-offset:1px}
+input.bad{border-color:var(--bad);background:var(--bad-bg)}
+.err{color:var(--bad);font-size:13px;margin:3px 0 0}
+.chk{display:flex;gap:8px;align-items:center;font-size:15px;font-weight:600;margin:0}
+.chk input{width:20px;height:20px;accent-color:#1c1b19}
+.sub{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+.verdict{display:flex;gap:12px;align-items:center;border-radius:10px;padding:12px 16px;margin:0 0 14px;font-weight:700;font-size:18px}
+.verdict small{display:block;font-weight:400;font-size:14px}
+.verdict.pass{background:var(--ok-bg);color:#14522f}
+.verdict.fail{background:var(--bad-bg);color:#7e1a14}
+.verdict.err{background:var(--warn-bg);color:var(--warn)}
+.big{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin:0 0 14px}
+.big div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.big b{display:block;font-size:22px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.big span{font-size:12px;color:var(--mute)}
+.big .hot{background:#fff4c9;border-color:var(--tape)}
+ul.checks{list-style:none;margin:0;padding:0}
+ul.checks li{display:grid;grid-template-columns:62px 1fr;gap:10px;padding:8px 0;border-top:1px solid #eee9dc;font-size:15px}
+ul.checks li:first-child{border-top:0}
+.tag{font-size:12px;font-weight:700;text-align:center;border-radius:5px;padding:2px 0;align-self:start;margin-top:2px}
+.tag.pass{background:var(--ok-bg);color:#14522f}.tag.fail{background:var(--bad-bg);color:#7e1a14}.tag.warn{background:var(--warn-bg);color:var(--warn)}
+ul.checks b{display:block}
+ul.checks span{color:var(--mute);font-size:14px}
+.draw{width:100%;line-height:0;background:#fff;border:1px solid var(--line);border-radius:8px}
+.draw svg{width:100%;height:auto;max-height:640px}
+svg text{font-family:-apple-system,"Segoe UI",Roboto,sans-serif}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:5px 8px;text-align:left;border-bottom:1px solid #eee9dc}
+th{font-size:12px;color:var(--mute);font-weight:600}
+.scroll{overflow-x:auto}
+button{font:inherit;font-weight:600;border:1px solid #1c1b19;background:#1c1b19;color:#fff;border-radius:7px;padding:9px 16px;cursor:pointer}
+button.alt{background:#fff;color:#1c1b19}
+.note{font-size:13px;color:var(--mute)}
+.prose p,.prose li{max-width:68ch}
+.prose table td:first-child{font-weight:600;white-space:nowrap}
+details{border-top:1px solid var(--line);padding:10px 0}
+details summary{cursor:pointer;font-weight:600}
+footer{font-size:14px;color:var(--mute);margin-top:34px}
+@media(max-width:520px){h1{font-size:25px}ul.checks li{grid-template-columns:54px 1fr}}
+@media print{.stripe,nav,.noprint,.prose,footer,form,details{display:none!important}body{background:#fff}.card,.big div{border-color:#999}}
+.dec{font-size:13px;font-weight:400;color:var(--mute)}.rect td.w{color:var(--warn)}</style><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Duct Size Calculator","url":"https://notchwork.demetio.app/duct-calculator/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","description":"Free duct size calculator. Round duct diameter, velocity, friction loss and equivalent rectangular sizes from CFM and friction rate or velocity. Runs in your browser.","publisher":{"@type":"Organization","name":"Notchwork"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+</head><body>
+<div class="stripe"></div>
+<div class="wrap">
+<nav><a href="../">Notchwork</a> / Duct size calculator</nav>
+<h1>Duct Size Calculator</h1>
+<p class="lead">Enter the airflow in CFM and either a friction rate or a maximum velocity. Get the round duct diameter, the velocity and friction loss, the next stock size, and equivalent rectangular duct sizes. A ductulator in your browser, free, no account, nothing uploaded.</p>
+
+<form class="card noprint" id="f" autocomplete="off" onsubmit="return false">
+<div class="grid">
+ <div><label for="units">Units</label><select id="units"><option value="ip" selected>Inch-pound (CFM, in.wg, fpm)</option><option value="si">SI (L/s, Pa/m, m/s)</option></select></div>
+ <div><label for="q" id="q-l">Airflow, CFM</label><input type="text" id="q" inputmode="decimal" value="1000"><p class="hint">Total air through this duct section.</p></div>
+ <div><label for="mode">Size by</label><select id="mode"><option value="friction" selected>Friction rate</option><option value="velocity">Maximum velocity</option></select></div>
+ <div><label for="v" id="v-l">Friction rate, in.wg per 100 ft</label><input type="text" id="v" inputmode="decimal" value="0.1"><p class="hint" id="v-h">Typical comfort systems use 0.08 to 0.1.</p></div>
+</div>
+</form>
+<div id="out" aria-live="polite"></div>
+<p class="noprint"><button class="alt" type="button" id="print">Print this page</button></p>
+<p class="note">An Android app with saved jobs and duct fitting take-offs is coming.</p>
+
+<div class="prose">
+<h2>How the numbers are calculated</h2>
+<p>Friction loss uses the Darcy-Weisbach equation with the friction factor from the Colebrook equation, as given in the ASHRAE Handbook, Fundamentals, duct design chapter. It assumes standard air at 0.075 lb/ft3, kinematic viscosity 1.62e-4 ft2/s and galvanized steel with a roughness of 0.0003 ft (0.09 mm), the same basis as most printed ductulators. The round diameter is found by solving that equation for the friction rate you enter.</p>
+<p>Rectangular sizes use the Huebscher equivalent diameter, De = 1.30 (a b)^0.625 / (a + b)^0.25, which gives the round duct with the same friction loss at the same airflow. Widths are rounded up to the next 2 inches (50 mm), so the real friction is at or below your target. A rectangular duct with an aspect ratio over 4 to 1 costs more and is noisier.</p>
+<div class="scroll"><table>
+<thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td>CFM</td><td>Cubic feet of air per minute. 1 CFM is 0.4719 L/s.</td></tr>
+<tr><td>Friction rate</td><td>Pressure lost per 100 ft of straight duct, in inches of water gauge. 0.1 in.wg per 100 ft is 0.817 Pa/m.</td></tr>
+<tr><td>Velocity</td><td>Airflow divided by duct cross-section area, in feet per minute. Higher velocity means more noise.</td></tr>
+<tr><td>Equivalent diameter</td><td>The round duct that loses the same pressure per foot as the rectangular duct at the same CFM.</td></tr>
+</tbody></table></div>
+
+<h2>Common design values</h2>
+<p>Many residential and light commercial designs use a friction rate of 0.08 to 0.1 in.wg per 100 ft and keep supply branches near 600 to 900 fpm and mains below about 1,200 to 1,500 fpm. Your code, equipment data and project specification come first.</p>
+
+<h2>Questions</h2>
+<details><summary>What is a ductulator?</summary><p>A ductulator is the slide-rule style duct sizing tool, a printed version of the friction chart. This page does the same job: pick CFM and friction rate or velocity, read off the round size, then look up the rectangular equivalent.</p></details>
+<details><summary>Should I size by friction rate or by velocity?</summary><p>The equal friction method is the usual starting point, because it keeps the system roughly balanced. Use the velocity option when noise limits the duct, for example near occupied rooms.</p></details>
+<details><summary>Does this include fittings and flex duct?</summary><p>No. The result is for straight, smooth galvanized duct. Fittings add pressure loss, and flexible duct has a higher friction than metal. Add allowances for both.</p></details>
+<details><summary>Does anything get sent anywhere?</summary><p>No. The calculation runs in your browser and nothing is uploaded or stored.</p></details>
+<p class="note">This is a design aid, not a substitute for a full load and duct design. Check results against your code, manufacturer data and ACCA or SMACNA procedures.</p>
+</div>
+<footer><p>Notchwork makes offline tools for the workshop. <a href="../">Home</a> | <a href="../rolling-offset/">Rolling offset calculator</a> | <a href="../stairs/">Stair stringer calculator</a> | <a href="../cutlist/">Cut list optimizer</a></p></footer>
+</div>
+
+<script src="duct-calculator.js"></script>
+<script>
+(function(){
+var C=window.DuctCalc,$=function(i){return document.getElementById(i)};
+function si(){return $('units').value==='si'}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function num(id){var el=$(id),s=el.value.trim().replace(',','.');el.classList.remove('bad');var e=el.parentNode.querySelector('.err');if(e)e.remove();
+ if(!s||!/^[+]?(\d+\.?\d*|\.\d+)$/.test(s)||!(parseFloat(s)>0)){el.classList.add('bad');var p=document.createElement('p');p.className='err';p.textContent=s?'Enter a number greater than zero':'Enter a number';el.parentNode.appendChild(p);return NaN}
+ return parseFloat(s)}
+function dia(x){return si()?Math.round(x*25.4)+' mm':(Math.round(x*100)/100)+'"'}
+function len(x){return si()?Math.round(x*25.4):Math.round(x*10)/10}
+function vel(x){return si()?(C.fpmToMs(x)).toFixed(2)+' m/s':Math.round(x)+' fpm'}
+function fr(x){return si()?C.frToPaM(x).toFixed(3)+' Pa/m':x.toFixed(3)+' in.wg/100 ft'}
+function big(items){return '<div class="big">'+items.map(function(i){return '<div'+(i[2]?' class="hot"':'')+'><b>'+i[0]+'</b><span>'+i[1]+'</span></div>'}).join('')+'</div>'}
+function labels(){var m=$('mode').value==='velocity';
+ $('q-l').textContent=si()?'Airflow, L/s':'Airflow, CFM';
+ $('v-l').textContent=m?(si()?'Maximum velocity, m/s':'Maximum velocity, fpm'):(si()?'Friction rate, Pa/m':'Friction rate, in.wg per 100 ft');
+ $('v-h').textContent=m?'Residential branches 600 to 900, mains up to about 1,500 fpm (3 to 7.5 m/s).':(si()?'Typical comfort systems use 0.7 to 0.8 Pa/m.':'Typical comfort systems use 0.08 to 0.1.')}
+function render(){
+ labels();var out=$('out'),q=num('q'),v=num('v');
+ if(isNaN(q)||isNaN(v)){out.innerHTML='<div class="verdict err">Fix the highlighted field.</div>';return}
+ var cfm=si()?C.lsToCfm(q):q,m=$('mode').value,val=m==='velocity'?(si()?C.msToFpm(v):v):(si()?C.paMToFr(v):v);
+ var r=C.size(cfm,m,val,si());
+ if(!r){out.innerHTML='<div class="verdict err">That combination is outside the range this calculator handles (round duct 1 to 200 inches). Check the airflow and the '+(m==='velocity'?'velocity':'friction rate')+'.</div>';return}
+ var heights=si()?[150,200,250,300,350,400,450,500,600,750].map(function(x){return x/25.4}):[6,8,10,12,14,16,18,20,24,30],step=si()?50/25.4:2;
+ var rows=C.rectTable(r.diameter,cfm,heights,step);
+ var warn=r.stdVelocity>1500?'<div class="verdict err">Velocity above 1,500 fpm ('+vel(r.stdVelocity)+') is noisy for comfort ducts. Size up or lower the friction rate.</div>':'';
+ var h='<div class="verdict pass">Round duct: '+dia(r.diameter)+' calculated, '+dia(r.standard)+' next stock size<small>At '+dia(r.standard)+': '+vel(r.stdVelocity)+', '+fr(r.stdFriction)+'</small></div>'+warn+
+  big([[dia(r.diameter),'round diameter, exact',1],[dia(r.standard),'next stock round size',1],[vel(r.velocity),'velocity at exact size'],[fr(r.friction),'friction at exact size']])+
+  '<div class="card"><h3>Equivalent rectangular ducts</h3><div class="scroll rect"><table><thead><tr><th>Height</th><th>Width</th><th>Equiv. round</th><th>Velocity</th><th>Friction</th><th>Aspect</th></tr></thead><tbody>'+
+  rows.map(function(x){return '<tr><td>'+len(x.h)+'</td><td>'+len(x.w)+'</td><td>'+dia(x.de)+'</td><td>'+vel(x.velocity)+'</td><td>'+fr(x.friction)+'</td><td'+(x.aspect>4?' class="w"':'')+'>'+x.aspect.toFixed(1)+':1'+(x.aspect>4?' (high)':'')+'</td></tr>'}).join('')+
+  '</tbody></table></div><p class="note">Sizes in '+(si()?'millimeters':'inches')+'. Widths are rounded up, so friction is at or below the target. Heights without a row are too tall for this airflow.</p></div>';
+ out.innerHTML=h}
+['q','v'].forEach(function(i){$(i).addEventListener('input',render)});
+$('mode').addEventListener('change',function(){ // reset the value to a sensible default for the new mode
+ var m=$('mode').value==='velocity';$('v').value=m?(si()?'4.5':'900'):(si()?'0.8':'0.1');render()});
+// Convert typed values when the unit changes, so 1000 CFM does not silently become 1000 L/s.
+var lastSi=si();
+$('units').addEventListener('change',function(){var now=si();if(now!==lastSi){
+ var q=parseFloat($('q').value.replace(',','.')),v=parseFloat($('v').value.replace(',','.')),vm=$('mode').value==='velocity';
+ if(q>0)$('q').value=now?+C.cfmToLs(q).toFixed(1):+C.lsToCfm(q).toFixed(0);
+ if(v>0){if(vm)$('v').value=now?+C.fpmToMs(v).toFixed(2):+C.msToFpm(v).toFixed(0);else $('v').value=now?+C.frToPaM(v).toFixed(3):+C.paMToFr(v).toFixed(3)}}
+ lastSi=now;render()});
+$('print').addEventListener('click',function(){window.print()});
+render();
+})();
+</script>
+</body></html>
