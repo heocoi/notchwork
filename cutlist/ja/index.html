@@ -200,8 +200,7 @@ section p{line-height:1.8}
 <section class="promo">
   <h2>Android アプリで現場に持ち出す</h2>
   <p style="margin:0">このページの計算は無料アプリと同じで、部材は20行まで、板は1種類です。名称、寸法、切断の順番まで入った割り付け図を表示します。Android アプリでは、作業内容の保存と、部材の名称と寸法を入れた PDF の書き出しができ、専用の数字キーパッドでオフラインでも使えます。</p>
-  <!-- When the app is live, replace this line with a link to https://play.google.com/store/apps/details?id=com.notchwork.cutlist -->
-  <span class="play">Google Play で近日公開</span>
+  <a class="play" href="https://play.google.com/store/apps/details?id=com.notchwork.cutlist&amp;referrer=utm_source%3Dnotchwork%26utm_medium%3Dsite%26utm_campaign%3Dcutlist-ja">Google Play で Android アプリを入手</a>
 </section>
 
 <section style="margin-top:26px">
@@ -944,7 +943,7 @@ function parsePartsCsv(text, limit) {
     state.parts = r.rows.map(x => ({ id: nextId++, label: x.label, w: x.w, h: x.h, qty: x.qty, rot: x.rot }));
     renderInputs(); $('err').hidden = true; flagBad(new Set()); save();
     let m = r.rows.length + ' 行の部材を取り込みました（単位は' + (state.unit === 'in' ? 'インチ' : 'mm') + '）。';
-    if (r.over) m = r.valid + ' 行のうち最初の ' + FREE_PART_ROWS + ' 行を取り込みました。残りの ' + r.over + ' 行は含まれていません。Android アプリは行数に制限がなく、Google Play で近日公開です。';
+    if (r.over) m = r.valid + ' 行のうち最初の ' + FREE_PART_ROWS + ' 行を取り込みました。残りの ' + r.over + ' 行は含まれていません。Google Play の Android アプリは行数に制限がありません。';
     showCsv('okmsg csvmsg', esc(m));
     return true;
   }

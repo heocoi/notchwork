@@ -180,8 +180,7 @@ footer{border-top:1px solid var(--line);padding-top:22px}
 <section class="promo">
   <h2>Take it to the shop with the Android app</h2>
   <p style="margin:0">This page does what the free app does: up to 20 part rows, one sheet size, the full layout with labels, sizes and cut order. The Android app adds saved projects and a PDF with part labels and sizes, and works offline with a keypad made for fractions.</p>
-  <!-- When the app is live, replace this line with a link to https://play.google.com/store/apps/details?id=com.notchwork.cutlist -->
-  <span class="play">Coming soon to Google Play</span>
+  <a class="play" href="https://play.google.com/store/apps/details?id=com.notchwork.cutlist&amp;referrer=utm_source%3Dnotchwork%26utm_medium%3Dsite%26utm_campaign%3Dcutlist-en">Get the Android app on Google Play</a>
 </section>
 
 <section style="margin-top:26px">
@@ -893,7 +892,7 @@ function unitDefaultSwap(field, s, from, to) {
     state.parts = r.rows.map(x => ({ id: nextId++, label: x.label, w: x.w, h: x.h, qty: x.qty, rot: x.rot }));
     renderInputs(); $('err').hidden = true; flagBad(new Set()); save();
     let m = 'Imported ' + r.rows.length + ' part row' + (r.rows.length === 1 ? '' : 's') + ' in ' + (state.unit === 'in' ? 'inches' : 'millimetres') + '.';
-    if (r.over) m = 'Imported the first ' + FREE_PART_ROWS + ' of ' + r.valid + ' rows. The other ' + r.over + ' were left out. The Android app has no row limit and is coming soon to Google Play.';
+    if (r.over) m = 'Imported the first ' + FREE_PART_ROWS + ' of ' + r.valid + ' rows. The other ' + r.over + ' were left out. The Android app on Google Play has no row limit.';
     showCsv('okmsg csvmsg', esc(m));
     return true;
   }
