@@ -532,6 +532,21 @@ function parsePartsCsv(text, limit) {
 }
 // ==CSV-END==
 
+// ==UNITS-START==
+// Untouched defaults per unit. Returns the other unit's default (a number) when `s` is exactly the default
+// of `from`, otherwise null so the caller converts the value.
+// New projects start in inch fractions with a 1/8 kerf, as in the Android app (Project.blank). Millimetres stay decimal.
+const defaultFractions = unit => unit === 'in';
+const defaultKerf = unit => unit === 'in' ? '1/8' : '3';
+const UNIT_DEFAULTS = { sw: { in: 96, mm: 1820 }, sh: { in: 48, mm: 910 }, kerf: { in: 0.125, mm: 3 } };
+function unitDefaultSwap(field, s, from, to) {
+  const d = UNIT_DEFAULTS[field];
+  if (!d || from === to) return null;
+  const v = parseLength(s);
+  return v !== null && Math.abs(v - d[from]) < 1e-9 ? d[to] : null;
+}
+// ==UNITS-END==
+
 // ---------------------------------------------------------------- page ----
 (function () {
   if (typeof document === 'undefined') return;
@@ -549,11 +564,11 @@ function parsePartsCsv(text, limit) {
 
   function defaultState(unit) {
     const inch = unit === 'in';
-    return { unit, fractions: false, kerf: inch ? '0.125' : '3', trim: '', sw: inch ? '96' : '1820', sh: inch ? '48' : '910', sq: DEFAULT_STOCK_QTY, parts: [blankPart()] };
+    return { unit, fractions: defaultFractions(unit), kerf: defaultKerf(unit), trim: '', sw: inch ? '96' : '1820', sh: inch ? '48' : '910', sq: DEFAULT_STOCK_QTY, parts: [blankPart()] };
   }
   function blankPart() { return { id: nextId++, label: '', w: '', h: '', qty: '1', rot: true }; }
 
-  function examplePartsFor(unit) {
+  function examplePartsFor(unit, fractions) {
     const inch = unit === 'in';
     const rows = inch ? [
       ['側板', '28.375', '22', '2', 0], ['底板', '30.0625', '21.25', '1', 1], ['棚板', '30.0625', '19.6875', '2', 1],
@@ -564,7 +579,8 @@ function parsePartsCsv(text, limit) {
       ['扉', '716', '397', '2', 0], ['幕板', '764', '100', '2', 1], ['引出し前板', '764', '180', '3', 0],
       ['背板', '764', '716', '1', 1], ['引出し側板', '500', '140', '6', 1], ['引出し底板', '464', '500', '3', 1]
     ];
-    return rows.map(r => ({ id: nextId++, label: r[0], w: r[1], h: r[2], qty: r[3], rot: r[4] === 1 }));
+    const t = x => (fractions && inch) ? fractionLength(parseLength(x)) : x;
+    return rows.map(r => ({ id: nextId++, label: r[0], w: t(r[1]), h: t(r[2]), qty: r[3], rot: r[4] === 1 }));
   }
 
   const decimals = () => state.unit === 'mm' ? 2 : 3;
@@ -577,14 +593,10 @@ function parsePartsCsv(text, limit) {
     const frac = showFractions && target === 'in';
     if (target === state.unit && frac === state.fractions) return;
     const k = target === state.unit ? 1 : (target === 'in' ? 1 / 25.4 : 25.4);
-    const c = s => {
-      const v = parseLength(s);
-      if (v === null) return s;
-      const x = v * k;
-      if (frac && Math.abs(x * 32 - roundHalfEven(x * 32)) < 1e-6) return fractionLength(x);
-      return formatLength(x, target === 'mm' ? 2 : 3);
-    };
-    state.kerf = c(state.kerf); state.trim = c(state.trim); state.sw = c(state.sw); state.sh = c(state.sh);
+    const out = x => (frac && Math.abs(x * 32 - roundHalfEven(x * 32)) < 1e-6) ? fractionLength(x) : formatLength(x, target === 'mm' ? 2 : 3);
+    const c = s => { const v = parseLength(s); return v === null ? s : out(v * k); };
+    const f = (field, s) => { const d = target === state.unit ? null : unitDefaultSwap(field, s, state.unit, target); return d === null ? c(s) : out(d); };
+    state.kerf = f('kerf', state.kerf); state.trim = c(state.trim); state.sw = f('sw', state.sw); state.sh = f('sh', state.sh);
     state.parts.forEach(p => { p.w = c(p.w); p.h = c(p.h); });
     state.unit = target; state.fractions = frac;
   }
@@ -733,7 +745,7 @@ function parsePartsCsv(text, limit) {
   });
   $('example').addEventListener('click', () => {
     const u = state.unit; const d = defaultState(u);
-    state = d; state.parts = examplePartsFor(u); state.sq = '4';
+    state = d; state.parts = examplePartsFor(u, state.fractions); state.sq = '4';
     renderInputs(); $('err').hidden = true; flagBad(new Set()); save(); calculate();
   });
   $('clear').addEventListener('click', () => {
