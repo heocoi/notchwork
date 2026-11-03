@@ -573,7 +573,8 @@ function unitDefaultSwap(field, s, from, to) {
 
   const decimals = () => state.unit === 'mm' ? 2 : 3;
   function fmt(v, unit, fractions) {
-    return (fractions && unit === 'in') ? fractionLength(v) : formatLength(v, unit === 'mm' ? 2 : 3);
+    const t = (fractions && unit === 'in') ? fractionLength(v) : formatLength(v, unit === 'mm' ? 2 : 3);
+    return t.replace('.', ',');  // display only: decimal comma like the app; inputs and CORE stay untouched
   }
 
   // Convert every typed length when the unit or the display mode changes (Project.convertedTo).
@@ -724,7 +725,7 @@ function unitDefaultSwap(field, s, from, to) {
 
   // ---- result
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  const pct = v => v.toFixed(1) + '%';
+  const pct = v => v.toFixed(1).replace('.', ',') + '%';
 
   function renderResult() {
     if (!last) return;
